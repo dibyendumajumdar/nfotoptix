@@ -23,92 +23,107 @@ Original GNU Optical License and Authors are as follows:
       Author: Alexandre Becoulet
  */
 
-namespace Redukti.Nfotopix {
+namespace Redukti.Nfotopix
+{
 
 
-/*
-Notes:
-Plane can be represented as two vectors: point and normal
-Ray can be represented as two vectors: origin and direction
-*/
+    /*
+    Notes:
+    Plane can be represented as two vectors: point and normal
+    Ray can be represented as two vectors: origin and direction
+    */
 
-public class Vector3Pair {
-
-    public static readonly Vector3Pair position_000_001 = new Vector3Pair(Vector3.vector3_0, Vector3.vector3_001);
-
-    public readonly Vector3 v0;
-    public readonly Vector3 v1;
-
-    /**
-     * @param v0 First vector, origin / point
-     * @param v1 Second vector, direction / normal
-     */
-    public Vector3Pair(Vector3 v0, Vector3 v1) {
-        this.v0 = v0;
-        this.v1 = v1;
-    }
-
-    public Vector3 point() {
-        return v0;
-    }
-
-    public Vector3 origin() {
-        return v0;
-    }
-
-    public Vector3 direction() {
-        return v1;
-    }
-
-    public Vector3 normal() {
-        return v1;
-    }
-
-    public double z0() { return  v0.z(); }
-    public double z1() { return  v1.z(); }
-
-    public bool isEquals(Vector3Pair other, double tolerance) {
-        return v0.isEqual(other.v0, tolerance) && v1.isEqual(other.v1, tolerance);
-    }
-
-    public double pl_ln_intersect_scale(Vector3Pair line) {
-        // See https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
-        return (origin().dot(normal()) - normal().dot(line.origin())) /
-                (line.normal().dot(normal()));
-    }
-    public Vector3 pl_ln_intersect (Vector3Pair line)
+    public class Vector3Pair
     {
-        return line.v0.plus(line.v1.times(pl_ln_intersect_scale (line)));
-    }
-    /**
-     * Swap the given element between the member vectors and return a new pair
-     */
-    public static Vector3Pair swapElement(Vector3Pair p, int j) {
-        double[] n0 = new double[3];
-        double[] n1 = new double[3];
 
-        for (int i = 0; i < 3; i++) {
-            if (i == j) {
-                // swap
-                n0[i] = p.v1.v(i);
-                n1[i] = p.v0.v(i);
-            }
-            else {
-                // retain original
-                n0[i] = p.v0.v(i);
-                n1[i] = p.v1.v(i);
-            }
+        public static readonly Vector3Pair position_000_001 = new Vector3Pair(Vector3.vector3_0, Vector3.vector3_001);
+
+        public readonly Vector3 v0;
+        public readonly Vector3 v1;
+
+        /**
+         * @param v0 First vector, origin / point
+         * @param v1 Second vector, direction / normal
+         */
+        public Vector3Pair(Vector3 v0, Vector3 v1)
+        {
+            this.v0 = v0;
+            this.v1 = v1;
         }
-        return new Vector3Pair(new Vector3(n0[0],n0[1],n0[2]), new Vector3(n0[0],n0[1],n0[2]));
-    }
 
-    override public string ToString() {
-        return "[" + v0.ToString() + "," + v1.ToString() + "]";
-    }
+        public Vector3 point()
+        {
+            return v0;
+        }
 
-    public double x1() {
-        return v1.x();
+        public Vector3 origin()
+        {
+            return v0;
+        }
+
+        public Vector3 direction()
+        {
+            return v1;
+        }
+
+        public Vector3 normal()
+        {
+            return v1;
+        }
+
+        public double z0() { return v0.z(); }
+        public double z1() { return v1.z(); }
+
+        public bool isEquals(Vector3Pair other, double tolerance)
+        {
+            return v0.isEqual(other.v0, tolerance) && v1.isEqual(other.v1, tolerance);
+        }
+
+        public double pl_ln_intersect_scale(Vector3Pair line)
+        {
+            // See https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
+            return (origin().dot(normal()) - normal().dot(line.origin())) /
+                    (line.normal().dot(normal()));
+        }
+        public Vector3 pl_ln_intersect(Vector3Pair line)
+        {
+            return line.v0.plus(line.v1.times(pl_ln_intersect_scale(line)));
+        }
+        /**
+         * Swap the given element between the member vectors and return a new pair
+         */
+        public static Vector3Pair swapElement(Vector3Pair p, int j)
+        {
+            double[] n0 = new double[3];
+            double[] n1 = new double[3];
+
+            for (int i = 0; i < 3; i++)
+            {
+                if (i == j)
+                {
+                    // swap
+                    n0[i] = p.v1.v(i);
+                    n1[i] = p.v0.v(i);
+                }
+                else
+                {
+                    // retain original
+                    n0[i] = p.v0.v(i);
+                    n1[i] = p.v1.v(i);
+                }
+            }
+            return new Vector3Pair(new Vector3(n0[0], n0[1], n0[2]), new Vector3(n0[0], n0[1], n0[2]));
+        }
+
+        override public string ToString()
+        {
+            return "[" + v0.ToString() + "," + v1.ToString() + "]";
+        }
+
+        public double x1()
+        {
+            return v1.x();
+        }
     }
-}
 
 }

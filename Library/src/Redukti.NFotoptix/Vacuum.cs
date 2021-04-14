@@ -24,34 +24,41 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
-namespace Redukti.Nfotopix {
+namespace Redukti.Nfotopix
+{
 
-public class Vacuum : MaterialBase {
+    public class Vacuum : MaterialBase
+    {
 
-    public Vacuum(): base("Vacuum")
+        public Vacuum() : base("Vacuum")
         {
-        
-    }
 
-    override public bool is_opaque() {
-        return false;
-    }
+        }
 
-    override public bool is_reflecting() {
-        return false;
-    }
+        override public bool is_opaque()
+        {
+            return false;
+        }
 
-    override public double get_internal_transmittance(double wavelen, double thickness) {
-        return 1.0;
-    }
+        override public bool is_reflecting()
+        {
+            return false;
+        }
 
-    override public double get_extinction_coef(double wavelen) {
-        return 0.0;
-    }
+        override public double get_internal_transmittance(double wavelen, double thickness)
+        {
+            return 1.0;
+        }
 
-    override public double get_refractive_index(double wavelen) {
-        return 1.0;
+        override public double get_extinction_coef(double wavelen)
+        {
+            return 0.0;
+        }
+
+        override public double get_refractive_index(double wavelen)
+        {
+            return 1.0;
+        }
     }
-}
 
 }

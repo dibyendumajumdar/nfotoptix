@@ -24,6 +24,8 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
+using System;
+
 namespace Redukti.Nfotopix {
 
 /**
@@ -75,7 +77,7 @@ public class AnalysisSpot : AnalysisPointImage {
         double max = 0;       // max radius
         double intensity = 0; // total intensity
 
-        for (TracedRay i : _intercepts)
+        foreach (TracedRay i in _intercepts)
         {
             double dist = (i.get_intercept_point ().minus(_centroid)).len ();
 
@@ -87,7 +89,7 @@ public class AnalysisSpot : AnalysisPointImage {
         }
 
         _useful_radius = _max_radius = max;
-        _rms_radius = Math.sqrt (mean / _intercepts.size ());
+        _rms_radius = Math.Sqrt (mean / _intercepts.Count);
         _tot_intensity = intensity;
 
         _processed_analysis = true;
@@ -97,7 +99,7 @@ public class AnalysisSpot : AnalysisPointImage {
     {
 //        double max_intensity = _results.get_max_ray_intensity ();
 //        renderer.set_max_intensity(max_intensity);
-        for (TracedRay ray : _results.get_intercepted (s))
+        foreach (TracedRay ray in _results.get_intercepted (s))
         {
             // dont need global transform here, draw ray intercept points in
             // surface local coordinates.
