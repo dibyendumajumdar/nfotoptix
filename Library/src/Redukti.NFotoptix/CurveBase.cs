@@ -22,6 +22,8 @@ Original GNU Optical License and Authors are as follows:
       Copyright (C) 2010-2011 Free Software Foundation, Inc
       Author: Alexandre Becoulet
  */
+using System;
+
 namespace Redukti.Nfotopix {
 
 
@@ -34,8 +36,8 @@ public abstract class CurveBase : Curve {
 
     protected Vector2 base_derivative(Vector2 xy) {
         //double abserr;
-        DerivFunction dxf = (x) -> this.sagitta(new Vector2(x, xy.y()));
-        DerivFunction dyf = (y) -> this.sagitta(new Vector2(xy.x(), y));
+        DerivFunction dxf = (x) => this.sagitta(new Vector2(x, xy.y()));
+        DerivFunction dyf = (y) => this.sagitta(new Vector2(xy.x(), y));
 
         DerivResult result = Derivatives.central_derivative(dxf, xy.x(), 1e-6);
         double dx = result.result;
@@ -78,7 +80,7 @@ public abstract class CurveBase : Curve {
             origin = new Vector3(origin.x(), origin.y(), new_sag);
 
             // stop if close enough
-            if (Math.abs (old_sag - new_sag) < 1e-10)
+            if (Math.Abs (old_sag - new_sag) < 1e-10)
                 break;
 
             // get curve tangeante plane at intersection point
@@ -105,6 +107,8 @@ public abstract class CurveBase : Curve {
         Vector2 d = derivative (point.project_xy ());
         return new Vector3 (d.x (), d.y (), -1.0).normalize();
     }
-}
+
+        public abstract double sagitta(Vector2 xy);
+    }
 
 }

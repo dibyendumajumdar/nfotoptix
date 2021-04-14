@@ -26,8 +26,9 @@ namespace Redukti.Nfotopix {
 
 public class Conic : ConicBase {
 
-    public Conic(double roc, double sc) {
-        super(roc, sc);
+    public Conic(double roc, double sc): base(roc, sc)
+        {
+        
     }
 
     public double derivative(double r) {
@@ -49,12 +50,12 @@ public class Conic : ConicBase {
 
     
     public Vector3 intersect(Vector3Pair ray) {
-        const double ax = ray.origin().x();
-        const double ay = ray.origin().y();
-        const double az = ray.origin().z();
-        const double bx = ray.direction().x();
-        const double by = ray.direction().y();
-        const double bz = ray.direction().z();
+        double ax = ray.origin().x();
+        double ay = ray.origin().y();
+        double az = ray.origin().z();
+        double bx = ray.direction().x();
+        double by = ray.direction().y();
+        double bz = ray.direction().z();
 
   /*
     find intersection point between conical section and ray,

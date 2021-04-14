@@ -26,19 +26,19 @@ namespace Redukti.Nfotopix {
 
 public interface Curve {
     /** Get curve sagitta (z) at specified point */
-    double sagitta (Vector2 xy);
+    public double sagitta (Vector2 xy);
 
     /** Get curve dz/dx and dx/dy partial derivatives (gradient) at specified
      * point */
-    Vector2 derivative (Vector2 xy);
+    public Vector2 derivative (Vector2 xy);
 
     /** Get intersection point between curve and 3d ray. Return
      false if no intersection occurred. ray must have a position vector and
      direction vector (cosines). */
-    Vector3 intersect(Vector3Pair ray);
+    public Vector3 intersect(Vector3Pair ray);
 
     /** Get normal to curve surface at specified point. */
-    Vector3 normal (Vector3 point);
+    public Vector3 normal (Vector3 point);
 }
 
 }

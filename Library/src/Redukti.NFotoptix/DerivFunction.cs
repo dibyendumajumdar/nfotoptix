@@ -26,8 +26,6 @@ Original GNU Optical License and Authors are as follows:
 
 namespace Redukti.Nfotopix {
 
-public interface DerivFunction {
-    double apply(double x);
-}
+public delegate double DerivFunction (double x);
 
 }

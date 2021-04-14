@@ -26,7 +26,7 @@ namespace Redukti.Nfotopix {
 
 public abstract class ConicBase : RotationalRoc {
 
-    double _sh; // Schwarzschild constant + 1
+    protected double _sh; // Schwarzschild constant + 1
 
     public ConicBase (double roc, double sc) {
         super (roc);
