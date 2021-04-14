@@ -24,6 +24,8 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
+using System;
+
 namespace Redukti.Nfotopix {
 
 
@@ -42,35 +44,36 @@ public class Vector2 {
     readonly double[] _values;
 
     public Vector2(double x, double y) {
-        if (Double.isNaN(x) || Double.isNaN(y)) {
-            throw new IllegalArgumentException("NaN");
+        if (Double.IsNaN(x) || Double.IsNaN(y)) {
+            throw new InvalidOperationException("NaN");
         }
         this._values = new double[N];
         this._values[0] = x;
         this._values[1] = y;
     }
 
-    public Vector2(double v) {
-        this(v,v);
+    public Vector2(double v): this(v, v) {
+
     }
 
     private Vector2(double[] values) {
         this._values = values;
     }
 
-    public final double x() {
+    public double x() {
         return this._values[0];
     }
-    public final double y() {
+    public double y() {
         return this._values[1];
     }
 
-    public final Vector2 x(double value) { return new Vector2(value, y()); }
-    public final Vector2 y(double value) { return new Vector2(x(), value); }
+    public Vector2 x(double value) { return new Vector2(value, y()); }
+    public Vector2 y(double value) { return new Vector2(x(), value); }
 
     public double v(int i) {return this._values[i];}
     public Vector2 set(int i, double v) {
-        double[] values = Arrays.copyOf(_values, _values.length);
+        double[] values = new double[_values.Length];
+        Array.Copy(_values, values, _values.Length);
         values[i] = v;
         return new Vector2(values);
     }
@@ -137,8 +140,8 @@ public class Vector2 {
     {
         double r = 0;
         for (int i = 0; i < N; i++)
-            r += square (_values[i]);
-        return Math.sqrt (r);
+            r += MathUtils.square (_values[i]);
+        return Math.Sqrt(r);
     }
 
     public static Vector2 from(Vector3 v3, int a, int b)
@@ -150,13 +153,13 @@ public class Vector2 {
     }
 
     
-    public string toString() {
+    override public string ToString() {
         return "[" + x() + ',' + y() + ']';
     }
 
-    public final bool isEqual(Vector2 other, double tolerance) {
-        return Math.abs(this.x() - other.x()) < tolerance &&
-                Math.abs(this.y() - other.y()) < tolerance;
+    public bool isEqual(Vector2 other, double tolerance) {
+        return Math.Abs(this.x() - other.x()) < tolerance &&
+                Math.Abs(this.y() - other.y()) < tolerance;
     }
 }
 

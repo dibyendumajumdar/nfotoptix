@@ -24,6 +24,8 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
+using System;
+
 namespace Redukti.Nfotopix {
 
 public class Vector2Pair {
@@ -34,13 +36,11 @@ public class Vector2Pair {
     public readonly static Vector2Pair vector2_pair_00 = new Vector2Pair(Vector2.vector2_0, Vector2.vector2_0);
 
     public Vector2Pair(Vector2 v0, Vector2 b) {
-        Objects.requireNonNull(v0);
-        Objects.requireNonNull(b);
         this.v0 = v0;
         this.v1 = b;
     }
 
-    public final bool isEquals(Vector2Pair other, double tolerance) {
+    public bool isEquals(Vector2Pair other, double tolerance) {
         return v0.isEqual(other.v0, tolerance) && v1.isEqual(other.v1, tolerance);
     }
 
@@ -52,8 +52,8 @@ public class Vector2Pair {
 
         double d = v1.x() * line.v1.y() - v1.y() * line.v1.x();
 
-        if (Math.abs(d) < 1e-10)
-            throw new IllegalArgumentException("ln_intersect_ln_scale: lines are parallel");
+        if (Math.Abs(d) < 1e-10)
+            throw new InvalidOperationException("ln_intersect_ln_scale: lines are parallel");
 
         double s = (line.v1.x() * w.y() - line.v1.y() * w.x()) / d;
 
@@ -72,8 +72,8 @@ public class Vector2Pair {
         return new Vector2Pair(Vector2.from(v.v0, c0, c1), Vector2.from(v.v1, c0, c1));
     }
 
-    public string toString() {
-        return "[" + v0.toString() + "," + v1.toString() + "]";
+    override public string ToString() {
+        return "[" + v0.ToString() + "," + v1.ToString() + "]";
     }
 }
 

@@ -25,6 +25,7 @@ Original GNU Optical License and Authors are as follows:
 
 
 using System.Collections.Generic;
+using System.Text;
 
 namespace Redukti.Nfotopix {
 
@@ -96,7 +97,7 @@ public class RayTraceParameters {
     public Distribution get_distribution (OpticalSurface s)
     {
         Distribution d;
-        if (_s_distribution.TryGetValue(s, out d))
+        if (!_s_distribution.TryGetValue(s, out d))
             return _default_distribution;
         else
             return d;

@@ -24,6 +24,8 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
+using System;
+
 namespace Redukti.Nfotopix {
 
 
@@ -45,41 +47,40 @@ public class Vector3 {
     readonly double[] values;
 
     public Vector3(double x, double y, double z) {
-        if (Double.isNaN(x) || Double.isNaN(y) || Double.isNaN(z)) {
-            throw new IllegalArgumentException("NaN");
+        if (Double.IsNaN(x) || Double.IsNaN(y) || Double.IsNaN(z)) {
+            throw new InvalidOperationException("NaN");
         }
         this.values = new double[N];
         this.values[0] = x;
         this.values[1] = y;
         this.values[2] = z;
     }
-    public Vector3(double v) {
-        this(v, v, v);
+    public Vector3(double v): this(v, v, v) {
     }
 
     private Vector3(double[] values) {
         this.values = values;
     }
 
-    public final double x() {
+    public double x() {
         return this.values[0];
     }
 
-    public final double y() {
+    public double y() {
         return this.values[1];
     }
 
-    public final double z() {
+    public double z() {
         return this.values[2];
     }
 
-    public final Vector3 x(double v) {
+    public Vector3 x(double v) {
         return new Vector3(v, y(), z());
     }
-    public final Vector3 y(double v) {
+    public Vector3 y(double v) {
         return new Vector3(x(), v, z());
     }
-    public final Vector3 z(double v) {
+    public Vector3 z(double v) {
         return new Vector3(x(), y(), v);
     }
 
@@ -139,8 +140,8 @@ public class Vector3 {
     {
         double r = 0;
         for (int i = 0; i < N; i++)
-            r += square (values[i]);
-        return Math.sqrt (r);
+            r += MathUtils.square (values[i]);
+        return Math.Sqrt (r);
     }
 
     public Vector3 times(double scale) {
@@ -165,20 +166,21 @@ public class Vector3 {
         return this.values[i];
     }
     public Vector3 v(int i, double d) {
-        double[] val = this.values.clone();
+        double[] val = new double[this.values.Length];
+        Array.Copy(val, values, values.Length);
         val[i] = d;
         return new Vector3(val);
     }
 
     
-    public string toString() {
+    override public string ToString() {
         return "[" + x() + ',' + y() + ',' + z() + ']';
     }
 
-    public final bool isEqual(Vector3 other, double tolerance) {
-        return Math.abs(this.x() - other.x()) < tolerance &&
-                Math.abs(this.y() - other.y()) < tolerance &&
-                Math.abs(this.z() - other.z()) < tolerance;
+    public bool isEqual(Vector3 other, double tolerance) {
+        return Math.Abs(this.x() - other.x()) < tolerance &&
+                Math.Abs(this.y() - other.y()) < tolerance &&
+                Math.Abs(this.z() - other.z()) < tolerance;
     }
 }
 

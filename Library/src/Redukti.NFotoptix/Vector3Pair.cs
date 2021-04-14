@@ -44,32 +44,30 @@ public class Vector3Pair {
      * @param v1 Second vector, direction / normal
      */
     public Vector3Pair(Vector3 v0, Vector3 v1) {
-        Objects.requireNonNull(v0);
-        Objects.requireNonNull(v1);
         this.v0 = v0;
         this.v1 = v1;
     }
 
-    public final Vector3 point() {
+    public Vector3 point() {
         return v0;
     }
 
-    public final Vector3 origin() {
+    public Vector3 origin() {
         return v0;
     }
 
-    public final Vector3 direction() {
+    public Vector3 direction() {
         return v1;
     }
 
-    public final Vector3 normal() {
+    public Vector3 normal() {
         return v1;
     }
 
-    public final double z0() { return  v0.z(); }
-    public final double z1() { return  v1.z(); }
+    public double z0() { return  v0.z(); }
+    public double z1() { return  v1.z(); }
 
-    public final bool isEquals(Vector3Pair other, double tolerance) {
+    public bool isEquals(Vector3Pair other, double tolerance) {
         return v0.isEqual(other.v0, tolerance) && v1.isEqual(other.v1, tolerance);
     }
 
@@ -104,8 +102,8 @@ public class Vector3Pair {
         return new Vector3Pair(new Vector3(n0[0],n0[1],n0[2]), new Vector3(n0[0],n0[1],n0[2]));
     }
 
-    public string toString() {
-        return "[" + v0.toString() + "," + v1.toString() + "]";
+    override public string ToString() {
+        return "[" + v0.ToString() + "," + v1.ToString() + "]";
     }
 
     public double x1() {

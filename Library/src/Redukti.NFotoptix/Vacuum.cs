@@ -28,27 +28,28 @@ namespace Redukti.Nfotopix {
 
 public class Vacuum : MaterialBase {
 
-    public Vacuum() {
-        super("Vacuum");
+    public Vacuum(): base("Vacuum")
+        {
+        
     }
 
-    public bool is_opaque() {
+    override public bool is_opaque() {
         return false;
     }
 
-    public bool is_reflecting() {
+    override public bool is_reflecting() {
         return false;
     }
 
-    public double get_internal_transmittance(double wavelen, double thickness) {
+    override public double get_internal_transmittance(double wavelen, double thickness) {
         return 1.0;
     }
 
-    public double get_extinction_coef(double wavelen) {
+    override public double get_extinction_coef(double wavelen) {
         return 0.0;
     }
 
-    public double get_refractive_index(double wavelen) {
+    override public double get_refractive_index(double wavelen) {
         return 1.0;
     }
 }

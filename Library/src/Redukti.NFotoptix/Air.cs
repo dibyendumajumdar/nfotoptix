@@ -24,6 +24,8 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
+using System;
+
 namespace Redukti.Nfotopix {
 
 /**
@@ -121,7 +123,7 @@ public class Air : MaterialBase {
                         / (1.0 + (_temperature - 15.0) * 0.0034785));
             }
         }
-            throw new InvalidOperationException();
+        throw new InvalidOperationException();
     }
 
     override public double get_extinction_coef(double wavelen) {
