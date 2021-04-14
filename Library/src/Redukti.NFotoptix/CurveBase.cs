@@ -24,89 +24,97 @@ Original GNU Optical License and Authors are as follows:
  */
 using System;
 
-namespace Redukti.Nfotopix {
+namespace Redukti.Nfotopix
+{
 
 
-public abstract class CurveBase : Curve {
+    public abstract class CurveBase : Curve
+    {
 
-    
-    public Vector2 derivative(Vector2 xy) {
-        return base_derivative(xy);
-    }
 
-    protected Vector2 base_derivative(Vector2 xy) {
-        //double abserr;
-        DerivFunction dxf = (x) => this.sagitta(new Vector2(x, xy.y()));
-        DerivFunction dyf = (y) => this.sagitta(new Vector2(xy.x(), y));
-
-        DerivResult result = Derivatives.central_derivative(dxf, xy.x(), 1e-6);
-        double dx = result.result;
-        result = Derivatives.central_derivative(dyf, xy.y(), 1e-6);
-        double dy = result.result;
-        // TODO what do we do about error?
-        return new Vector2(dx, dy);
-    }
-
-    
-    public Vector3 intersect(Vector3Pair ray) {
-        return base_intersect(ray);
-    }
-
-    protected Vector3 base_intersect(Vector3Pair ray) {
-        Vector3 origin;
-        // initial intersection with z=0 plane
+        public Vector2 derivative(Vector2 xy)
         {
-            double s = ray.direction ().z ();
-
-            if (s == 0)
-                return null;
-
-            double a = -ray.origin ().z () / s;
-
-            if (a < 0)
-                return null;
-
-            origin  = ray.origin ().plus(ray.direction ().times(a));
+            return base_derivative(xy);
         }
 
-        int n = 32; // avoid infinite loop
-
-        while (n-- > 0)
+        protected Vector2 base_derivative(Vector2 xy)
         {
-            double new_sag = sagitta (origin.project_xy ());
-            double old_sag = origin.z ();
+            //double abserr;
+            DerivFunction dxf = (x) => this.sagitta(new Vector2(x, xy.y()));
+            DerivFunction dyf = (y) => this.sagitta(new Vector2(xy.x(), y));
 
-            // project previous intersection point on curve
-            origin = new Vector3(origin.x(), origin.y(), new_sag);
-
-            // stop if close enough
-            if (Math.Abs (old_sag - new_sag) < 1e-10)
-                break;
-
-            // get curve tangeante plane at intersection point
-            Vector3 norm = normal (origin);
-
-            // intersect again with new tangeante plane
-            Vector3Pair p = new Vector3Pair(origin, norm);
-            double a = p.pl_ln_intersect_scale (ray);
-
-            if (a < 0)
-                return null;
-            // See https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
-            origin  = ray.origin ().plus(ray.direction ().times(a));
+            DerivResult result = Derivatives.central_derivative(dxf, xy.x(), 1e-6);
+            double dx = result.result;
+            result = Derivatives.central_derivative(dyf, xy.y(), 1e-6);
+            double dy = result.result;
+            // TODO what do we do about error?
+            return new Vector2(dx, dy);
         }
-        return origin;
-    }
 
-    
-    public Vector3 normal(Vector3 point) {
-        return base_normal(point);
-    }
 
-    protected Vector3 base_normal(Vector3 point) {
-        Vector2 d = derivative (point.project_xy ());
-        return new Vector3 (d.x (), d.y (), -1.0).normalize();
-    }
+        public Vector3 intersect(Vector3Pair ray)
+        {
+            return base_intersect(ray);
+        }
+
+        protected Vector3 base_intersect(Vector3Pair ray)
+        {
+            Vector3 origin;
+            // initial intersection with z=0 plane
+            {
+                double s = ray.direction().z();
+
+                if (s == 0)
+                    return null;
+
+                double a = -ray.origin().z() / s;
+
+                if (a < 0)
+                    return null;
+
+                origin = ray.origin().plus(ray.direction().times(a));
+            }
+
+            int n = 32; // avoid infinite loop
+
+            while (n-- > 0)
+            {
+                double new_sag = sagitta(origin.project_xy());
+                double old_sag = origin.z();
+
+                // project previous intersection point on curve
+                origin = new Vector3(origin.x(), origin.y(), new_sag);
+
+                // stop if close enough
+                if (Math.Abs(old_sag - new_sag) < 1e-10)
+                    break;
+
+                // get curve tangeante plane at intersection point
+                Vector3 norm = normal(origin);
+
+                // intersect again with new tangeante plane
+                Vector3Pair p = new Vector3Pair(origin, norm);
+                double a = p.pl_ln_intersect_scale(ray);
+
+                if (a < 0)
+                    return null;
+                // See https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
+                origin = ray.origin().plus(ray.direction().times(a));
+            }
+            return origin;
+        }
+
+
+        public Vector3 normal(Vector3 point)
+        {
+            return base_normal(point);
+        }
+
+        protected Vector3 base_normal(Vector3 point)
+        {
+            Vector2 d = derivative(point.project_xy());
+            return new Vector3(d.x(), d.y(), -1.0).normalize();
+        }
 
         public abstract double sagitta(Vector2 xy);
     }
