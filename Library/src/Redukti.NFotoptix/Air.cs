@@ -93,7 +93,7 @@ public class Air : MaterialBase {
                 // _temperature in celsius
                 // _pressure in pascal
 
-                double s2 = square(1 / (wavelen / 1000.0));
+                double s2 = MathUtils.square(1 / (wavelen / 1000.0));
 
                 double ref1
                         = /*1.0 +*/ 1e-8
@@ -111,7 +111,7 @@ public class Air : MaterialBase {
             case AirFormula.AirKohlrausch68Formula: {
                 // F. Kohlrausch, Praktische Physik, 1968, 1, 408
 
-                double w2 = square(wavelen / 1000.0);
+                double w2 = MathUtils.square(wavelen / 1000.0);
 
                 double nref = 1.0
                         + (+6432.8 + (2949810.0 * w2) / (146.0 * w2 - 1.0)
