@@ -43,16 +43,19 @@ public class LightRay {
         this._wavelen = wavelen;
     }
 
-    public LightRay(Vector3Pair ray) {
-        this(ray, 1.0, SpectralLine.d);
+    public LightRay(Vector3Pair ray): this(ray, 1.0, SpectralLine.d)
+        {
+        
     }
 
-    public LightRay(LightRay ray) {
-        this(ray._ray, ray._intensity, ray._wavelen);
+    public LightRay(LightRay ray): this(ray._ray, ray._intensity, ray._wavelen)
+        {
+        
     }
 
-    public LightRay() {
-        this(Vector3Pair.position_000_001);
+    public LightRay(): this(Vector3Pair.position_000_001)
+        {
+        
     }
 
     public void set_intensity(double intensity) {
@@ -75,7 +78,7 @@ public class LightRay {
         return _wavelen;
     }
 
-    public string toString() {
+    public override string ToString() {
         return "LightRay{wavelen=" + _wavelen + ",origin=" + _ray.origin() + ",direction=" + _ray.direction() + '}';
     }
 
