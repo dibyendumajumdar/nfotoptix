@@ -29,12 +29,12 @@ public class Flat : Rotational {
     public static Flat flat = new Flat();
 
     
-    public double sagitta(double s) {
+    override public double sagitta(double s) {
         return 0;
     }
 
     
-    public double derivative (double r)
+    override public double derivative (double r)
     {
         return 1.0;
     }
@@ -57,7 +57,7 @@ t=(Nz*Pz+Ny*Py+Nx*Px-Az*Nz-Ay*Ny-Ax*Nx)/(Bz*Nz+By*Ny+Bx*Nx)
 */
 
     
-    public Vector3 intersect (Vector3Pair ray)
+    override public Vector3 intersect (Vector3Pair ray)
     {
         double s = ray.direction ().z ();
         if (s == 0)
@@ -69,7 +69,7 @@ t=(Nz*Pz+Ny*Py+Nx*Px-Az*Nz-Ay*Ny-Ax*Nx)/(Bz*Nz+By*Ny+Bx*Nx)
     }
 
     
-    public Vector3 normal (Vector3 point)
+    override public Vector3 normal (Vector3 point)
     {
         return new Vector3 (0, 0, -1);
     }

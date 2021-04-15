@@ -22,6 +22,8 @@ Original GNU Optical License and Authors are as follows:
       Copyright (C) 2010-2011 Free Software Foundation, Inc
       Author: Alexandre Becoulet
  */
+using System;
+
 namespace Redukti.Nfotopix {
 
 
@@ -37,42 +39,42 @@ public abstract class Rotational : CurveBase {
      */
     public abstract double sagitta(double s);
 
-    public double sagitta(Vector2 xy) {
+    override public double sagitta(Vector2 xy) {
         return sagitta(xy.len());
     }
 
-    public double derivative(double r) {
+    public virtual double derivative(double r) {
         return rotational_derivative(r);
     }
 
     protected double rotational_derivative(double r) {
-        DerivFunction df = (x) -> this.sagitta(x);
+        DerivFunction df = (x) => this.sagitta(x);
         DerivResult result = Derivatives.central_derivative(df, r, 1e-4);
         return result.result;
     }
 
-    public Vector2 derivative(Vector2 xy) {
+    override public Vector2 derivative(Vector2 xy) {
         return rotational_derivative(xy);
     }
 
     protected Vector2 rotational_derivative(Vector2 xy) {
-        const double r = xy.len();
+        double r = xy.len();
         if (r == 0)
             return Vector2.vector2_0;
-        const double p = derivative(r);
+        double p = derivative(r);
         return xy.times(p / r);
     }
 
-    public Vector3 normal(Vector3 point) {
+    override public Vector3 normal(Vector3 point) {
         return rotational_normal(point);
     }
 
     protected Vector3 rotational_normal(Vector3 point) {
-        const double r = Math.sqrt(square(point.x()) + square(point.y()));
+        double r = Math.Sqrt(MathUtils.square(point.x()) + MathUtils.square(point.y()));
         if (r == 0)
             return new Vector3(0, 0, -1);
         else {
-            const double p = derivative(r);
+            double p = derivative(r);
             return new Vector3(point.x() * p / r, point.y() * p / r, -1.0).normalize();
         }
     }

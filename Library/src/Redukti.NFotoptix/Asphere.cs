@@ -86,8 +86,8 @@ namespace Redukti.Nfotopix
 
             /* Get intercept with new (spherical) surface: */
             double[] delta_length = new double[3];
-            for (int j = 0; j < 3; j++)
-                delta_length[j] = -origin.v(j);
+            for (int k = 0; k < 3; k++)
+                delta_length[k] = -origin.v(k);
             Vector3 result = origin.plus(direction.times(L));
             result = result.z(result.z() - t);
             Vector3 N = Vector3.vector3_0;
@@ -332,13 +332,13 @@ namespace Redukti.Nfotopix
         }
 
 
-        public double sagitta(double s)
+        override public double sagitta(double s)
         {
             return compute_Z(this, s * s);
         }
 
 
-        public double derivative(double r)
+        override public double derivative(double r)
         {
             if (_feder_algo)
             {
@@ -351,13 +351,13 @@ namespace Redukti.Nfotopix
         }
 
 
-        public double sagitta(Vector2 xy)
+        override public double sagitta(Vector2 xy)
         {
             return compute_Z(this, xy);
         }
 
 
-        public Vector2 derivative(Vector2 xy)
+        override public Vector2 derivative(Vector2 xy)
         {
             if (_feder_algo)
             {
@@ -370,7 +370,7 @@ namespace Redukti.Nfotopix
         }
 
 
-        public Vector3 intersect(Vector3Pair ray)
+        override public Vector3 intersect(Vector3Pair ray)
         {
             //static int count = 0;
             //count++;
@@ -400,7 +400,7 @@ namespace Redukti.Nfotopix
             }
         }
 
-        public Vector3 normal(Vector3 point)
+        override public Vector3 normal(Vector3 point)
         {
             if (_feder_algo)
             {

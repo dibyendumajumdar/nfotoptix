@@ -32,7 +32,7 @@ namespace Redukti.Nfotopix
     {
 
 
-        public Vector2 derivative(Vector2 xy)
+        public virtual Vector2 derivative(Vector2 xy)
         {
             return base_derivative(xy);
         }
@@ -52,7 +52,7 @@ namespace Redukti.Nfotopix
         }
 
 
-        public Vector3 intersect(Vector3Pair ray)
+        public virtual Vector3 intersect(Vector3Pair ray)
         {
             return base_intersect(ray);
         }
@@ -105,7 +105,7 @@ namespace Redukti.Nfotopix
         }
 
 
-        public Vector3 normal(Vector3 point)
+        public virtual Vector3 normal(Vector3 point)
         {
             return base_normal(point);
         }

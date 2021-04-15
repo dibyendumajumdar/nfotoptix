@@ -22,24 +22,27 @@ Original GNU Optical License and Authors are as follows:
       Copyright (C) 2010-2011 Free Software Foundation, Inc
       Author: Alexandre Becoulet
  */
+using System;
+
 namespace Redukti.Nfotopix {
 
 
 public class Sphere : ConicBase {
 
-    public Sphere(double roc) {
-        super(roc, 0.0);
+    public Sphere(double roc): base(roc, 0.0)
+        {
+        
     }
 
     
-    public double sagitta(double r) {
-        double x = Math.abs(_roc) - Math.sqrt(square(_roc) - square(r));
+    override public double sagitta(double r) {
+        double x = Math.Abs(_roc) - Math.Sqrt(MathUtils.square(_roc) - MathUtils.square(r));
         return _roc < 0 ? -x : x;
     }
 
     
-    public double derivative(double r) {
-        return r / Math.sqrt(square(_roc) - square(r));
+    override public double derivative(double r) {
+        return r / Math.Sqrt(MathUtils.square(_roc) - MathUtils.square(r));
     }
 
     /*
@@ -58,13 +61,13 @@ t= (sqrt((Bz^2+By^2+Bx^2)*R^2+(-Bz^2-By^2)*d^2+(2*Az*Bx*Bz+2*Ay*Bx*By)
 
 */
 
-    public Vector3 intersect(Vector3Pair ray) {
-        const double ax = (ray.origin().x());
-        const double ay = (ray.origin().y());
-        const double az = (ray.origin().z());
-        const double bx = (ray.direction().x());
-        const double by = (ray.direction().y());
-        const double bz = (ray.direction().z());
+    override public Vector3 intersect(Vector3Pair ray) {
+        double ax = (ray.origin().x());
+        double ay = (ray.origin().y());
+        double az = (ray.origin().z());
+        double bx = (ray.direction().x());
+        double by = (ray.direction().y());
+        double bz = (ray.direction().z());
 
         // double bz2_by2_bx2 = math::square(bx) + math::square(by) +
         // math::square(bx);
@@ -74,17 +77,17 @@ t= (sqrt((Bz^2+By^2+Bx^2)*R^2+(-Bz^2-By^2)*d^2+(2*Az*Bx*Bz+2*Ay*Bx*By)
         double ay_by = ay * by;
         double ax_bx = ax * bx;
 
-        double s = +square(_roc) // * bz2_by2_bx2
+        double s = +MathUtils.square(_roc) // * bz2_by2_bx2
                 + 2.0 * (ax_bx + ay_by) * bz * d + 2.0 * ax_bx * ay_by
-                - square(ay * bx) - square(ax * by)
-                - (square(bx) + square(by)) * square(d)
-                - (square(ax) + square(ay)) * square(bz);
+                - MathUtils.square(ay * bx) - MathUtils.square(ax * by)
+                - (MathUtils.square(bx) + MathUtils.square(by)) * MathUtils.square(d)
+                - (MathUtils.square(ax) + MathUtils.square(ay)) * MathUtils.square(bz);
 
         // no sphere/ray colision
         if (s < 0)
             return null;
 
-        s = Math.sqrt(s);
+        s = Math.Sqrt(s);
 
         // there are 2 possible sphere/line collision point, keep the right
         // one depending on ray direction
@@ -102,7 +105,7 @@ t= (sqrt((Bz^2+By^2+Bx^2)*R^2+(-Bz^2-By^2)*d^2+(2*Az*Bx*Bz+2*Ay*Bx*By)
     }
 
     
-    public Vector3 normal (Vector3 point)
+    override public Vector3 normal (Vector3 point)
     {
         // normalized vector to sphere center
         Vector3 normal = new Vector3(point.x(), point.y(), point.z() - _roc).normalize();

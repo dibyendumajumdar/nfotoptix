@@ -22,20 +22,21 @@ Original GNU Optical License and Authors are as follows:
       Copyright (C) 2010-2011 Free Software Foundation, Inc
       Author: Alexandre Becoulet
  */
+using System;
+
 namespace Redukti.Nfotopix {
 
 public abstract class ConicBase : RotationalRoc {
 
     protected double _sh; // Schwarzschild constant + 1
 
-    public ConicBase (double roc, double sc) {
-        super (roc);
+    public ConicBase (double roc, double sc): base(roc) {
         _sh = sc + 1;
     }
 
     public double get_eccentricity ()
     {
-        return Math.sqrt (-_sh + 1.0);
+        return Math.Sqrt (-_sh + 1.0);
     }
 
     public double get_schwarzschild ()
