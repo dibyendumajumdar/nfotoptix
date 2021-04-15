@@ -26,195 +26,223 @@ Original GNU Optical License and Authors are as follows:
 
 using System;
 
-namespace Redukti.Nfotopix {
+namespace Redukti.Nfotopix
+{
 
 
-public class Rectangle : ShapeBase {
-    Vector2 _halfsize;
+    public class Rectangle : ShapeBase
+    {
+        Vector2 _halfsize;
 
-    public Rectangle(double sqwidth) {
-        this._halfsize = new Vector2(sqwidth / 2., sqwidth / 2.);
-    }
+        public Rectangle(double sqwidth)
+        {
+            this._halfsize = new Vector2(sqwidth / 2., sqwidth / 2.);
+        }
 
-    public Rectangle(double width, double height) {
-        this._halfsize = new Vector2(width / 2., height / 2.);
-    }
-
-
-        override public double max_radius() {
-        return _halfsize.len();
-    }
+        public Rectangle(double width, double height)
+        {
+            this._halfsize = new Vector2(width / 2., height / 2.);
+        }
 
 
-        override public double min_radius() {
-        return Math.Min(_halfsize.x(), _halfsize.y());
-    }
+        override public double max_radius()
+        {
+            return _halfsize.len();
+        }
 
 
-        override public bool inside(Vector2 point) {
-        return (Math.Abs(point.x()) <= _halfsize.x()
-                && Math.Abs(point.y()) <= _halfsize.y());
-    }
+        override public double min_radius()
+        {
+            return Math.Min(_halfsize.x(), _halfsize.y());
+        }
 
-    
-    public override void get_pattern(PatternConsumer f,
-                            Distribution d, bool unobstructed) {
-        const double epsilon = 1e-8;
-        Vector2 hs = _halfsize.times(d.get_scaling());
-        Vector2 step = hs.divide((double)(d.get_radial_density () / 2));
 
-        switch (d.get_pattern()) {
-            case Pattern.MeridionalDist: {
-                f(Vector2.vector2_0);
+        override public bool inside(Vector2 point)
+        {
+            return (Math.Abs(point.x()) <= _halfsize.x()
+                    && Math.Abs(point.y()) <= _halfsize.y());
+        }
 
-                for (double y = step.y(); y < hs.y() + epsilon; y += step.y()) {
-                    f(new Vector2(0, y));
-                    f(new Vector2(0, -y));
-                }
-                break;
-            }
 
-            case Pattern.SagittalDist: {
-                f(Vector2.vector2_0);
+        public override void get_pattern(PatternConsumer f,
+                                Distribution d, bool unobstructed)
+        {
+            const double epsilon = 1e-8;
+            Vector2 hs = _halfsize.times(d.get_scaling());
+            Vector2 step = hs.divide((double)(d.get_radial_density() / 2));
 
-                for (double x = step.x(); x < hs.x() + epsilon; x += step.x()) {
-                    f(new Vector2(x, 0));
-                    f(new Vector2(-x, 0));
-                }
-                break;
-            }
+            switch (d.get_pattern())
+            {
+                case Pattern.MeridionalDist:
+                    {
+                        f(Vector2.vector2_0);
 
-            case Pattern.CrossDist: {
-                f(Vector2.vector2_0);
-
-                for (double x = step.x(); x < hs.x() + epsilon; x += step.x()) {
-                    f(new Vector2(x, 0));
-                    f(new Vector2(-x, 0));
-                }
-
-                for (double y = step.y(); y < hs.y() + epsilon; y += step.y()) {
-                    f(new Vector2(0, y));
-                    f(new Vector2(0, -y));
-                }
-                break;
-            }
-
-            case Pattern.DefaultDist:
-            case Pattern.SquareDist: {
-                double x, y;
-
-                f(Vector2.vector2_0);
-
-                for (x = step.x(); x < hs.x() + epsilon; x += step.x())
-                    for (y = step.y(); y < hs.y() + epsilon; y += step.y()) {
-                        f(new Vector2(x, y));
-                        f(new Vector2(-x, y));
-                        f(new Vector2(x, -y));
-                        f(new Vector2(-x, -y));
+                        for (double y = step.y(); y < hs.y() + epsilon; y += step.y())
+                        {
+                            f(new Vector2(0, y));
+                            f(new Vector2(0, -y));
+                        }
+                        break;
                     }
 
-                for (x = step.x(); x < hs.x() + epsilon; x += step.x()) {
-                    f(new Vector2(x, 0));
-                    f(new Vector2(-x, 0));
-                }
+                case Pattern.SagittalDist:
+                    {
+                        f(Vector2.vector2_0);
 
-                for (y = step.y(); y < hs.y() + epsilon; y += step.y()) {
-                    f(new Vector2(0, y));
-                    f(new Vector2(0, -y));
-                }
-                break;
-            }
+                        for (double x = step.x(); x < hs.x() + epsilon; x += step.x())
+                        {
+                            f(new Vector2(x, 0));
+                            f(new Vector2(-x, 0));
+                        }
+                        break;
+                    }
 
-            default:
-                base.get_pattern(f, d, unobstructed);
+                case Pattern.CrossDist:
+                    {
+                        f(Vector2.vector2_0);
+
+                        for (double x = step.x(); x < hs.x() + epsilon; x += step.x())
+                        {
+                            f(new Vector2(x, 0));
+                            f(new Vector2(-x, 0));
+                        }
+
+                        for (double y = step.y(); y < hs.y() + epsilon; y += step.y())
+                        {
+                            f(new Vector2(0, y));
+                            f(new Vector2(0, -y));
+                        }
+                        break;
+                    }
+
+                case Pattern.DefaultDist:
+                case Pattern.SquareDist:
+                    {
+                        double x, y;
+
+                        f(Vector2.vector2_0);
+
+                        for (x = step.x(); x < hs.x() + epsilon; x += step.x())
+                            for (y = step.y(); y < hs.y() + epsilon; y += step.y())
+                            {
+                                f(new Vector2(x, y));
+                                f(new Vector2(-x, y));
+                                f(new Vector2(x, -y));
+                                f(new Vector2(-x, -y));
+                            }
+
+                        for (x = step.x(); x < hs.x() + epsilon; x += step.x())
+                        {
+                            f(new Vector2(x, 0));
+                            f(new Vector2(-x, 0));
+                        }
+
+                        for (y = step.y(); y < hs.y() + epsilon; y += step.y())
+                        {
+                            f(new Vector2(0, y));
+                            f(new Vector2(0, -y));
+                        }
+                        break;
+                    }
+
+                default:
+                    base.get_pattern(f, d, unobstructed);
                     break;
-        }
-    }
-
-
-        override public Vector2Pair get_bounding_box() {
-        return new Vector2Pair(_halfsize.negate(), _halfsize);
-    }
-
-
-        override public int get_contour_count() {
-        return 1;
-    }
-
-
-        override public void get_contour(int contour, PatternConsumer f, double resolution) {
-        const double epsilon = 1e-8;
-
-        Vector2 step = get_step(resolution);
-
-        double x, y;
-
-        for (x = -_halfsize.x(); x < _halfsize.x() - epsilon; x += step.x())
-            f(new Vector2(x, -_halfsize.y()));
-
-        for (y = -_halfsize.y(); y < _halfsize.y() - epsilon; y += step.y())
-            f(new Vector2(_halfsize.x(), y));
-
-        for (x = _halfsize.x(); x > -_halfsize.x() + epsilon; x -= step.x())
-            f(new Vector2(x, _halfsize.y()));
-
-        for (y = _halfsize.y(); y > -_halfsize.y() + epsilon; y -= step.y())
-            f(new Vector2(-_halfsize.x(), y));
-
-    }
-
-
-        override public void get_triangles(ConsumerTriangle2 f, double resolution) {
-        const double epsilon = 1e-8;
-
-        Vector2 step = get_step(resolution);
-
-        for (double x = 0; x < _halfsize.x() - epsilon; x += step.x())
-            for (double y = 0; y < _halfsize.y() - epsilon; y += step.y()) {
-                Vector2 a = new Vector2(x, y);
-                Vector2 b = new Vector2(x + step.x(), y);
-                Vector2 c = new Vector2(x, y + step.y());
-                Vector2 d = new Vector2(x + step.x(), y + step.y());
-
-                f(new Triangle2(b, a, c));
-                f(new Triangle2(d, b, c));
-                f(new Triangle2(b.negate(), a.negate(), c.negate()));
-                f(new Triangle2(d.negate(), b.negate(), c.negate()));
-
-                a = a.x(-a.x());
-                b = b.x(-b.x());
-                c = c.x(-c.x());
-                d = d.x(-d.x());
-
-                f(new Triangle2(a, b, c));
-                f(new Triangle2(b, d, c));
-                f(new Triangle2(a.negate(), b.negate(), c.negate()));
-                f(new Triangle2(b.negate(), d.negate(), c.negate()));
             }
-    }
-
-    Vector2 get_step(double resolution) {
-        double[] s = new double[2];
-        for (int i = 0; i < 2; i++) {
-            if (resolution > _halfsize.v(i))
-                s[i] = _halfsize.v(i);
-            else
-                s[i] = _halfsize.v(i) / Math.Round(_halfsize.v(i) / resolution);
         }
-        return new Vector2(s[0], s[1]);
+
+
+        override public Vector2Pair get_bounding_box()
+        {
+            return new Vector2Pair(_halfsize.negate(), _halfsize);
+        }
+
+
+        override public int get_contour_count()
+        {
+            return 1;
+        }
+
+
+        override public void get_contour(int contour, PatternConsumer f, double resolution)
+        {
+            const double epsilon = 1e-8;
+
+            Vector2 step = get_step(resolution);
+
+            double x, y;
+
+            for (x = -_halfsize.x(); x < _halfsize.x() - epsilon; x += step.x())
+                f(new Vector2(x, -_halfsize.y()));
+
+            for (y = -_halfsize.y(); y < _halfsize.y() - epsilon; y += step.y())
+                f(new Vector2(_halfsize.x(), y));
+
+            for (x = _halfsize.x(); x > -_halfsize.x() + epsilon; x -= step.x())
+                f(new Vector2(x, _halfsize.y()));
+
+            for (y = _halfsize.y(); y > -_halfsize.y() + epsilon; y -= step.y())
+                f(new Vector2(-_halfsize.x(), y));
+
+        }
+
+
+        override public void get_triangles(ConsumerTriangle2 f, double resolution)
+        {
+            const double epsilon = 1e-8;
+
+            Vector2 step = get_step(resolution);
+
+            for (double x = 0; x < _halfsize.x() - epsilon; x += step.x())
+                for (double y = 0; y < _halfsize.y() - epsilon; y += step.y())
+                {
+                    Vector2 a = new Vector2(x, y);
+                    Vector2 b = new Vector2(x + step.x(), y);
+                    Vector2 c = new Vector2(x, y + step.y());
+                    Vector2 d = new Vector2(x + step.x(), y + step.y());
+
+                    f(new Triangle2(b, a, c));
+                    f(new Triangle2(d, b, c));
+                    f(new Triangle2(b.negate(), a.negate(), c.negate()));
+                    f(new Triangle2(d.negate(), b.negate(), c.negate()));
+
+                    a = a.x(-a.x());
+                    b = b.x(-b.x());
+                    c = c.x(-c.x());
+                    d = d.x(-d.x());
+
+                    f(new Triangle2(a, b, c));
+                    f(new Triangle2(b, d, c));
+                    f(new Triangle2(a.negate(), b.negate(), c.negate()));
+                    f(new Triangle2(b.negate(), d.negate(), c.negate()));
+                }
+        }
+
+        Vector2 get_step(double resolution)
+        {
+            double[] s = new double[2];
+            for (int i = 0; i < 2; i++)
+            {
+                if (resolution > _halfsize.v(i))
+                    s[i] = _halfsize.v(i);
+                else
+                    s[i] = _halfsize.v(i) / Math.Round(_halfsize.v(i) / resolution);
+            }
+            return new Vector2(s[0], s[1]);
+        }
+
+
+        override public double get_outter_radius(Vector2 dir)
+        {
+            Vector2 e
+                    = (Math.Abs(dir.x() / dir.y()) < (_halfsize.x() / _halfsize.y()))
+                    ? Vector2.vector2_10
+                    : Vector2.vector2_01;
+
+            return (new Vector2Pair(_halfsize, e)
+                    .ln_intersect_ln(new Vector2Pair(Vector2.vector2_0, dir)))
+                    .len();
+        }
     }
-
-
-        override public double get_outter_radius(Vector2 dir) {
-        Vector2 e
-                = (Math.Abs(dir.x() / dir.y()) < (_halfsize.x() / _halfsize.y()))
-                ? Vector2.vector2_10
-                : Vector2.vector2_01;
-
-        return (new Vector2Pair(_halfsize, e)
-                .ln_intersect_ln(new Vector2Pair(Vector2.vector2_0, dir)))
-                .len();
-    }
-}
 
 }

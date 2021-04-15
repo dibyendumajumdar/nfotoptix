@@ -26,60 +26,72 @@ Original GNU Optical License and Authors are as follows:
 
 using System;
 
-namespace Redukti.Nfotopix {
+namespace Redukti.Nfotopix
+{
 
-public class Infinite : Shape {
-    public static readonly Infinite infinite = new Infinite();
+    public class Infinite : Shape
+    {
+        public static readonly Infinite infinite = new Infinite();
 
-    
-    public bool inside(Vector2 point) {
-        return true;
+
+        public bool inside(Vector2 point)
+        {
+            return true;
+        }
+
+
+        public void get_pattern(PatternConsumer f, Distribution d, bool unobstructed)
+        {
+            throw new InvalidOperationException("can not distribute rays across an infinite surface shape");
+        }
+
+
+        public double max_radius()
+        {
+            return 0;
+        }
+
+
+        public double min_radius()
+        {
+            return 0;
+        }
+
+
+        public double get_outter_radius(Vector2 dir)
+        {
+            return 0;
+        }
+
+
+        public double get_hole_radius(Vector2 dir)
+        {
+            return 0;
+        }
+
+
+        public Vector2Pair get_bounding_box()
+        {
+            return Vector2Pair.vector2_pair_00;
+        }
+
+
+        public int get_contour_count()
+        {
+            return 0;
+        }
+
+
+        public void get_contour(int contour, PatternConsumer f, double resolution)
+        {
+
+        }
+
+
+        public void get_triangles(ConsumerTriangle2 f, double resolution)
+        {
+
+        }
     }
-
-
-    public void get_pattern(PatternConsumer f, Distribution d, bool unobstructed) {
-        throw new InvalidOperationException("can not distribute rays across an infinite surface shape");
-    }
-
-    
-    public double max_radius() {
-        return 0;
-    }
-
-    
-    public double min_radius() {
-        return 0;
-    }
-
-    
-    public double get_outter_radius(Vector2 dir) {
-        return 0;
-    }
-
-    
-    public double get_hole_radius(Vector2 dir) {
-        return 0;
-    }
-
-    
-    public Vector2Pair get_bounding_box() {
-        return Vector2Pair.vector2_pair_00;
-    }
-
-    
-    public int get_contour_count() {
-        return 0;
-    }
-
-    
-    public void get_contour(int contour, PatternConsumer f, double resolution) {
-
-    }
-
-    
-    public void get_triangles(ConsumerTriangle2 f, double resolution) {
-
-    }
-}
 
 }
