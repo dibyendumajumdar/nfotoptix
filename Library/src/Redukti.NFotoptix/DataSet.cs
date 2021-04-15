@@ -23,6 +23,8 @@ Original GNU Optical License and Authors are as follows:
       Author: Alexandre Becoulet
  */
 
+using System;
+
 namespace Redukti.Nfotopix {
 
 /**
@@ -40,8 +42,8 @@ namespace Redukti.Nfotopix {
  ..., xn known parameters to access the stored y value.
  */
 public abstract class DataSet {
-    int _version;
-    Interpolation _interpolation;
+    protected int _version;
+    protected Interpolation _interpolation;
 
     /** Get total number of dimensions */
     public abstract int get_dimensions ();
@@ -53,10 +55,12 @@ public abstract class DataSet {
     public abstract double get_x_value (int n, int dim);
 
     /** Get y data stored at position (x0, x1, ...) in data set */
-    public abstract double get_y_value (int x[]);
+    public abstract double get_y_value (int[] x);
 
-    /** Interpolate y value corresponding to given x value(s) in data set. */
-    public abstract double interpolate (double x[]);
+        public abstract double get_y_value(int x);
+
+        /** Interpolate y value corresponding to given x value(s) in data set. */
+        public abstract double interpolate (double[] x);
 
     /** Interpolate y value corresponding to given x value in data
      set. data may be differentiated several times along the requested
@@ -64,7 +68,7 @@ public abstract class DataSet {
      @param deriv Differentiation count, 0 means y value, 1 means 1st derivative...
      @param dim Differentiation dimension
      */
-    public abstract double interpolate (double x[], int deriv,
+    public abstract double interpolate (double[] x, int deriv,
                                 int dim);
 
     /** Get minimal and maximal x values on dimension n found in data set */
@@ -73,7 +77,7 @@ public abstract class DataSet {
     /** Get minimal and maximal y values found in data set */
     public Range get_y_range ()
     {
-        Range r = new Range(Double.MAX_VALUE, Double.MIN_VALUE);
+        Range r = new Range(Double.MaxValue, Double.MinValue);
 
         int d = get_dimensions ();
         int[] x = new int[d];
@@ -82,7 +86,7 @@ public abstract class DataSet {
         for (int i = 0; i < d; i++)
         {
             if (get_count (i) == 0)
-                throw new IllegalStateException ("data set contains no data");
+                throw new InvalidOperationException("data set contains no data");
 
             x[i] = 0;
             c[i] = get_count (i) - 1;

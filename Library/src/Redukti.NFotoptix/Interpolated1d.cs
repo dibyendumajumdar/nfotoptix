@@ -23,6 +23,9 @@ Original GNU Optical License and Authors are as follows:
       Author: Alexandre Becoulet
  */
 
+using System;
+using System.Collections.Generic;
+
 namespace Redukti.Nfotopix {
 
 
@@ -36,8 +39,8 @@ public class Interpolated1d {
 
     InterpolatableDataSet _data_set;
 
-    static class PolyS {
-        double a, b, c, d;
+    class PolyS {
+        public double a, b, c, d;
 
         public PolyS(double a, double b, double c, double d) {
             this.a = a;
@@ -47,7 +50,7 @@ public class Interpolated1d {
         }
     }
 
-    ArrayList<PolyS> _poly = new ArrayList<>();
+    List<PolyS> _poly = new List<PolyS>();
 
     bool _invalid = true;
 
@@ -57,17 +60,17 @@ public class Interpolated1d {
         this._data_set = dataSet;
     }
 
-    void invalidate() {
+    public void invalidate() {
         this._invalid = true;
     }
 
     void resizePoly(int n) {
-        for (int i = _poly.size(); i < n; i++) {
-            _poly.add(new PolyS(0, 0, 0, 0));
+        for (int i = _poly.Count; i < n; i++) {
+            _poly.Add(new PolyS(0, 0, 0, 0));
         }
     }
 
-    void set_interpolation(Interpolation i) {
+    public void set_interpolation(Interpolation i) {
         this._method = i;
         invalidate();
     }
@@ -78,50 +81,50 @@ public class Interpolated1d {
 
     public double interpolate(double x, int d) {
         switch (_method) {
-            case Nearest:
+            case Interpolation.Nearest:
                 if (_invalid) {
-                    _poly.clear();
+                    _poly.Clear();
                     _invalid = false;
                 }
                 return interpolate_nearest(d, x);
 
-            case Linear:
+            case Interpolation.Linear:
                 if (_invalid) {
-                    _poly.clear();
+                    _poly.Clear();
                     _invalid = false;
                 }
                 return interpolate_linear(d, x);
 
-            case Quadratic:
+            case Interpolation.Quadratic:
                 return _invalid ? update_quadratic(d, x) : interpolate_quadratic(d, x);
 
-            case CubicSimple:
+            case Interpolation.CubicSimple:
                 return _invalid ? update_cubic_simple(d, x) : interpolate_cubic(d, x);
 
-            case CubicDeriv:
+            case Interpolation.CubicDeriv:
                 return _invalid ? update_cubic_deriv(d, x) : interpolate_cubic(d, x);
 
-            case Cubic2Deriv:
+            case Interpolation.Cubic2Deriv:
                 return _invalid ? update_cubic2_deriv(d, x) : interpolate_cubic(d, x);
 
-            case CubicDerivInit:
+            case Interpolation.CubicDerivInit:
                 return _invalid ? update_cubic_deriv_init(d, x) : interpolate_cubic(d, x);
 
-            case Cubic2DerivInit:
+            case Interpolation.Cubic2DerivInit:
                 return _invalid ? update_cubic2_deriv_init(d, x) : interpolate_cubic(d, x);
 
-            case Cubic:
+            case Interpolation.Cubic:
                 return _invalid ? update_cubic(d, x) : interpolate_cubic(d, x);
 
-            case Cubic2:
+            case Interpolation.Cubic2:
                 return _invalid ? update_cubic2(d, x) : interpolate_cubic(d, x);
 
             default:
-                throw new IllegalStateException("invalid interpolation selected");
+                throw new InvalidOperationException("invalid interpolation selected");
         }
     }
 
-    void compute_cubic_2nd_deriv(cubic_2nd_deriv_init_e de, int n, double dd[],
+    void compute_cubic_2nd_deriv(cubic_2nd_deriv_init_e de, int n, double[] dd,
                                  double d0, double dn) {
         // double eq[n][3];
         double[] eq = new double[n * 3];
@@ -129,13 +132,13 @@ public class Interpolated1d {
 
         // first and last tridiag system equations
         switch (de) {
-            case Cubic2ndDerivQuadratic:
+            case cubic_2nd_deriv_init_e.Cubic2ndDerivQuadratic:
                 dd[0] = dd[n - 1] = 0.0;
                 eq[idx.i(0, 1)] = eq[idx.i(n - 1, 1)] = 1.0;
                 eq[idx.i(1, 0)] = eq[idx.i(n - 2, 2)] = -1.0;
                 break;
 
-            case Cubic2ndDerivFirst: {
+            case cubic_2nd_deriv_init_e.Cubic2ndDerivFirst: {
                 // first derivative is prescribed for first and last point
                 double x0 = _data_set.get_x_interval(0);
                 double xn = _data_set.get_x_interval(n - 2);
@@ -150,7 +153,7 @@ public class Interpolated1d {
                 break;
             }
 
-            case Cubic2ndDerivSecond:
+            case cubic_2nd_deriv_init_e.Cubic2ndDerivSecond:
                 // second derivative is prescribed for first and last point
                 dd[0] = d0;
                 dd[n - 1] = dn;
@@ -214,9 +217,9 @@ public class Interpolated1d {
 
         p.b = (p3y * (p2x - p1x) + p2y * (p1x - p3x) + p1y * (p3x - p2x)) / n;
 
-        double p1x2 = square(p1x);
-        double p2x2 = square(p2x);
-        double p3x2 = square(p3x);
+        double p1x2 = MathUtils.square(p1x);
+        double p2x2 = MathUtils.square(p2x);
+        double p3x2 = MathUtils.square(p3x);
 
         p.c = (p3y * (p1x2 - p2x2) + p2y * (p3x2 - p1x2) + p1y * (p2x2 - p3x2)) / n;
 
@@ -240,26 +243,26 @@ public class Interpolated1d {
 
         // FIXME simplify
 
-        p.a = -(2. * y1 - 2. * y2 + (d2 + d1) * x2 - (d2 + d1) * x1)
-                / (3. * x1 * x2 * x2 - x2 * x2 * x2 - 3. * x1 * x1 * x2
+        p.a = -(2.0 * y1 - 2.0 * y2 + (d2 + d1) * x2 - (d2 + d1) * x1)
+                / (3.0 * x1 * x2 * x2 - x2 * x2 * x2 - 3.0 * x1 * x1 * x2
                 + x1 * x1 * x1);
 
-        p.b = (x1 * ((d2 - d1) * x2 - 3. * y2) - 3. * x2 * y2
-                + (3. * x2 + 3. * x1) * y1 + (d2 + 2. * d1) * x2 * x2
-                - (2. * d2 + d1) * x1 * x1)
-                / (3. * x1 * x2 * x2 - x2 * x2 * x2 - 3. * x1 * x1 * x2
+        p.b = (x1 * ((d2 - d1) * x2 - 3.0 * y2) - 3.0 * x2 * y2
+                + (3.0 * x2 + 3.0 * x1) * y1 + (d2 + 2.0 * d1) * x2 * x2
+                - (2.0 * d2 + d1) * x1 * x1)
+                / (3.0 * x1 * x2 * x2 - x2 * x2 * x2 - 3.0 * x1 * x1 * x2
                 + x1 * x1 * x1);
 
-        p.c = -(x1 * ((2. * d2 + d1) * x2 * x2 - 6. * x2 * y2) + 6. * x1 * x2 * y1
-                + d1 * x2 * x2 * x2 - (d2 + 2. * d1) * x1 * x1 * x2
+        p.c = -(x1 * ((2.0 * d2 + d1) * x2 * x2 - 6.0 * x2 * y2) + 6.0 * x1 * x2 * y1
+                + d1 * x2 * x2 * x2 - (d2 + 2.0 * d1) * x1 * x1 * x2
                 - d2 * x1 * x1 * x1)
-                / (3. * x1 * x2 * x2 - x2 * x2 * x2 - 3. * x1 * x1 * x2
+                / (3.0 * x1 * x2 * x2 - x2 * x2 * x2 - 3.0 * x1 * x1 * x2
                 + x1 * x1 * x1);
 
-        p.d = (x1 * x1 * ((d2 - d1) * x2 * x2 - 3. * x2 * y2)
+        p.d = (x1 * x1 * ((d2 - d1) * x2 * x2 - 3.0 * x2 * y2)
                 + x1 * x1 * x1 * (y2 - d2 * x2)
-                + (3. * x1 * x2 * x2 - x2 * x2 * x2) * y1 + d1 * x1 * x2 * x2 * x2)
-                / (3. * x1 * x2 * x2 - x2 * x2 * x2 - 3. * x1 * x1 * x2
+                + (3.0 * x1 * x2 * x2 - x2 * x2 * x2) * y1 + d1 * x1 * x2 * x2 * x2)
+                / (3.0 * x1 * x2 * x2 - x2 * x2 * x2 - 3.0 * x1 * x1 * x2
                 + x1 * x1 * x1);
     }
 
@@ -275,17 +278,17 @@ public class Interpolated1d {
 
         // FIXME simplify
 
-        p.a = (dd1 - dd2) / (6. * p1x - 6. * p2x);
+        p.a = (dd1 - dd2) / (6.0 * p1x - 6.0 * p2x);
 
-        p.b = (dd2 * p1x - dd1 * p2x) / (2. * p1x - 2. * p2x);
+        p.b = (dd2 * p1x - dd1 * p2x) / (2.0 * p1x - 2.0 * p2x);
 
-        p.c = (6. * p1y - 6. * p2y + (dd2 + 2. * dd1) * p2x * p2x
-                + (2. * dd1 - 2. * dd2) * p1x * p2x - (2. * dd2 + dd1) * p1x * p1x)
-                / (6. * p1x - 6. * p2x);
+        p.c = (6.0 * p1y - 6.0 * p2y + (dd2 + 2.0 * dd1) * p2x * p2x
+                + (2.0 * dd1 - 2.0 * dd2) * p1x * p2x - (2.0 * dd2 + dd1) * p1x * p1x)
+                / (6.0 * p1x - 6.0 * p2x);
 
-        p.d = -(p1x * ((dd2 + 2. * dd1) * p2x * p2x - 6. * p2y) + 6. * p2x * p1y
-                - (2. * dd2 + dd1) * p1x * p1x * p2x)
-                / (6. * p1x - 6. * p2x);
+        p.d = -(p1x * ((dd2 + 2.0 * dd1) * p2x * p2x - 6.0 * p2y) + 6.0 * p2x * p1y
+                - (2.0 * dd2 + dd1) * p1x * p1x * p2x)
+                / (6.0 * p1x - 6.0 * p2x);
     }
 
     void set_quadratic_poly(PolyS p, double px, double py,
@@ -334,7 +337,7 @@ public class Interpolated1d {
     }
 
     double interpolate_quadratic(int d, double x) {
-        PolyS p = _poly.get(_data_set.get_nearest(x));
+        PolyS p = _poly[_data_set.get_nearest(x)];
 
         switch (d) {
             case (0):
@@ -353,11 +356,11 @@ public class Interpolated1d {
 
     double update_quadratic(int d, double x) {
         if (_data_set.get_count() < 3)
-            throw new IllegalStateException("data set doesn't contains enough data");
+            throw new InvalidOperationException("data set doesn't contains enough data");
 
         resizePoly(_data_set.get_count());
 
-        set_linear_poly(_poly.get(0), _data_set.get_x_value(0), _data_set.get_y_value(0),
+        set_linear_poly(_poly[0], _data_set.get_x_value(0), _data_set.get_y_value(0),
                 _data_set.get_x_value(1), _data_set.get_y_value(1));
 
         int i;
@@ -369,11 +372,11 @@ public class Interpolated1d {
             double p3x = (_data_set.get_x_value(i) + _data_set.get_x_value(i + 1)) / 2.0;
             double p3y = (_data_set.get_y_value(i) + _data_set.get_y_value(i + 1)) / 2.0;
 
-            set_quadratic_poly(_poly.get(i), p1x, p1y, _data_set.get_x_value(i),
+            set_quadratic_poly(_poly[i], p1x, p1y, _data_set.get_x_value(i),
                     _data_set.get_y_value(i), p3x, p3y);
         }
 
-        set_linear_poly(_poly.get(i), _data_set.get_x_value(i - 1), _data_set.get_y_value(i - 1),
+        set_linear_poly(_poly[i], _data_set.get_x_value(i - 1), _data_set.get_y_value(i - 1),
                 _data_set.get_x_value(i), _data_set.get_y_value(i));
 
         _invalid = false;
@@ -381,7 +384,7 @@ public class Interpolated1d {
     }
 
     double interpolate_cubic(int d, double x) {
-        PolyS p = _poly.get(_data_set.get_interval(x));
+        PolyS p = _poly[_data_set.get_interval(x)];
 
         switch (d) {
             case (0):
@@ -405,7 +408,7 @@ public class Interpolated1d {
         int n = _data_set.get_count();
 
         if (n < 4)
-            throw new IllegalStateException("data set doesn't contains enough data");
+            throw new InvalidOperationException("data set doesn't contains enough data");
 
         resizePoly(n + 1);
 
@@ -418,10 +421,10 @@ public class Interpolated1d {
         double d2 = (vp1.y() - vm1.y()) / (vp1.x() - vm1.x());
 
         // extrapolation
-        set_linear_poly(_poly.get(0), vm1.x(), vm1.y(), d1);
+        set_linear_poly(_poly[0], vm1.x(), vm1.y(), d1);
 
         // first segment
-        set_cubic_poly(_poly.get(1), vm1.x(), vm1.y(), v.x(), v.y(), d1, d2);
+        set_cubic_poly(_poly[1], vm1.x(), vm1.y(), v.x(), v.y(), d1, d2);
 
         for (int i = 2; i < n - 1; i++) {
             vm2 = vm1;
@@ -432,17 +435,17 @@ public class Interpolated1d {
             d1 = d2;
             d2 = (vp1.y() - vm1.y()) / (vp1.x() - vm1.x());
 
-            set_cubic_poly(_poly.get(i), vm1.x(), vm1.y(), v.x(), v.y(), d1, d2);
+            set_cubic_poly(_poly[i], vm1.x(), vm1.y(), v.x(), v.y(), d1, d2);
         }
 
         d1 = d2;
         d2 = (vp1.y() - v.y()) / (vp1.x() - v.x());
 
         // last segment
-        set_cubic_poly(_poly.get(n - 1), v.x(), v.y(), vp1.x(), vp1.y(), d1, d2);
+        set_cubic_poly(_poly[n - 1], v.x(), v.y(), vp1.x(), vp1.y(), d1, d2);
 
         // extrapolation
-        set_linear_poly(_poly.get(n), vp1.x(), vp1.y(), d2);
+        set_linear_poly(_poly[n], vp1.x(), vp1.y(), d2);
         _invalid = false;
 
         return interpolate_cubic(d, x);
@@ -452,7 +455,7 @@ public class Interpolated1d {
         int n = _data_set.get_count();
 
         if (n < 4)
-            throw new IllegalStateException("data set doesn't contains enough data");
+            throw new InvalidOperationException("data set doesn't contains enough data");
 
         resizePoly(n + 1);
 
@@ -464,13 +467,13 @@ public class Interpolated1d {
 
         compute_cubic_2nd_deriv(cubic_2nd_deriv_init_e.Cubic2ndDerivFirst, n, dd, d0, dn);
 
-        set_linear_poly(_poly.get(0), _data_set.get_x_value(0), _data_set.get_y_value(0), d0);
+        set_linear_poly(_poly[0], _data_set.get_x_value(0), _data_set.get_y_value(0), d0);
 
         for (int i = 1; i < n; i++)
-            set_cubic_poly2(_poly.get(i), _data_set.get_x_value(i - 1), _data_set.get_y_value(i - 1),
+            set_cubic_poly2(_poly[i], _data_set.get_x_value(i - 1), _data_set.get_y_value(i - 1),
                     _data_set.get_x_value(i), _data_set.get_y_value(i), dd[i - 1], dd[i]);
 
-        set_linear_poly(_poly.get(n), _data_set.get_x_value(n - 1), _data_set.get_y_value(n - 1),
+        set_linear_poly(_poly[n], _data_set.get_x_value(n - 1), _data_set.get_y_value(n - 1),
                 dn);
         _invalid = false;
 
@@ -481,7 +484,7 @@ public class Interpolated1d {
         int n = _data_set.get_count();
 
         if (n < 4)
-            throw new IllegalStateException("data set doesn't contains enough data");
+            throw new InvalidOperationException("data set doesn't contains enough data");
 
         resizePoly(n + 1);
 
@@ -493,14 +496,14 @@ public class Interpolated1d {
 
         compute_cubic_2nd_deriv(cubic_2nd_deriv_init_e.Cubic2ndDerivFirst, n, dd, d0, dn);
 
-        set_quadratic_poly(_poly.get(0), _data_set.get_x_value(0), _data_set.get_y_value(0), d0,
+        set_quadratic_poly(_poly[0], _data_set.get_x_value(0), _data_set.get_y_value(0), d0,
                 dd[0]);
 
         for (int i = 1; i < n; i++)
-            set_cubic_poly2(_poly.get(i), _data_set.get_x_value(i - 1), _data_set.get_y_value(i - 1),
+            set_cubic_poly2(_poly[i], _data_set.get_x_value(i - 1), _data_set.get_y_value(i - 1),
                     _data_set.get_x_value(i), _data_set.get_y_value(i), dd[i - 1], dd[i]);
 
-        set_quadratic_poly(_poly.get(n), _data_set.get_x_value(n - 1), _data_set.get_y_value(n - 1),
+        set_quadratic_poly(_poly[n], _data_set.get_x_value(n - 1), _data_set.get_y_value(n - 1),
                 dn, dd[n - 1]);
         _invalid = false;
 
@@ -511,7 +514,7 @@ public class Interpolated1d {
         int n = _data_set.get_count();
 
         if (n < 4)
-            throw new IllegalStateException("data set doesn't contains enough data");
+            throw new InvalidOperationException("data set doesn't contains enough data");
 
         resizePoly(n + 1);
 
@@ -522,13 +525,13 @@ public class Interpolated1d {
 
         compute_cubic_2nd_deriv(cubic_2nd_deriv_init_e.Cubic2ndDerivFirst, _data_set.get_count(), dd, d0, dn);
 
-        set_linear_poly(_poly.get(0), _data_set.get_x_value(0), _data_set.get_y_value(0), d0);
+        set_linear_poly(_poly[0], _data_set.get_x_value(0), _data_set.get_y_value(0), d0);
 
         for (int i = 1; i < n; i++)
-            set_cubic_poly2(_poly.get(i), _data_set.get_x_value(i - 1), _data_set.get_y_value(i - 1),
+            set_cubic_poly2(_poly[i], _data_set.get_x_value(i - 1), _data_set.get_y_value(i - 1),
                     _data_set.get_x_value(i), _data_set.get_y_value(i), dd[i - 1], dd[i]);
 
-        set_linear_poly(_poly.get(n), _data_set.get_x_value(n - 1), _data_set.get_y_value(n - 1),
+        set_linear_poly(_poly[n], _data_set.get_x_value(n - 1), _data_set.get_y_value(n - 1),
                 dn);
         _invalid = false;
 
@@ -539,7 +542,7 @@ public class Interpolated1d {
         int n = _data_set.get_count();
 
         if (n < 4)
-            throw new IllegalStateException("data set doesn't contains enough data");
+            throw new InvalidOperationException("data set doesn't contains enough data");
 
         resizePoly(n + 1);
 
@@ -550,14 +553,14 @@ public class Interpolated1d {
 
         compute_cubic_2nd_deriv(cubic_2nd_deriv_init_e.Cubic2ndDerivFirst, _data_set.get_count(), dd, d0, dn);
 
-        set_quadratic_poly(_poly.get(0), _data_set.get_x_value(0), _data_set.get_y_value(0), d0,
+        set_quadratic_poly(_poly[0], _data_set.get_x_value(0), _data_set.get_y_value(0), d0,
                 dd[0]);
 
         for (int i = 1; i < n; i++)
-            set_cubic_poly2(_poly.get(i), _data_set.get_x_value(i - 1), _data_set.get_y_value(i - 1),
+            set_cubic_poly2(_poly[i], _data_set.get_x_value(i - 1), _data_set.get_y_value(i - 1),
                     _data_set.get_x_value(i), _data_set.get_y_value(i), dd[i - 1], dd[i]);
 
-        set_quadratic_poly(_poly.get(n), _data_set.get_x_value(n - 1), _data_set.get_y_value(n - 1),
+        set_quadratic_poly(_poly[n], _data_set.get_x_value(n - 1), _data_set.get_y_value(n - 1),
                 dn, dd[n - 1]);
         _invalid = false;
 
@@ -568,25 +571,25 @@ public class Interpolated1d {
         int n = _data_set.get_count();
 
         if (n < 4)
-            throw new IllegalStateException("data set doesn't contains enough data");
+            throw new InvalidOperationException("data set doesn't contains enough data");
 
         resizePoly(n + 1);
 
         double dd0
                 = (_data_set.get_d_value(1) - _data_set.get_d_value(0)) / _data_set.get_x_interval(0);
 
-        set_quadratic_poly(_poly.get(0), _data_set.get_x_value(0), _data_set.get_y_value(0),
+        set_quadratic_poly(_poly[0], _data_set.get_x_value(0), _data_set.get_y_value(0),
                 _data_set.get_d_value(0), dd0);
 
         for (int i = 1; i < n; i++)
-            set_cubic_poly(_poly.get(i), _data_set.get_x_value(i - 1), _data_set.get_y_value(i - 1),
+            set_cubic_poly(_poly[i], _data_set.get_x_value(i - 1), _data_set.get_y_value(i - 1),
                     _data_set.get_x_value(i), _data_set.get_y_value(i),
                     _data_set.get_d_value(i - 1), _data_set.get_d_value(i));
 
         double ddn = (_data_set.get_d_value(n - 1) - _data_set.get_d_value(n - 2))
                 / _data_set.get_x_interval(n - 2);
 
-        set_quadratic_poly(_poly.get(n), _data_set.get_x_value(n - 1), _data_set.get_y_value(n - 1),
+        set_quadratic_poly(_poly[n], _data_set.get_x_value(n - 1), _data_set.get_y_value(n - 1),
                 _data_set.get_d_value(n - 1), ddn);
         _invalid = false;
 
@@ -597,19 +600,19 @@ public class Interpolated1d {
         int n = _data_set.get_count();
 
         if (n < 4)
-            throw new IllegalStateException("data set doesn't contains enough data");
+            throw new InvalidOperationException("data set doesn't contains enough data");
 
         resizePoly(n + 1);
 
-        set_linear_poly(_poly.get(0), _data_set.get_x_value(0), _data_set.get_y_value(0),
+        set_linear_poly(_poly[0], _data_set.get_x_value(0), _data_set.get_y_value(0),
                 _data_set.get_d_value(0));
 
         for (int i = 1; i < n; i++)
-            set_cubic_poly(_poly.get(i), _data_set.get_x_value(i - 1), _data_set.get_y_value(i - 1),
+            set_cubic_poly(_poly[i], _data_set.get_x_value(i - 1), _data_set.get_y_value(i - 1),
                     _data_set.get_x_value(i), _data_set.get_y_value(i),
                     _data_set.get_d_value(i - 1), _data_set.get_d_value(i));
 
-        set_linear_poly(_poly.get(n), _data_set.get_x_value(n - 1), _data_set.get_y_value(n - 1),
+        set_linear_poly(_poly[n], _data_set.get_x_value(n - 1), _data_set.get_y_value(n - 1),
                 _data_set.get_d_value(n - 1));
         _invalid = false;
 

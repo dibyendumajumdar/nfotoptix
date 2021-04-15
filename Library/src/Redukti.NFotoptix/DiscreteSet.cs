@@ -34,17 +34,17 @@ public class DiscreteSet : DiscreteSetBase, InterpolatableDataSet {
     }
 
     
-    public double interpolate(double x) {
+    override public double interpolate(double x) {
         return _interpolated_1d.interpolate(x);
     }
 
     
-    public double interpolate(double x, int deriv) {
+    override public double interpolate(double x, int deriv) {
         return _interpolated_1d.interpolate(x, deriv);
     }
 
     
-    protected void invalidate() {
+    override protected void invalidate() {
         this._interpolated_1d.invalidate();
     }
 

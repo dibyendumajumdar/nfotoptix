@@ -23,12 +23,15 @@ Original GNU Optical License and Authors are as follows:
       Author: Alexandre Becoulet
  */
 
+using System;
+using System.Collections.Generic;
+
 namespace Redukti.Nfotopix {
 
 public abstract class DiscreteSetBase : Set1d {
 
-    static final class EntryS {
-        readonly double x, y, d;
+    class EntryS {
+        public readonly double x, y, d;
 
         public EntryS(double x, double y, double d) {
             this.x = x;
@@ -37,7 +40,7 @@ public abstract class DiscreteSetBase : Set1d {
         }
     }
 
-    ArrayList<EntryS> _data = new ArrayList<>();
+    List<EntryS> _data = new List<EntryS>();
 
     /**
      * Insert data pair in data set. If a pair with the same x
@@ -51,10 +54,10 @@ public abstract class DiscreteSetBase : Set1d {
 
         int di = get_interval(x);
 
-        if (di > 0 && (_data.get(di - 1).x == x))
-            _data.set(di - 1, e);
+        if (di > 0 && (_data[di - 1].x == x))
+            _data.Insert(di - 1, e);
         else
-            _data.add(di, e);
+            _data.Insert(di, e);
         invalidate();
     }
 
@@ -66,7 +69,7 @@ public abstract class DiscreteSetBase : Set1d {
      * Clear all data
      */
     public void clear() {
-        _data.clear();
+        _data.Clear();
         _version++;
         invalidate();
     }
@@ -75,29 +78,26 @@ public abstract class DiscreteSetBase : Set1d {
      * Get stored derivative value at index x
      */
     public double get_d_value(int n) {
-        assert (n < _data.size());
-        return _data.get(n).d;
+        return _data[n].d;
     }
 
     // inherited from Set1d
-    public int get_count() {
-        return _data.size();
+    override public int get_count() {
+        return _data.Count;
     }
 
-    public double get_x_value(int n) {
-        assert (n < _data.size());
-        return _data.get(n).x;
+    override public double get_x_value(int n) {
+        return _data[n].x;
     }
 
-    public double get_y_value(int n) {
-        assert (n < _data.size());
-        return _data.get(n).y;
+    override public double get_y_value(int n) {
+        return _data[n].y;
     }
 
-    public Range get_x_range() {
-        if (_data.isEmpty())
-            throw new IllegalStateException("_data set contains no _data");
-        return new Range(_data.get(0).x, _data.get(_data.size() - 1).x);
+    override public Range get_x_range() {
+        if (_data.Count == 0)
+            throw new InvalidOperationException("_data set contains no _data");
+        return new Range(_data[0].x, _data[_data.Count - 1].x);
     }
 
     /**
@@ -105,12 +105,12 @@ public abstract class DiscreteSetBase : Set1d {
      */
     public int get_interval(double x) {
         int min_idx = 0;
-        int max_idx = _data.size() + 1;
+        int max_idx = _data.Count + 1;
 
         while (max_idx - min_idx > 1) {
             int p = (max_idx + min_idx) / 2;
 
-            if (x >= _data.get(p - 1).x)
+            if (x >= _data[p - 1].x)
                 min_idx = p;
             else
                 max_idx = p;
@@ -123,12 +123,12 @@ public abstract class DiscreteSetBase : Set1d {
      */
     public int get_nearest(double x) {
         int min_idx = 0;
-        int max_idx = _data.size();
+        int max_idx = _data.Count;
 
         while (max_idx - min_idx > 1) {
             int p = (max_idx + min_idx) / 2;
 
-            if (x + x >= _data.get(p - 1).x + _data.get(p).x)
+            if (x + x >= _data[p - 1].x + _data[p].x)
                 min_idx = p;
             else
                 max_idx = p;
@@ -137,11 +137,11 @@ public abstract class DiscreteSetBase : Set1d {
     }
 
     public double get_x_interval(int x) {
-        return _data.get(x + 1).x - _data.get(x).x;
+        return _data[x + 1].x - _data[x].x;
     }
 
     public double get_x_interval(int x1, int x2) {
-        return _data.get(x2).x - _data.get(x1).x;
+        return _data[x2].x - _data[x1].x;
     }
 }
 
