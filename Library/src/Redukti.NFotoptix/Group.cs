@@ -23,105 +23,109 @@ Original GNU Optical License and Authors are as follows:
       Author: Alexandre Becoulet
  */
 
+using System.Collections.Generic;
+using System.Text;
+
 namespace Redukti.Nfotopix {
 
 public class Group : Element,  Container {
-    private readonly List<? extends Element> elements;
+    private readonly List<Element> _elements;
 
-    public Group(int id, Vector3Pair p, Transform3 transform3, List<? extends Element> elements) {
-        super(id, p, transform3);
-        this.elements = elements;
+    public Group(int id, Vector3Pair p, Transform3 transform3, List<Element> elements): base(id, p, transform3)
+        {
+        
+        this._elements = elements;
     }
 
     
-    public List<? extends Element> elements() {
-        return elements;
+    public List<Element> elements() {
+        return _elements;
     }
 
     public Element getElement(int pos) {
-        if (pos >= 0 && pos < elements.size()) {
-            return elements.get(pos);
+        if (pos >= 0 && pos < _elements.Count) {
+            return _elements[pos];
         }
         return null;
     }
 
     public Group getGroup(int pos) {
-        if (pos >= 0 && pos < elements.size() && elements.get(pos) instanceof Group) {
-            return (Group)elements.get(pos);
+        if (pos >= 0 && pos < _elements.Count && _elements[pos] is Group) {
+            return (Group)_elements[pos];
         }
         return null;
     }
 
     public Surface getSurface(int pos) {
-        if (pos >= 0 && pos < elements.size()  && elements.get(pos) instanceof Surface) {
-            return (Surface) elements.get(pos);
+        if (pos >= 0 && pos < _elements.Count  && _elements[pos] is Surface) {
+            return (Surface) _elements[pos];
         }
         return null;
     }
 
     void set_system(OpticalSystem system) {
         this._system = system;
-        for (Element e: elements()) {
+        foreach (Element e in elements()) {
             e.set_system(system);
         }
     }
 
     public Vector3Pair get_bounding_box ()
     {
-        return Element.get_bounding_box(elements);
+        return Element.get_bounding_box(_elements);
     }
 
     
-    public string toString() {
+    public override string ToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("id=" + _id +
+        sb.Append("id=" + _id +
                 ", position=" + _position +
                 ", transform=" + _transform)
-                .append(System.lineSeparator());
-        for (Element e: elements) {
-            sb.append('\t').append(e.toString()).append(System.lineSeparator());
+                .Append(System.lineSeparator());
+        foreach (Element e in elements()) {
+            sb.Append('\t').Append(e.ToString()).Append(System.lineSeparator());
         }
-        return sb.toString();
+        return sb.ToString();
     }
 
-    public static class Builder extends Element.Builder {
-        protected final ArrayList<Element.Builder> elements = new ArrayList<>();
+    public class Builder: Element.Builder {
+        protected List<Element.Builder> _elements = new List<Element.Builder>();
 
-        public Group.Builder position(Vector3Pair position) {
-            return (Builder) super.position(position);
+        public override Group.Builder position(Vector3Pair position) {
+            return (Builder) base.position(position);
         }
 
         public Group.Builder add(Element.Builder element) {
-            this.elements.add(element);
+            this._elements.Add(element);
             element.parent(this);
             return this;
         }
 
         public Group.Builder setId(AtomicInteger id) {
-            this.id = id.incrementAndGet();
-            for (Element.Builder e: elements) {
+            this._id = id.incrementAndGet();
+            foreach (Element.Builder e in _elements) {
                 e.setId(id);
             }
             return this;
         }
 
         
-        public void compute_global_transforms(Transform3Cache tcache) {
-            super.compute_global_transforms(tcache);
-            for (Element.Builder e: elements) {
+        public override void compute_global_transforms(Transform3Cache tcache) {
+            base.compute_global_transforms(tcache);
+            foreach (Element.Builder e in _elements) {
                 e.compute_global_transforms(tcache);
             }
         }
 
         
-        public Element build() {
-            return new Group(id, position, transform, getElements());
+        public override Element build() {
+            return new Group(_id, _position, _transform, getElements());
         }
 
-        protected ArrayList<Element> getElements() {
-            ArrayList<Element> myels = new ArrayList<>();
-            for (Element.Builder e: elements) {
-                myels.add(e.build());
+        protected List<Element> getElements() {
+            List<Element> myels = new List<Element>();
+            foreach (Element.Builder e in _elements) {
+                myels.Add(e.build());
             }
             return myels;
         }
