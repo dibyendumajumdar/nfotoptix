@@ -23,10 +23,9 @@ Original GNU Optical License and Authors are as follows:
       Author: Alexandre Becoulet
  */
 
+using System;
 
 namespace Redukti.Nfotopix {
-
-import static org.redukti.jfotoptix.patterns.Pattern.DefaultDist;
 
 /**
  Ray distribution pattern descriptor
@@ -54,14 +53,14 @@ public class Distribution {
                          double scaling)
     {
         if (radial_density < 1)
-            throw new IllegalArgumentException ("ray distribution radial density must be greater than 1");
+            throw new InvalidOperationException ("ray distribution radial density must be greater than 1");
         this._pattern = pattern;
         this._radial_density = radial_density;
         this._scaling = scaling;
     }
 
     public Distribution() {
-        _pattern = DefaultDist;
+        _pattern = Pattern.DefaultDist;
         _radial_density = 5;
         _scaling = 0.999;
     }
@@ -100,11 +99,14 @@ public class Distribution {
     {
         switch (_pattern)
         {
-            case SagittalDist:
-            case MeridionalDist:
-            case CrossDist:
-                _pattern = DefaultDist;
-            default:;
+            case Pattern.SagittalDist:
+            case Pattern.MeridionalDist:
+            case Pattern.CrossDist:
+                _pattern = Pattern.DefaultDist;
+                    break;
+            default:
+                    break;
+
         }
     }
 
