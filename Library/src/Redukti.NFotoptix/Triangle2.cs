@@ -24,24 +24,26 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
-namespace Redukti.Nfotopix {
+namespace Redukti.Nfotopix
+{
 
-public class Triangle2 {
-    readonly int N = 3;
-    public readonly Vector2[] _v;
-
-    public Triangle2 (Vector2 a, Vector2 b, Vector2 c)
+    public class Triangle2
     {
-        _v = new Vector2[N];
-        _v[0] = a;
-        _v[1] = b;
-        _v[2] = c;
-    }
+        readonly int N = 3;
+        public readonly Vector2[] _v;
 
-    public Vector2 get_centroid ()
-    {
-        return _v[0].plus(_v[1]).plus(_v[2]).divide(3.);
+        public Triangle2(Vector2 a, Vector2 b, Vector2 c)
+        {
+            _v = new Vector2[N];
+            _v[0] = a;
+            _v[1] = b;
+            _v[2] = c;
+        }
+
+        public Vector2 get_centroid()
+        {
+            return _v[0].plus(_v[1]).plus(_v[2]).divide(3.);
+        }
     }
-}
 
 }
