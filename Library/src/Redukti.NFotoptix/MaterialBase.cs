@@ -98,9 +98,9 @@ public abstract class MaterialBase {
         // McGraw Hill, Handbook of optics, vol1, 1995, 5-10 (47)
 
         double n0 = from.get_refractive_index (wavelen);
-        double k12 = square (get_extinction_coef (wavelen));
+        double k12 = MathUtils.square (get_extinction_coef (wavelen));
         double n1 = get_refractive_index (wavelen);
-        double res = (square (n0 - n1) + k12) / (square (n0 + n1) + k12);
+        double res = (MathUtils.square (n0 - n1) + k12) / (MathUtils.square (n0 + n1) + k12);
 
         return res;
     }
@@ -114,7 +114,7 @@ public abstract class MaterialBase {
         double n0 = from.get_refractive_index (wavelen);
         double n1 = get_refractive_index (wavelen);
 
-        return (4.0 * n0 * n1) / square (n0 + n1);
+        return (4.0 * n0 * n1) / MathUtils.square (n0 + n1);
     }
 
     /** Get material color and alpha */
