@@ -22,13 +22,16 @@ Original GNU Optical License and Authors are as follows:
       Copyright (C) 2010-2011 Free Software Foundation, Inc
       Author: Alexandre Becoulet
  */
-namespace Redukti.Nfotopix {
+namespace Redukti.Nfotopix
+{
 
-public abstract class RotationalRoc : Rotational {
-    protected double _roc;
+    public abstract class RotationalRoc : Rotational
+    {
+        protected double _roc;
 
-    public RotationalRoc(double _roc) {
-        this._roc = _roc;
+        public RotationalRoc(double _roc)
+        {
+            this._roc = _roc;
+        }
     }
-}
 }

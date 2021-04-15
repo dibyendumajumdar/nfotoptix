@@ -22,57 +22,60 @@ Original GNU Optical License and Authors are as follows:
       Copyright (C) 2010-2011 Free Software Foundation, Inc
       Author: Alexandre Becoulet
  */
-namespace Redukti.Nfotopix {
+namespace Redukti.Nfotopix
+{
 
-public class Flat : Rotational {
-
-    public static Flat flat = new Flat();
-
-    
-    override public double sagitta(double s) {
-        return 0;
-    }
-
-    
-    override public double derivative (double r)
+    public class Flat : Rotational
     {
-        return 1.0;
+
+        public static Flat flat = new Flat();
+
+
+        override public double sagitta(double s)
+        {
+            return 0;
+        }
+
+
+        override public double derivative(double r)
+        {
+            return 1.0;
+        }
+
+        /*
+
+    intersection d'un plan defini par :
+
+    P(Px, Py, Pz) appartenant au plan
+    N(Px, Py, Pz) normal au plan
+
+    avec une droite AB definie par l'ensemble des points tel que:
+
+    A + * t B
+
+    on a :
+
+    t=(Nz*Pz+Ny*Py+Nx*Px-Az*Nz-Ay*Ny-Ax*Nx)/(Bz*Nz+By*Ny+Bx*Nx)
+
+    */
+
+
+        override public Vector3 intersect(Vector3Pair ray)
+        {
+            double s = ray.direction().z();
+            if (s == 0)
+                return null;
+            double a = -ray.origin().z() / s;
+            if (a < 0)
+                return null;
+            return ray.origin().plus(ray.direction().times(a));
+        }
+
+
+        override public Vector3 normal(Vector3 point)
+        {
+            return new Vector3(0, 0, -1);
+        }
     }
-
-    /*
-
-intersection d'un plan defini par :
-
-P(Px, Py, Pz) appartenant au plan
-N(Px, Py, Pz) normal au plan
-
-avec une droite AB definie par l'ensemble des points tel que:
-
-A + * t B
-
-on a :
-
-t=(Nz*Pz+Ny*Py+Nx*Px-Az*Nz-Ay*Ny-Ax*Nx)/(Bz*Nz+By*Ny+Bx*Nx)
-
-*/
-
-    
-    override public Vector3 intersect (Vector3Pair ray)
-    {
-        double s = ray.direction ().z ();
-        if (s == 0)
-            return null;
-        double a = -ray.origin ().z () / s;
-        if (a < 0)
-            return null;
-        return ray.origin ().plus(ray.direction ().times(a));
-    }
-
-    
-    override public Vector3 normal (Vector3 point)
-    {
-        return new Vector3 (0, 0, -1);
-    }
-}
 
 }
