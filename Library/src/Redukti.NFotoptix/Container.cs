@@ -24,10 +24,12 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
+using System.Collections.Generic;
+
 namespace Redukti.Nfotopix {
 
 public interface Container {
-    List<? extends Element> elements();
+    List<Element> elements();
     Vector3Pair get_bounding_box ();
 }
 
