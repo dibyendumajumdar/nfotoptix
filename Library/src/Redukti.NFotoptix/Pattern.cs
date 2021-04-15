@@ -48,4 +48,7 @@ public enum Pattern {
     RandomDist
 }
 
+    public delegate void PatternConsumer(Vector2 v);
+    public delegate void ConsumerTriangle2(Triangle2 v);
+
 }

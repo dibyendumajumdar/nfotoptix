@@ -24,6 +24,8 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
+using System;
+
 namespace Redukti.Nfotopix {
 
 public class Infinite : Shape {
@@ -34,9 +36,9 @@ public class Infinite : Shape {
         return true;
     }
 
-    
-    public void get_pattern(Consumer<Vector2> f, Distribution d, bool unobstructed) {
-        throw new IllegalArgumentException ("can not distribute rays across an infinite surface shape");
+
+    public void get_pattern(PatternConsumer f, Distribution d, bool unobstructed) {
+        throw new InvalidOperationException("can not distribute rays across an infinite surface shape");
     }
 
     
@@ -70,12 +72,12 @@ public class Infinite : Shape {
     }
 
     
-    public void get_contour(int contour, Consumer<Vector2> f, double resolution) {
+    public void get_contour(int contour, PatternConsumer f, double resolution) {
 
     }
 
     
-    public void get_triangles(Consumer<Triangle2> f, double resolution) {
+    public void get_triangles(ConsumerTriangle2 f, double resolution) {
 
     }
 }

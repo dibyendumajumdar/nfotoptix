@@ -24,6 +24,8 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
+using System;
+
 namespace Redukti.Nfotopix {
 
 public class Ellipse : Round {
@@ -36,57 +38,56 @@ public class Ellipse : Round {
         _xr = x_radius;
         _yr = y_radius;
         _xy_ratio = x_radius / y_radius;
-        _e2 = MathUtils.square(Math.sqrt(Math.abs(_xr * _xr - _yr * _yr))
-                / Math.max(_xr, _yr));
+        _e2 = MathUtils.square(Math.Sqrt(Math.Abs(_xr * _xr - _yr * _yr))
+                / Math.Max(_xr, _yr));
     }
 
-    public Ellipse(double x_radius, double y_radius) {
-        super(false);
+    public Ellipse(double x_radius, double y_radius): base(false) {
         set_radius(x_radius, y_radius);
     }
 
 
-    
-    double get_xy_ratio() {
+
+        override public double get_xy_ratio() {
         return _xy_ratio;
     }
 
-    
-    double get_external_xradius() {
+
+        override public double get_external_xradius() {
         return _xr;
     }
 
-    
-    double get_internal_xradius() {
+
+        override public double get_internal_xradius() {
         return 0.0;
     }
 
-    
-    public bool inside(Vector2 point) {
+
+        override public bool inside(Vector2 point) {
         return (MathUtils.square(point.x()) + MathUtils.square(point.y() * _xy_ratio)
                 <= MathUtils.square(_xr));
     }
 
-    
-    public double max_radius() {
-        return Math.max(_yr, _xr);
+
+        override public double max_radius() {
+        return Math.Max(_yr, _xr);
     }
 
-    
-    public double min_radius() {
-        return Math.min(_yr, _xr);
+
+        override public double min_radius() {
+        return Math.Min(_yr, _xr);
     }
 
-    
-    public double get_outter_radius(Vector2 dir) {
+
+        override public double get_outter_radius(Vector2 dir) {
         return _xr > _yr
-                ? Math.sqrt(MathUtils.square(_yr) / (1. - _e2 * MathUtils.square(dir.x())))
-                : Math.sqrt(MathUtils.square(_xr)
-                / (1. - _e2 * MathUtils.square(dir.y())));
+                ? Math.Sqrt(MathUtils.square(_yr) / (1.0 - _e2 * MathUtils.square(dir.x())))
+                : Math.Sqrt(MathUtils.square(_xr)
+                / (1.0 - _e2 * MathUtils.square(dir.y())));
     }
 
-    
-    public Vector2Pair get_bounding_box() {
+
+        override public Vector2Pair get_bounding_box() {
         Vector2 hs = new Vector2(_xr, _yr);
 
         return new Vector2Pair(hs.negate(), hs);

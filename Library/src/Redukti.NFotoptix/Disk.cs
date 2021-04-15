@@ -31,55 +31,54 @@ public class Disk : Round {
 
     double _radius;
 
-    public Disk(double radius) {
-        super(false);
+    public Disk(double radius): base(false) {
         this._radius = radius;
     }
 
     
-    double get_xy_ratio() {
+    override public double get_xy_ratio() {
         return 1.0;
     }
 
-    
-    double get_external_xradius() {
+
+        override public double get_external_xradius() {
         return _radius;
     }
 
-    
-    double get_internal_xradius() {
+
+        override public double get_internal_xradius() {
         return 0;
     }
 
-    
-    public bool inside(Vector2 point) {
-        return (square(point.x()) + square(point.y())
-                <= square(_radius));
+
+        override public bool inside(Vector2 point) {
+        return (MathUtils.square(point.x()) + MathUtils.square(point.y())
+                <= MathUtils.square(_radius));
     }
 
-    
-    public double max_radius() {
+
+        override public double max_radius() {
         return _radius;
     }
 
-    
-    public double min_radius() {
+
+        override public double min_radius() {
         return _radius;
     }
 
-    
-    public double get_outter_radius(Vector2 dir) {
+
+        override public double get_outter_radius(Vector2 dir) {
         return _radius;
     }
 
-    
-    public Vector2Pair get_bounding_box() {
+
+        override public Vector2Pair get_bounding_box() {
         Vector2 hs = new Vector2(_radius, _radius);
         return new Vector2Pair(hs.negate(), hs);
     }
 
     
-    public string toString() {
+    override public string ToString() {
         return "Disk{" +
                 "radius=" + _radius +
                 '}';

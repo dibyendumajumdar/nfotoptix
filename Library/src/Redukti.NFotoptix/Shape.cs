@@ -33,7 +33,7 @@ public interface Shape {
     bool inside (Vector2 point);
 
     /** Get points distributed on shape area with given pattern */
-    void get_pattern (Consumer<Vector2> f,
+    void get_pattern (PatternConsumer f,
                       Distribution d,
                       bool unobstructed);
 
@@ -61,11 +61,11 @@ public interface Shape {
     /** Get contour polygone points for specified contour id. First
      contour is always outter edge. @see get_contour_count */
     void get_contour (int contour,
-                            Consumer<Vector2> f,
+                            PatternConsumer f,
                               double resolution);
 
     /** Get shape teselation triangles */
-    void get_triangles (Consumer<Triangle2> f, double resolution);
+    void get_triangles (ConsumerTriangle2 f, double resolution);
 
 }
 

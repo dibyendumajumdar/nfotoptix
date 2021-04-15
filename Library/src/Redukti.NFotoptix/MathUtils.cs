@@ -39,20 +39,26 @@ public class MathUtils {
         {
             return (Math.PI / 180) * degrees;
         }
-    //public static DecimalFormat decimal_format(int maxFractionDigits) {
-    //    DecimalFormat _decimal_format = new DecimalFormat();
-    //    //formatter.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
-    //    _decimal_format.setMinimumIntegerDigits(1);
-    //    _decimal_format.setMaximumFractionDigits(maxFractionDigits);
-    //    _decimal_format.setMinimumFractionDigits(0);
-    //    _decimal_format.setDecimalSeparatorAlwaysShown(false);
-    //    _decimal_format.setGroupingUsed(false);
-    //    return _decimal_format;
-    //}
-    //public static DecimalFormat decimal_format() {
-    //    return decimal_format(3);
-    //}
 
-}
+        public static double Hypot(double x, double y)
+        {
+            return Math.Sqrt(x*x + y*y);
+        }
+
+        //public static DecimalFormat decimal_format(int maxFractionDigits) {
+        //    DecimalFormat _decimal_format = new DecimalFormat();
+        //    //formatter.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
+        //    _decimal_format.setMinimumIntegerDigits(1);
+        //    _decimal_format.setMaximumFractionDigits(maxFractionDigits);
+        //    _decimal_format.setMinimumFractionDigits(0);
+        //    _decimal_format.setDecimalSeparatorAlwaysShown(false);
+        //    _decimal_format.setGroupingUsed(false);
+        //    return _decimal_format;
+        //}
+        //public static DecimalFormat decimal_format() {
+        //    return decimal_format(3);
+        //}
+
+    }
 
 }
