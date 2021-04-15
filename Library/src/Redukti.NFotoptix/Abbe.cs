@@ -24,6 +24,8 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
+using System;
+
 namespace Redukti.Nfotopix {
 
 public class Abbe : Dielectric {
@@ -76,6 +78,9 @@ public class Abbe : Dielectric {
                         + (_a * -14.30050903441605747446 + 7.77787634432116181671) / w2
                         + (_a * 3.41225047218704347074 + -1.76619259848202947438) / w3;
                 break;
+
+                default:
+                    throw new InvalidOperationException();
         }
 
         return _n + _q * f;
