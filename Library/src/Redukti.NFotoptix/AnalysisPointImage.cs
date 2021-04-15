@@ -26,48 +26,51 @@ Original GNU Optical License and Authors are as follows:
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Redukti.Nfotopix {
+namespace Redukti.Nfotopix
+{
 
 
-/**
- * Point image analysis base class
- */
-public class AnalysisPointImage {
-    public OpticalSystem _system;
-    public RayTracer _tracer;
-    public RayTraceParameters _params;
-    public bool _processed_trace;
-    /** Image plan that collect rays for analysis */
-    public Image _image;
-    /** The rays intercepted at image place */
-    public List<TracedRay> _intercepts;
-    public RayTraceResults _results;
-
-    public AnalysisPointImage (OpticalSystem system)
+    /**
+     * Point image analysis base class
+     */
+    public class AnalysisPointImage
     {
-        _system = system;
-        _tracer = new RayTracer();
-        _processed_trace = false;
-        _image = null;
-        _intercepts = new List<TracedRay>();
-        _params = new RayTraceParameters(system);
-        _params.set_default_distribution (
-                new Distribution (Pattern.HexaPolarDist, 20, 0.999));
-        _params.get_default_distribution ().set_uniform_pattern ();
-    }
+        public OpticalSystem _system;
+        public RayTracer _tracer;
+        public RayTraceParameters _params;
+        public bool _processed_trace;
+        /** Image plan that collect rays for analysis */
+        public Image _image;
+        /** The rays intercepted at image place */
+        public List<TracedRay> _intercepts;
+        public RayTraceResults _results;
 
-    public void trace() {
-        if (_processed_trace)
-            return;
+        public AnalysisPointImage(OpticalSystem system)
+        {
+            _system = system;
+            _tracer = new RayTracer();
+            _processed_trace = false;
+            _image = null;
+            _intercepts = new List<TracedRay>();
+            _params = new RayTraceParameters(system);
+            _params.set_default_distribution(
+                    new Distribution(Pattern.HexaPolarDist, 20, 0.999));
+            _params.get_default_distribution().set_uniform_pattern();
+        }
+
+        public void trace()
+        {
+            if (_processed_trace)
+                return;
 
             _image = (Image)(from p in _params.get_sequence()
-                       where p is Image
-                       select p as Image).First();
-        _results = _tracer.trace(_system, _params);
-        _intercepts = _results.get_intercepted(_image);
+                             where p is Image
+                             select p as Image).First();
+            _results = _tracer.trace(_system, _params);
+            _intercepts = _results.get_intercepted(_image);
 
-        _processed_trace = true;
+            _processed_trace = true;
+        }
     }
-}
 
 }
