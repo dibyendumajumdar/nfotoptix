@@ -24,6 +24,8 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
+using System;
+
 namespace Redukti.Nfotopix {
 
 public class Transform3 {
@@ -67,7 +69,7 @@ public class Transform3 {
     /**
      * Apply this transforms rotation to given vector
      */
-    public const Vector3 apply_rotation(Vector3 v) {
+    public Vector3 apply_rotation(Vector3 v) {
         if (use_rotation_matrix)
             return this.rotation_matrix.times(v);
         else
@@ -92,14 +94,14 @@ public class Transform3 {
     /**
      * Transform given vector - vector is rotated and then translated.
      */
-    public const Vector3 transform(Vector3 v) {
+    public Vector3 transform(Vector3 v) {
         return apply_rotation(v).plus(translation);
     }
 
     /**
      * Create an inverse of the transform
      */
-    public const Transform3 inverse() {
+    public Transform3 inverse() {
         Matrix3 rotation_matrix = this.rotation_matrix.inverse();
         Vector3 translation = rotation_matrix.times(this.translation.negate());
         return new Transform3(translation, rotation_matrix, true);
@@ -126,8 +128,8 @@ public class Transform3 {
      * @param axis   0=x, 1=y, 2=z
      * @param dangle Angle of rotation in degrees
      */
-    public const Transform3 rotate_axis_by_angle(int axis, double dangle) {
-        return rotate_axis_by_radian(axis, Math.toRadians(dangle));
+    public Transform3 rotate_axis_by_angle(int axis, double dangle) {
+        return rotate_axis_by_radian(axis, MathUtils.ToRadians(dangle));
     }
 
     /**
@@ -136,7 +138,7 @@ public class Transform3 {
      * @param axis   0=x, 1=y, 2=z
      * @param rangle Angle of rotation in radians
      */
-    public const Transform3 rotate_axis_by_radian(int axis, double rangle) {
+    public Transform3 rotate_axis_by_radian(int axis, double rangle) {
         Matrix3 r = Matrix3.get_rotation_matrix(axis, rangle);
         r = r.times(this.rotation_matrix);
         return new Transform3(this.translation, r, true);
@@ -167,8 +169,8 @@ public class Transform3 {
         return new Vector3Pair (transform (v.origin ()), apply_rotation(v.direction ()));
     }
 
-    public string toString() {
-        return "{translation=" + this.translation.toString()+",rmat="+this.rotation_matrix +",use_rmat="+this.use_rotation_matrix +"}";
+    override public string ToString() {
+        return "{translation=" + this.translation.ToString()+",rmat="+this.rotation_matrix +",use_rmat="+this.use_rotation_matrix +"}";
     }
 }
 

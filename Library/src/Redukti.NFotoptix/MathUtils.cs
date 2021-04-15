@@ -34,6 +34,11 @@ public class MathUtils {
     public static int trunc(double value) {
         return (int)(value<0 ? Math.Ceiling(value) : Math.Floor(value));
     }
+
+        public static double ToRadians(double degrees)
+        {
+            return (Math.PI / 180) * degrees;
+        }
     //public static DecimalFormat decimal_format(int maxFractionDigits) {
     //    DecimalFormat _decimal_format = new DecimalFormat();
     //    //formatter.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));

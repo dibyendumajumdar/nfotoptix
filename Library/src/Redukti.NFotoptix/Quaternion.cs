@@ -24,11 +24,13 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
+using System;
+
 namespace Redukti.Nfotopix {
 
 
 public class Quaternion {
-    readonly double x, y, z, w;
+    public readonly double x, y, z, w;
 
     public Quaternion(double x, double y, double z, double w) {
         this.x = x;
@@ -65,41 +67,23 @@ public class Quaternion {
         return new Quaternion(_x,_y,_z,_w);
     }
 
-    static final double norm (double x, double y, double z, double w)
+    static double norm (double x, double y, double z, double w)
     {
-        return Math.sqrt (x * x + y * y + z * z + w * w);
+        return Math.Sqrt (x * x + y * y + z * z + w * w);
     }
 
-    public string toString() {
+    override public string ToString() {
         return "["+x+','+y+','+z+','+w+']';
     }
 
     
-    public bool equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public bool IsEquals(Quaternion that) {
+        if (this == that) return true;
 
-        Quaternion that = (Quaternion) o;
-
-        if (Double.compare(that.x, x) != 0) return false;
-        if (Double.compare(that.y, y) != 0) return false;
-        if (Double.compare(that.z, z) != 0) return false;
-        return Double.compare(that.w, w) == 0;
-    }
-
-    
-    public int hashCode() {
-        int result;
-        long temp;
-        temp = Double.doubleToLongBits(x);
-        result = (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(y);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(z);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(w);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        return result;
+        if (that.x != x) return false;
+        if (that.y != y) return false;
+        if (that.z != z) return false;
+        return that.w == w;
     }
 }
 

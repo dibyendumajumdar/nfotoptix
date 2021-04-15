@@ -46,7 +46,7 @@ namespace Redukti.Nfotopix
         public static readonly Vector3 vector3_010 = new Vector3(0.0, 1.0, 0.0);
         public static readonly Vector3 vector3_100 = new Vector3(1.0, 0.0, 0.0);
 
-        readonly double[] values;
+        public readonly double[] values;
 
         public Vector3(double x, double y, double z)
         {

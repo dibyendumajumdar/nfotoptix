@@ -24,6 +24,9 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
+using System;
+using System.Text;
+
 namespace Redukti.Nfotopix {
 
 
@@ -33,7 +36,7 @@ namespace Redukti.Nfotopix {
 public class Matrix3 {
 
     /* row major storage for 3d matrix */
-    readonly double _values[];
+    readonly double[] _values;
 
     private Matrix3(double[] values) {
         this._values = values;
@@ -45,7 +48,7 @@ public class Matrix3 {
 
     /* Create a diagonal matrix with given values */
     public static Matrix3 diag(double x, double y, double z) {
-        double values[] = new double[9];
+        double[] values = new double[9];
         values[idx(0, 0)] = x;
         values[idx(1, 1)] = y;
         values[idx(2, 2)] = z;
@@ -62,7 +65,7 @@ public class Matrix3 {
     // see https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
     */
     public static Matrix3 to_rotation_matrix(Quaternion q) {
-        double values[] = new double[9];
+        double[] values = new double[9];
         values[idx(0, 0)] = 1.0 - 2.0 * (q.y * q.y + q.z * q.z);
         values[idx(1, 0)] = 2.0 * (q.x * q.y + q.z * q.w);
         values[idx(2, 0)] = 2.0 * (q.x * q.z - q.y * q.w);
@@ -94,7 +97,7 @@ public class Matrix3 {
     }
 
     /** Matrix times vector */
-    public final Vector3 times(Vector3 v) {
+    public Vector3 times(Vector3 v) {
         double[] r = new double[3];
         for (int i = 0; i < 3; i++) {
             double s = 0;
@@ -107,7 +110,7 @@ public class Matrix3 {
     }
 
     /** Martrix times matrix */
-    public final Matrix3 times(Matrix3 m) {
+    public Matrix3 times(Matrix3 m) {
         double[] r = new double[9];
 
         for (int i = 0; i < 3; i++) {
@@ -123,15 +126,13 @@ public class Matrix3 {
     }
 
     /** Matrix inverse */
-    public final Matrix3 inverse() {
+    public Matrix3 inverse() {
         // inverse = adjugate / determinant
         double s1 = _values[idx(1, 1)] * _values[idx(2, 2)] - _values[idx(2, 1)] * _values[idx(1, 2)];
         double s2 = _values[idx(1, 0)] * _values[idx(2, 2)] - _values[idx(2, 0)] * _values[idx(1, 2)];
         double s3 = _values[idx(1, 0)] * _values[idx(2, 1)] - _values[idx(2, 0)] * _values[idx(1, 1)];
 
         double det = _values[idx(0, 0)] * s1 - _values[idx(0, 1)] * s2 + _values[idx(0, 2)] * s3;
-
-        assert (det != 0.0);
 
         double[] r = new double[9];
         r[idx(0, 0)] = +s1 / det;
@@ -160,8 +161,6 @@ public class Matrix3 {
      * @param angleInRadians the angle to rotate in radians
      */
     public static Matrix3 get_rotation_matrix(int axis, double angleInRadians) {
-        assert (axis < 3 && axis >= 0);
-
         /*
          * Note on convention used below.
          *
@@ -187,68 +186,68 @@ public class Matrix3 {
                 r[idx(0, 1)] = 0;
                 r[idx(0, 2)] = 0;
                 r[idx(1, 0)] = 0;
-                r[idx(1, 1)] = Math.cos(angleInRadians);
-                r[idx(1, 2)] = Math.sin(angleInRadians);
+                r[idx(1, 1)] = Math.Cos(angleInRadians);
+                r[idx(1, 2)] = Math.Sin(angleInRadians);
                 r[idx(2, 0)] = 0;
-                r[idx(2, 1)] = -Math.sin(angleInRadians);
-                r[idx(2, 2)] = Math.cos(angleInRadians);
+                r[idx(2, 1)] = -Math.Sin(angleInRadians);
+                r[idx(2, 2)] = Math.Cos(angleInRadians);
                 break;
 
             case 1:
                 // rotation counter clockwise around the Y axis
-                r[idx(0, 0)] = Math.cos(angleInRadians);
+                r[idx(0, 0)] = Math.Cos(angleInRadians);
                 r[idx(0, 1)] = 0;
-                r[idx(0, 2)] = -Math.sin(angleInRadians);
+                r[idx(0, 2)] = -Math.Sin(angleInRadians);
                 r[idx(1, 0)] = 0;
                 r[idx(1, 1)] = 1;
                 r[idx(1, 2)] = 0;
-                r[idx(2, 0)] = Math.sin(angleInRadians);
+                r[idx(2, 0)] = Math.Sin(angleInRadians);
                 r[idx(2, 1)] = 0;
-                r[idx(2, 2)] = Math.cos(angleInRadians);
+                r[idx(2, 2)] = Math.Cos(angleInRadians);
                 break;
 
             case 2:
                 // rotation counter clockwise around the Z axis
-                r[idx(0, 0)] = Math.cos(angleInRadians);
-                r[idx(0, 1)] = Math.sin(angleInRadians);
+                r[idx(0, 0)] = Math.Cos(angleInRadians);
+                r[idx(0, 1)] = Math.Sin(angleInRadians);
                 r[idx(0, 2)] = 0;
-                r[idx(1, 0)] = -Math.sin(angleInRadians);
-                r[idx(1, 1)] = Math.cos(angleInRadians);
+                r[idx(1, 0)] = -Math.Sin(angleInRadians);
+                r[idx(1, 1)] = Math.Cos(angleInRadians);
                 r[idx(1, 2)] = 0;
                 r[idx(2, 0)] = 0;
                 r[idx(2, 1)] = 0;
                 r[idx(2, 2)] = 1;
                 break;
             default:
-                throw new IllegalArgumentException("Invalid rotation axis, must be 0=x, 1=y or 2=z");
+                throw new InvalidOperationException("Invalid rotation axis, must be 0=x, 1=y or 2=z");
         }
         return new Matrix3(r);
     }
 
     
-    public string toString() {
+    override public string ToString() {
         StringBuilder sb = new StringBuilder();
-        sb.append('[');
+        sb.Append('[');
         for (int i = 0; i < 3; i++) {
             if (i > 0) {
-                sb.append(',');
+                sb.Append(',');
             }
-            sb.append('[');
+            sb.Append('[');
             for (int j = 0; j < 3; j++) {
                 if (j > 0) {
-                    sb.append(',');
+                    sb.Append(',');
                 }
-                sb.append(_values[idx(i, j)]);
+                sb.Append(_values[idx(i, j)]);
             }
-            sb.append(']');
+            sb.Append(']');
         }
-        sb.append(']');
-        return sb.toString();
+        sb.Append(']');
+        return sb.ToString();
     }
 
-    public final bool isEquals(Matrix3 other, double tolerance) {
-        for (int i = 0; i < _values.length; i++) {
-            if (Math.abs(_values[i]-other._values[i]) > tolerance)
+    public bool isEquals(Matrix3 other, double tolerance) {
+        for (int i = 0; i < _values.Length; i++) {
+            if (Math.Abs(_values[i]-other._values[i]) > tolerance)
                 return false;
         }
         return true;
