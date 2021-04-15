@@ -24,6 +24,7 @@ Original GNU Optical License and Authors are as follows:
  */
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Redukti.Nfotopix {
 
@@ -59,7 +60,9 @@ public class AnalysisPointImage {
         if (_processed_trace)
             return;
 
-        _image = (Image) _params.get_sequence().stream().filter(e-> e instanceof Image).findFirst().get();
+            _image = (Image)(from p in _params.get_sequence()
+                       where p is Image
+                       select p as Image).First();
         _results = _tracer.trace(_system, _params);
         _intercepts = _results.get_intercepted(_image);
 
