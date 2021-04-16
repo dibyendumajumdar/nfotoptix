@@ -42,7 +42,7 @@ namespace Redukti.Nfotopix
 
         public Vector2 get_centroid()
         {
-            return _v[0].plus(_v[1]).plus(_v[2]).divide(3.);
+            return _v[0].plus(_v[1]).plus(_v[2]).divide(3.0);
         }
     }
 

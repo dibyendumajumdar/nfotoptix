@@ -22,34 +22,35 @@ Original GNU Optical License and Authors are as follows:
       Copyright (C) 2010-2011 Free Software Foundation, Inc
       Author: Alexandre Becoulet
  */
+
+using System;
+
 namespace Redukti.Nfotopix {
 
 public class Conic : ConicBase {
 
-    public Conic(double roc, double sc): base(roc, sc)
-        {
-        
+    public Conic(double roc, double sc): base(roc, sc) {
     }
 
-    public double derivative(double r) {
+    public override double derivative(double r) {
         // conical section differentiate (computed with Maxima)
 
-        const double s2 = _sh * MathUtils.square(r);
-        const double s3 = Math.sqrt(1 - s2 / MathUtils.square(_roc));
-        const double s4
-                = 2.0 / (_roc * (s3 + 1))
+        double s2 = _sh * MathUtils.square(r);
+        double s3 = Math.Sqrt(1.0 - s2 / MathUtils.square(_roc));
+        double s4
+                = 2.0 / (_roc * (s3 + 1.0))
                 + s2 / (MathUtils.square(_roc) * _roc * s3 * MathUtils.square(s3 + 1));
         return r * s4;
     }
 
-    public double sagitta(double r) {
+    public override double sagitta(double r) {
         return MathUtils.square(r)
                 / (_roc
-                * (Math.sqrt(1 - (_sh * MathUtils.square(r)) / MathUtils.square(_roc)) + 1));
+                * (Math.Sqrt(1.0 - (_sh * MathUtils.square(r)) / MathUtils.square(_roc)) + 1));
     }
 
     
-    public Vector3 intersect(Vector3Pair ray) {
+    public override Vector3 intersect(Vector3Pair ray) {
         double ax = ray.origin().x();
         double ay = ray.origin().y();
         double az = ray.origin().z();
@@ -77,7 +78,7 @@ public class Conic : ConicBase {
             if (d < 0)
                 return null; // no intersection
 
-            double s = Math.sqrt(d);
+            double s = Math.Sqrt(d);
 
             if (a * bz < 0)
                 s = -s;
@@ -85,7 +86,7 @@ public class Conic : ConicBase {
             if (_sh < 0)
                 s = -s;
 
-            t = (2 * c) / (s - b);
+            t = (2.0 * c) / (s - b);
         }
 
         if (t <= 0) // ignore intersection if before ray origin

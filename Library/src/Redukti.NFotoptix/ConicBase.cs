@@ -31,7 +31,7 @@ public abstract class ConicBase : RotationalRoc {
     protected double _sh; // Schwarzschild constant + 1
 
     public ConicBase (double roc, double sc): base(roc) {
-        _sh = sc + 1;
+        _sh = sc + 1.0;
     }
 
     public double get_eccentricity ()

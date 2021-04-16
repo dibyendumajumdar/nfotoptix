@@ -31,33 +31,32 @@ public class Mirror : MaterialBase {
 
     public static readonly Mirror mirror = new Mirror();
 
-    public Mirror() {
-        super("mirror");
+    public Mirror(): base("mirror") {
     }
 
     
-    public bool is_opaque() {
+    public override bool is_opaque() {
         return true;
     }
 
     
-    public bool is_reflecting() {
+    public override bool is_reflecting() {
         return true;
     }
 
     
-    public double get_refractive_index(double wavelen) {
+    public override double get_refractive_index(double wavelen) {
         return 1.0;
     }
 
     
-    public double get_internal_transmittance (double wavelen,
+    public override double get_internal_transmittance (double wavelen,
                                               double thickness) {
         return 0.0;
     }
 
     
-    public double get_extinction_coef (double wavelen) {
+    public override double get_extinction_coef (double wavelen) {
         return 9999.0;
     }
 

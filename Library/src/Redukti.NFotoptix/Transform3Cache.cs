@@ -24,20 +24,23 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
+using System;
+using System.Collections.Generic;
+
 namespace Redukti.Nfotopix {
 
 public class Transform3Cache {
 
-    Map<ElementPair, Transform3> _cache = new HashMap<>();
+    Dictionary<ElementPair, Transform3> _cache = new ();
 
     public Transform3 get(int from, int to) {
         ElementPair pair = new ElementPair(from, to);
-        return _cache.get(pair);
+        return _cache[pair];
     }
 
     private void put(int from, int to, Transform3 transform) {
         ElementPair pair = new ElementPair(from, to);
-        _cache.put(pair, transform);
+        _cache[pair] = transform;
     }
 
     public void put_local_2_global_transform(int id, Transform3 t) {
@@ -57,7 +60,6 @@ public class Transform3Cache {
     }
 
     public Transform3 transform_cache_update(int from, int to) {
-        assert (from != to);
         Transform3 e = get(from, to);
         if (e == null) {
             Transform3 t1 = local_2_global_transform(from);
@@ -68,27 +70,24 @@ public class Transform3Cache {
         return e;
     }
 
-    static const class ElementPair {
-        const int from;
-        const int to;
+    class ElementPair : IEquatable<ElementPair> {
+        public readonly int from;
+        public readonly int to;
 
         public ElementPair(int from, int to) {
             this.from = from;
             this.to = to;
         }
 
-        
-        public bool equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            ElementPair that = (ElementPair) o;
+        public bool Equals(ElementPair that)
+        {
+            if (that == null)
+                return false;
+            if (this == that)
+                return true;
             return from == that.from && to == that.to;
         }
 
-        
-        public int hashCode() {
-            return Objects.hash(from, to);
-        }
     }
 
 }

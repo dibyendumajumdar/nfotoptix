@@ -24,6 +24,8 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
+using System;
+
 namespace Redukti.Nfotopix {
 
 
@@ -45,8 +47,7 @@ public class Sellmeier : Dielectric {
     /**
      * Create an empty sellmeier model
      */
-    public Sellmeier() {
-        super("Sellmeier");
+    public Sellmeier(): base("Sellmeier") {
         _coeff = new double[0];
         _constant = 1.0;
     }
@@ -66,14 +67,14 @@ public class Sellmeier : Dielectric {
         _coeff[5] = L3;
     }
 
-    public double get_measurement_index(double wavelen) {
-        double w2 = square(wavelen / 1000.0);
+    public override double get_measurement_index(double wavelen) {
+        double w2 = MathUtils.square(wavelen / 1000.0);
         double n = _constant;
 
-        for (int i = 0; i < _coeff.length; i += 2)
+        for (int i = 0; i < _coeff.Length; i += 2)
             n += (w2 * _coeff[i]) / (w2 - _coeff[i + 1]);
 
-        return Math.sqrt(n);
+        return Math.Sqrt(n);
     }
 }
 

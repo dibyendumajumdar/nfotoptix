@@ -74,26 +74,26 @@ namespace Redukti.Nfotopix
 
 
 
-        override public bool is_opaque()
+        public override bool is_opaque()
         {
             return false;
         }
 
 
-        override public bool is_reflecting()
+        public override bool is_reflecting()
         {
             return false;
         }
 
 
-        override public double get_internal_transmittance(double wavelen, double thickness)
+        public override double get_internal_transmittance(double wavelen, double thickness)
         {
             // FIXME find a formula
             return 1.0;
         }
 
 
-        override public double get_refractive_index(double wavelen)
+        public override double get_refractive_index(double wavelen)
         {
             switch (airFormula)
             {
@@ -138,7 +138,7 @@ namespace Redukti.Nfotopix
             throw new InvalidOperationException();
         }
 
-        override public double get_extinction_coef(double wavelen)
+        public override double get_extinction_coef(double wavelen)
         {
             // FIXME find a formula
             return 0.0;

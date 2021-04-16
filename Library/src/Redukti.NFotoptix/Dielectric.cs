@@ -112,15 +112,15 @@ public abstract class Dielectric : Solid {
         _transmittance.setInterpolation(Interpolation.Cubic);
     }
 
-    override public bool is_opaque() {
+    public override bool is_opaque() {
         return false;
     }
 
-    override public bool is_reflecting() {
+    public override bool is_reflecting() {
         return false;
     }
 
-    override public double get_internal_transmittance(double wavelen, double thickness) {
+    public override double get_internal_transmittance(double wavelen, double thickness) {
         double t = _transmittance.interpolate(wavelen);
 
         return Math.Pow(t, thickness);
@@ -177,7 +177,7 @@ public abstract class Dielectric : Solid {
     }
 
 
-    override public double get_internal_transmittance(double wavelen) {
+    public override double get_internal_transmittance(double wavelen) {
         try {
             return _transmittance.interpolate(wavelen);
         } catch (Exception e) {
@@ -189,7 +189,7 @@ public abstract class Dielectric : Solid {
         // SCHOTT TIE-19: Temperature Coefficient of the Refractive Index
 
         double dt = _temperature - _measurement_medium.get_temperature();
-        double wl = wavelen / 1000.;
+        double wl = wavelen / 1000.0;
         double wl_tk = _temp_wl_tk;
 
         return (n * n - 1.0) / (2 * n) * dt
@@ -197,7 +197,7 @@ public abstract class Dielectric : Solid {
                 + (_temp_e0 + _temp_e1 * dt) / (wl * wl - wl_tk * wl_tk));
     }
 
-    override public double get_refractive_index(double wavelen) {
+    public override double get_refractive_index(double wavelen) {
         if (wavelen == _last_wavelen) {
             return _last_get_refractive_index;
         }
