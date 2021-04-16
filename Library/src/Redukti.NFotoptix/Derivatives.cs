@@ -17,16 +17,19 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
+
+using System;
+
 namespace Redukti.Nfotopix {
 
 public class Derivatives {
 
     static readonly double GSL_DBL_EPSILON = 2.2204460492503131e-16;
 
-    static class EvalResult {
-        double result;
-        double abserr_round;
-        double abserr_trunc;
+    class EvalResult {
+        public double result;
+        public double abserr_round;
+        public double abserr_trunc;
     }
 
     static EvalResult central_deriv(DerivFunction f, double x, double h) {
@@ -37,22 +40,22 @@ public class Derivatives {
      the 3-point rule (x-h,x,x+h). Again the central point is not
      used. */
 
-        double fm1 = f.apply(x - h);
-        double fp1 = f.apply(x + h);
+        double fm1 = f(x - h);
+        double fp1 = f(x + h);
 
-        double fmh = f.apply(x - h / 2);
-        double fph = f.apply(x + h / 2);
+        double fmh = f(x - h / 2);
+        double fph = f(x + h / 2);
 
         double r3 = 0.5 * (fp1 - fm1);
         double r5 = (4.0 / 3.0) * (fph - fmh) - (1.0 / 3.0) * r3;
 
-        double e3 = (Math.abs(fp1) + Math.abs(fm1)) * GSL_DBL_EPSILON;
-        double e5 = 2.0 * (Math.abs(fph) + Math.abs(fmh)) * GSL_DBL_EPSILON + e3;
+        double e3 = (Math.Abs(fp1) + Math.Abs(fm1)) * GSL_DBL_EPSILON;
+        double e5 = 2.0 * (Math.Abs(fph) + Math.Abs(fmh)) * GSL_DBL_EPSILON + e3;
 
         /* The next term is due to finite precision in x+h = O (eps * x) */
 
         double dy =
-                Math.max(Math.abs(r3 / h), Math.abs(r5 / h)) * (Math.abs(x) / h) * GSL_DBL_EPSILON;
+                Math.Max(Math.Abs(r3 / h), Math.Abs(r5 / h)) * (Math.Abs(x) / h) * GSL_DBL_EPSILON;
 
   /* The truncation error in the r5 approximation itself is O(h^4).
      However, for safety, we estimate the error from r5-r3, which is
@@ -60,8 +63,8 @@ public class Derivatives {
      the actual truncation error in r5. */
         EvalResult result = new EvalResult();
         result.result = r5 / h;
-        result.abserr_trunc = Math.abs((r5 - r3) / h); /* Estimated truncation error O(h^2) */
-        result.abserr_round = Math.abs(e5 / h) + dy;   /* Rounding error (cancellations) */
+        result.abserr_trunc = Math.Abs((r5 - r3) / h); /* Estimated truncation error O(h^2) */
+        result.abserr_round = Math.Abs(e5 / h) + dy;   /* Rounding error (cancellations) */
         return result;
     }
 
@@ -78,14 +81,14 @@ public class Derivatives {
          using the scaling of the truncation error (O(h^2)) and
          rounding error (O(1/h)). */
 
-            double h_opt = h * Math.pow(res.abserr_round / (2.0 * res.abserr_trunc), 1.0 / 3.0);
+            double h_opt = h * Math.Pow(res.abserr_round / (2.0 * res.abserr_trunc), 1.0 / 3.0);
             res = central_deriv(f, x, h_opt);
             error_opt = res.abserr_round + res.abserr_trunc;
 
       /* Check that the new error is smaller, and that the new derivative
          is consistent with the error bounds of the original estimate. */
 
-            if (error_opt < error && Math.abs(res.result - r_0) < 4.0 * error) {
+            if (error_opt < error && Math.Abs(res.result - r_0) < 4.0 * error) {
                 r_0 = res.result;
                 error = error_opt;
             }
