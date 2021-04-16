@@ -30,15 +30,14 @@ public class Stop : Surface {
 
     double _external_radius;
 
-    public Stop(int id, Vector3Pair p, Transform3 transform, Curve curve, Shape shape) {
-        super(id, p, transform, curve, shape);
+    public Stop(int id, Vector3Pair p, Transform3 transform, Curve curve, Shape shape): base(id, p, transform, curve, shape) {
         _external_radius = shape.max_radius () * 2.0;
     }
 
     
-    public string toString() {
+    public override string ToString() {
         return "Stop{" +
-                super.toString() +
+                base.ToString() +
                 ", external_radius=" + _external_radius +
                 '}';
     }
@@ -47,22 +46,22 @@ public class Stop : Surface {
         return _external_radius;
     }
 
-    public static class Builder extends Surface.Builder {
+    public class Builder : Surface.Builder {
         
-        public Stop.Builder position(Vector3Pair position) {
-            return (Stop.Builder) super.position(position);
+        public override Stop.Builder position(Vector3Pair position) {
+            return (Stop.Builder) base.position(position);
         }
 
-        public Stop.Builder shape(Shape shape) {
-            return (Stop.Builder) super.shape(shape);
+        public override Stop.Builder shape(Shape shape) {
+            return (Stop.Builder) base.shape(shape);
         }
 
-        public Stop.Builder curve(Curve curve) {
-            return (Stop.Builder) super.curve(curve);
+        public override Stop.Builder curve(Curve curve) {
+            return (Stop.Builder) base.curve(curve);
         }
 
-        public Stop build() {
-            return new Stop(id, position, transform, curve, shape);
+        public override Stop build() {
+            return new Stop(_id, _position, _transform, _curve, _shape);
         }
     }
 }

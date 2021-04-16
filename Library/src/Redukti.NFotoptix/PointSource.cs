@@ -24,6 +24,8 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
+using System.Collections.Generic;
+
 namespace Redukti.Nfotopix {
 
 
@@ -48,8 +50,7 @@ public class PointSource : RaySource {
 
     SourceInfinityMode _mode;
 
-    public PointSource(int id, Vector3Pair p, Transform3 transform, double min_intensity, double max_intensity, List<SpectralLine> spectrum, SourceInfinityMode mode) {
-        super(id, p, transform, min_intensity, max_intensity, spectrum);
+    public PointSource(int id, Vector3Pair p, Transform3 transform, double min_intensity, double max_intensity, List<SpectralLine> spectrum, SourceInfinityMode mode) : base(id, p, transform, min_intensity, max_intensity, spectrum){
         _mode = mode;
     }
 
@@ -57,13 +58,13 @@ public class PointSource : RaySource {
         return _mode;
     }
 
-    public string toString() {
-        return "PointSource{" + super.toString() + "}";
+    public override string ToString() {
+        return "PointSource{" + base.ToString() + "}";
     }
 
-    public static class Builder extends RaySource.Builder {
+    public class Builder : RaySource.Builder {
 
-        SourceInfinityMode _mode;
+        protected SourceInfinityMode _mode;
 
         public Builder(SourceInfinityMode m, Vector3 pos_dir) {
             position(m == SourceInfinityMode.SourceAtInfinity
@@ -76,14 +77,14 @@ public class PointSource : RaySource {
         }
 
         
-        public PointSource.Builder add_spectral_line(double wavelen) {
-            super.add_spectral_line(wavelen);
+        public override PointSource.Builder add_spectral_line(double wavelen) {
+            base.add_spectral_line(wavelen);
             return this;
         }
 
         
-        public PointSource build() {
-            return new PointSource(id, position, transform, _min_intensity, _max_intensity, _spectrum, _mode);
+        public override PointSource build() {
+            return new PointSource(_id, _position, _transform, _min_intensity, _max_intensity, _spectrum, _mode);
         }
     }
 

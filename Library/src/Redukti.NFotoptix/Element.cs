@@ -50,7 +50,7 @@ public abstract class Element {
         return _id;
     }
 
-    public Vector3Pair get_bounding_box() {
+    public virtual Vector3Pair get_bounding_box() {
         return new Vector3Pair(Vector3.vector3_0, Vector3.vector3_0);
     }
 
@@ -75,7 +75,7 @@ public abstract class Element {
 //        return _system.get_local_transform (this);
 //    }
 
-    void set_system(OpticalSystem system) {
+    public virtual void set_system(OpticalSystem system) {
         this._system = system;
     }
 
@@ -128,7 +128,7 @@ public abstract class Element {
         protected int _id;
         protected Vector3Pair _position;
         protected Transform3 _transform;
-        protected Element.Builder _parent;
+        private Element.Builder _parent;
 
         public virtual Builder position(Vector3Pair position) {
             this._position = position;
@@ -146,7 +146,12 @@ public abstract class Element {
             return this;
         }
 
-        public Builder setId(AtomicInteger id) {
+        public Element.Builder parent()
+        {
+            return _parent;
+        }
+
+        public virtual Builder setId(AtomicInteger id) {
             this._id = id.incrementAndGet();
             return this;
         }
@@ -184,8 +189,8 @@ public abstract class Element {
 
         public abstract Element build();
 
-        public string ToString() {
-            return getClass().getName() + ",id=" + id;
+        public override string ToString() {
+            return this.GetType().Name + ",id=" + _id;
         }
     }
 }

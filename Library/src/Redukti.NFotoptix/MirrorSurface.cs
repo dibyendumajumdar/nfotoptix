@@ -29,49 +29,48 @@ namespace Redukti.Nfotopix {
 
 public class MirrorSurface : OpticalSurface {
 
-    public MirrorSurface(int id, Vector3Pair p, Transform3 transform, Curve curve, Shape shape, MaterialBase left, MaterialBase right) {
-        super(id, p, transform, curve, shape, left, right);
+    public MirrorSurface(int id, Vector3Pair p, Transform3 transform, Curve curve, Shape shape, MaterialBase left, MaterialBase right): base(id, p, transform, curve, shape, left, right) {
     }
 
-    public static class Builder extends OpticalSurface.Builder {
+    public class Builder : OpticalSurface.Builder {
 
         bool _light_from_left = true;
 
         public Builder(bool _light_from_left) {
             this._light_from_left = _light_from_left;
-            this.left = Mirror.mirror;
-            this.right = null; /* none */
+            this._left = Mirror.mirror;
+            this._right = null; /* none */
         }
 
         
-        public MirrorSurface.Builder position(Vector3Pair position) {
-            return (MirrorSurface.Builder) super.position(position);
+        public override MirrorSurface.Builder position(Vector3Pair position) {
+            return (MirrorSurface.Builder) base.position(position);
         }
 
         
-        public MirrorSurface.Builder shape(Shape shape) {
-            return (MirrorSurface.Builder) super.shape(shape);
+        public override MirrorSurface.Builder shape(Shape shape) {
+            return (MirrorSurface.Builder) base.shape(shape);
         }
 
         
-        public MirrorSurface.Builder curve(Curve curve) {
-            return (MirrorSurface.Builder) super.curve(curve);
+        public override MirrorSurface.Builder curve(Curve curve) {
+            return (MirrorSurface.Builder) base.curve(curve);
         }
 
         
-        public MirrorSurface.Builder leftMaterial(MaterialBase left) {
-            return (MirrorSurface.Builder)super.leftMaterial(left);
+        public override MirrorSurface.Builder leftMaterial(MaterialBase left) {
+            return (MirrorSurface.Builder)base.leftMaterial(left);
         }
         public MirrorSurface.Builder metal(MaterialBase left) {
-            return (MirrorSurface.Builder)super.leftMaterial(left);
+            return (MirrorSurface.Builder)base.leftMaterial(left);
         }
 
         
-        public MirrorSurface.Builder rightMaterial(MaterialBase right) {
-            return (MirrorSurface.Builder) super.rightMaterial(right);
+        public override MirrorSurface.Builder rightMaterial(MaterialBase right) {
+            return (MirrorSurface.Builder) base.rightMaterial(right);
         }
         public MirrorSurface.Builder air(MaterialBase right) {
-            return (MirrorSurface.Builder) super.rightMaterial(right);
+            return (MirrorSurface.Builder) base.rightMaterial(right);
         }
 
         public MirrorSurface.Builder light_from_left() {
@@ -85,15 +84,15 @@ public class MirrorSurface : OpticalSurface {
         }
 
         MaterialBase metal() {
-            return this.left;
+            return this._left;
         }
         MaterialBase air() {
-            return this.right;
+            return this._right;
         }
 
         
         public OpticalSurface build() {
-            return new MirrorSurface(id, position, transform, curve, shape,
+            return new MirrorSurface(_id, _position, _transform, _curve, _shape,
                     _light_from_left ?  air() : metal(),
                     _light_from_left ? metal() : air() );
         }

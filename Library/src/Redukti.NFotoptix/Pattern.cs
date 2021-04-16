@@ -51,6 +51,8 @@ namespace Redukti.Nfotopix
     }
 
     public delegate void PatternConsumer(Vector2 v);
+
+    public delegate void ConsumerVector3(Vector3 v);
     public delegate void ConsumerTriangle2(Triangle2 v);
 
 }

@@ -24,13 +24,16 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
+using System;
+using System.Collections.Generic;
+
 namespace Redukti.Nfotopix {
 
 
 public class OpticalSystem : Container {
-    private final List<Element> _elements;
-    private final Transform3Cache _transform3Cache;
-    private bool keep_aspect = true;
+    protected List<Element> _elements;
+    protected Transform3Cache _transform3Cache;
+    protected bool _keep_aspect = true;
 
     
     public List<Element> elements() {
@@ -43,15 +46,15 @@ public class OpticalSystem : Container {
     }
 
     public Element getElement(int pos) {
-        if (pos >= 0 && pos < _elements.size()) {
-            return _elements.get(pos);
+        if (pos >= 0 && pos < _elements.Count) {
+            return _elements[pos];
         }
         return null;
     }
 
     public Group getGroup(int pos) {
-        if (pos >= 0 && pos < _elements.size() && _elements.get(pos) instanceof Group) {
-            return (Group) _elements.get(pos);
+        if (pos >= 0 && pos < _elements.Count && _elements[pos] is Group) {
+            return (Group) _elements[pos];
         }
         return null;
     }
@@ -65,12 +68,12 @@ public class OpticalSystem : Container {
         return Element.get_bounding_box(_elements);
     }
 
-    Transform3 get_transform (Element from, Element to)
+    public Transform3 get_transform (Element from, Element to)
     {
         return _transform3Cache.transform_cache_update (from.id (), to.id ());
     }
 
-    Transform3 get_global_transform(Element e) {
+    public Transform3 get_global_transform(Element e) {
         return _transform3Cache.local_2_global_transform(e.id());
     }
 
@@ -79,20 +82,20 @@ public class OpticalSystem : Container {
 //    }
 
     
-    public string toString() {
+    public override string ToString() {
         return "OpticalSystem{" +
                 "elements=" + _elements +
                 ", transform3Cache=" + _transform3Cache +
-                ", keep_aspect=" + keep_aspect +
+                ", keep_aspect=" + _keep_aspect +
                 '}';
     }
 
-    public static class Builder {
-        private final ArrayList<Element.Builder> elements = new ArrayList<>();
-        private Transform3Cache transform3Cache;
+    public class Builder {
+        protected List<Element.Builder> _elements = new List<Element.Builder>();
+        protected Transform3Cache _transform3Cache;
 
         public Builder add(Element.Builder element) {
-            this.elements.add(element);
+            this._elements.Add(element);
             return this;
         }
 
@@ -101,31 +104,31 @@ public class OpticalSystem : Container {
             Transform3Cache transform3Cache = setCoordinates();
             List<Element> elements = buildElements();
             OpticalSystem system = new OpticalSystem(elements, transform3Cache);
-            for (Element e: system.elements()) {
+            foreach (Element e in system.elements()) {
                 e.set_system(system);
             }
             return system;
         }
 
         private List<Element> buildElements() {
-            List<Element> els = new ArrayList<>();
-            for (Element.Builder e: elements) {
-                els.add(e.build());
+            List<Element> els = new ();
+            foreach (Element.Builder e in _elements) {
+                els.Add(e.build());
             }
             return els;
         }
 
         private Transform3Cache setCoordinates() {
-            transform3Cache = new Transform3Cache();
-            for (Element.Builder e: elements) {
-                e.compute_global_transforms(transform3Cache);
+            _transform3Cache = new Transform3Cache();
+            foreach (Element.Builder e in _elements) {
+                e.compute_global_transforms(_transform3Cache);
             }
-            return transform3Cache;
+            return _transform3Cache;
         }
 
         private void generateIds() {
             AtomicInteger id = new AtomicInteger(0);
-            for (Element.Builder e: elements) {
+            foreach (Element.Builder e in _elements) {
                 e.setId(id);
             }
         }
@@ -136,10 +139,10 @@ public class OpticalSystem : Container {
          */
         public OpticalSystem updatePosition(Element.Builder e, Vector3 v) {
             // FIXME
-            if (transform3Cache == null)
-                throw new IllegalStateException("build() must be called prior to updating position");
-            if (e.parent != null) {
-                e.localPosition(transform3Cache.global_2_local_transform(e.parent.id()).transform(v));
+            if (_transform3Cache == null)
+                throw new InvalidOperationException("build() must be called prior to updating position");
+            if (e.parent() != null) {
+                e.localPosition(_transform3Cache.global_2_local_transform(e.parent().id()).transform(v));
             }
             else {
                 e.localPosition(v);

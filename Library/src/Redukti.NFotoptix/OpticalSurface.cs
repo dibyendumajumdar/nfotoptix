@@ -28,7 +28,7 @@ namespace Redukti.Nfotopix {
 
 
 public class OpticalSurface : Surface {
-    MaterialBase[] mat = new MaterialBase[2];
+    protected MaterialBase[] _mat = new MaterialBase[2];
 
     public OpticalSurface(int id,
                           Vector3Pair p,
@@ -36,53 +36,57 @@ public class OpticalSurface : Surface {
                           Curve curve,
                           Shape shape,
                           MaterialBase left,
-                          MaterialBase right) {
-        super(id, p, transform, curve, shape);
-        mat[0] = left;
-        mat[1] = right;
+                          MaterialBase right) : base(id, p, transform, curve, shape){
+        _mat[0] = left;
+        _mat[1] = right;
     }
 
     public MaterialBase get_material(int i) {
-        return mat[i];
+        return _mat[i];
     }
 
-    public string toString() {
+    private string toString(MaterialBase mat)
+    {
+        return mat == null ? "none" : mat.ToString();
+    }
+
+    public override string ToString() {
         return "OpticalSurface{" +
-                super.toString() +
-                ", left material=" + Objects.toString(mat[0]) +
-                ", right material=" + Objects.toString(mat[1]) +
+                base.ToString() +
+                ", left material=" + toString(_mat[0]) +
+                ", right material=" + toString(_mat[1]) +
                 '}';
     }
 
-    public static class Builder extends Surface.Builder {
-        MaterialBase left = Air.air;
-        MaterialBase right = Air.air;
+    public class Builder : Surface.Builder {
+        protected MaterialBase _left = Air.air;
+        protected MaterialBase _right = Air.air;
 
         
-        public OpticalSurface.Builder position(Vector3Pair position) {
-            return (OpticalSurface.Builder) super.position(position);
+        public override OpticalSurface.Builder position(Vector3Pair position) {
+            return (OpticalSurface.Builder) base.position(position);
         }
 
-        public OpticalSurface.Builder shape(Shape shape) {
-            return (OpticalSurface.Builder) super.shape(shape);
+        public override OpticalSurface.Builder shape(Shape shape) {
+            return (OpticalSurface.Builder) base.shape(shape);
         }
 
-        public OpticalSurface.Builder curve(Curve curve) {
-            return (OpticalSurface.Builder) super.curve(curve);
+        public override OpticalSurface.Builder curve(Curve curve) {
+            return (OpticalSurface.Builder) base.curve(curve);
         }
 
-        public OpticalSurface.Builder leftMaterial(MaterialBase left) {
-            this.left = left;
+        public virtual OpticalSurface.Builder leftMaterial(MaterialBase left) {
+            this._left = left;
             return this;
         }
 
-        public OpticalSurface.Builder rightMaterial(MaterialBase right) {
-            this.right = right;
+        public virtual OpticalSurface.Builder rightMaterial(MaterialBase right) {
+            this._right = right;
             return this;
         }
 
-        public OpticalSurface build() {
-            return new OpticalSurface(id, position, transform, curve, shape, left, right);
+        public override OpticalSurface build() {
+            return new OpticalSurface(_id, _position, _transform, _curve, _shape, _left, _right);
         }
 
     }

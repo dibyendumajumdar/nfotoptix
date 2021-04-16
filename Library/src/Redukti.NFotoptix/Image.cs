@@ -28,31 +28,30 @@ namespace Redukti.Nfotopix {
 
 public class Image : Surface {
 
-    public Image(int id, Vector3Pair p, Transform3 transform, Curve curve, Shape shape) {
-        super(id, p, transform, curve, shape);
+    public Image(int id, Vector3Pair p, Transform3 transform, Curve curve, Shape shape): base(id, p, transform, curve, shape) {
     }
 
     
-    public string toString() {
-        return "Image{" + super.toString() + "}";
+    public override string ToString() {
+        return "Image{" + base.ToString() + "}";
     }
 
-    public static class Builder extends Surface.Builder {
+    public class Builder : Surface.Builder {
         
-        public Image.Builder position(Vector3Pair position) {
-            return (Image.Builder) super.position(position);
+        public override Image.Builder position(Vector3Pair position) {
+            return (Image.Builder) base.position(position);
         }
 
-        public Image.Builder shape(Shape shape) {
-            return (Image.Builder) super.shape(shape);
+        public override Image.Builder shape(Shape shape) {
+            return (Image.Builder) base.shape(shape);
         }
 
         public Image.Builder curve(Curve curve) {
-            return (Image.Builder) super.curve(curve);
+            return (Image.Builder) base.curve(curve);
         }
 
         public Image build() {
-            return new Image(id, position, transform, curve, shape);
+            return new Image(_id, _position, _transform, _curve, _shape);
         }
     }
 }

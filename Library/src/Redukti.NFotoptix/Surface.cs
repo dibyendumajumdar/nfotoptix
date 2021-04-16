@@ -24,50 +24,51 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
+using System;
+
 namespace Redukti.Nfotopix {
 
 
 public class Surface : Element {
 
-    readonly Shape shape;
-    readonly Curve curve;
+    protected readonly Shape _shape;
+    protected readonly Curve _curve;
 
-    public Surface(int id, Vector3Pair p, Transform3 transform, Curve curve, Shape shape) {
-        super(id, p, transform);
-        this.curve = curve;
-        this.shape = shape;
+    public Surface(int id, Vector3Pair p, Transform3 transform, Curve curve, Shape shape): base(id, p, transform) {
+        this._curve = curve;
+        this._shape = shape;
     }
 
     public Shape get_shape() {
-        return shape;
+        return _shape;
     }
 
     public Curve get_curve() {
-        return curve;
+        return _curve;
     }
 
     public Renderer.Style get_style() {
         return Renderer.Style.StyleSurface;
     }
 
-    public void get_pattern(Consumer<Vector3> f,
+    public void get_pattern(ConsumerVector3 f,
                             Distribution d, bool unobstructed) {
-        Consumer<Vector2> de = (v2d) -> {
-            f.accept(new Vector3(v2d.x(), v2d.y(), curve.sagitta(v2d)));
+        PatternConsumer de = (v2d) => {
+            f(new Vector3(v2d.x(), v2d.y(), _curve.sagitta(v2d)));
         };
 
         // get distribution from shape
-        shape.get_pattern(de, d, unobstructed);
+        _shape.get_pattern(de, d, unobstructed);
     }
 
-    public Vector3Pair get_bounding_box() {
-        Vector2Pair sb = shape.get_bounding_box();
+    public override Vector3Pair get_bounding_box() {
+        Vector2Pair sb = _shape.get_bounding_box();
 
         // FIXME we assume curve is symmetric here
         double z = 0;
-        double ms = curve.sagitta(new Vector2(shape.max_radius()));
-        if (Double.isNaN(ms)) {
-            System.err.println("Invalid sagitta at " + shape.max_radius());
+        double ms = _curve.sagitta(new Vector2(_shape.max_radius()));
+        if (Double.IsNaN(ms)) {
+            Console.WriteLine("Invalid sagitta at " + _shape.max_radius());
             return null;
         }
 
@@ -81,33 +82,33 @@ public class Surface : Element {
     }
 
     
-    public string toString() {
-        return super.toString() +
-                ", shape=" + shape +
-                ", curve=" + curve;
+    public override string ToString() {
+        return base.ToString() +
+                ", shape=" + _shape +
+                ", curve=" + _curve;
     }
 
-    public static class Builder extends Element.Builder {
-        Shape shape;
-        Curve curve;
+    public class Builder : Element.Builder {
+        protected Shape _shape;
+        protected Curve _curve;
 
         
-        public Surface.Builder position(Vector3Pair position) {
-            return (Builder) super.position(position);
+        public override Surface.Builder position(Vector3Pair position) {
+            return (Builder) base.position(position);
         }
 
         
-        public Element build() {
-            return new Surface(id, position, transform, curve, shape);
+        public override Element build() {
+            return new Surface(_id, _position, _transform, _curve, _shape);
         }
 
-        public Builder shape(Shape shape) {
-            this.shape = shape;
+        public virtual Builder shape(Shape shape) {
+            this._shape = shape;
             return this;
         }
 
-        public Builder curve(Curve curve) {
-            this.curve = curve;
+        public virtual Builder curve(Curve curve) {
+            this._curve = curve;
             return this;
         }
     }

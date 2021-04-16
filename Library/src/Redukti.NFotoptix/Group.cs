@@ -63,14 +63,14 @@ public class Group : Element,  Container {
         return null;
     }
 
-    void set_system(OpticalSystem system) {
+    public override void set_system(OpticalSystem system) {
         this._system = system;
         foreach (Element e in elements()) {
             e.set_system(system);
         }
     }
 
-    public Vector3Pair get_bounding_box ()
+    public override Vector3Pair get_bounding_box ()
     {
         return Element.get_bounding_box(_elements);
     }
@@ -81,9 +81,9 @@ public class Group : Element,  Container {
         sb.Append("id=" + _id +
                 ", position=" + _position +
                 ", transform=" + _transform)
-                .Append(System.lineSeparator());
+                .Append('\n');
         foreach (Element e in elements()) {
-            sb.Append('\t').Append(e.ToString()).Append(System.lineSeparator());
+            sb.Append('\t').Append(e.ToString()).Append('\n');
         }
         return sb.ToString();
     }

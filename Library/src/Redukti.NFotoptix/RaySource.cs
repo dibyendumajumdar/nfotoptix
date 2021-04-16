@@ -24,16 +24,18 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
+using System;
+using System.Collections.Generic;
+
 namespace Redukti.Nfotopix {
 
 public class RaySource : Element {
 
-    List<SpectralLine> _spectrum;
-    double _min_intensity, _max_intensity;
-    MaterialBase _mat = Air.air; // FIXME - should be settable
+    protected List<SpectralLine> _spectrum;
+    protected double _min_intensity, _max_intensity;
+    protected MaterialBase _mat = Air.air; // FIXME - should be settable
 
-    public RaySource(int id, Vector3Pair p, Transform3 transform, double min_intensity, double max_intensity, List<SpectralLine> spectrum) {
-        super(id, p, transform);
+    public RaySource(int id, Vector3Pair p, Transform3 transform, double min_intensity, double max_intensity, List<SpectralLine> spectrum): base(id, p, transform) {
         _max_intensity = max_intensity;
         _max_intensity = min_intensity;
         _spectrum = spectrum;
@@ -47,27 +49,27 @@ public class RaySource : Element {
         return _mat;
     }
 
-    public static abstract class Builder extends Element.Builder {
+    public abstract class Builder : Element.Builder {
 
-        List<SpectralLine> _spectrum = new ArrayList<>();
-        double _min_intensity = 1.0;
-        double _max_intensity = 1.0;
-        MaterialBase _mat = null;
+        protected List<SpectralLine> _spectrum = new List<SpectralLine>();
+        protected double _min_intensity = 1.0;
+        protected double _max_intensity = 1.0;
+        protected MaterialBase _mat = null;
 
-        public Builder add_spectral_line (SpectralLine l)
+        public virtual Builder add_spectral_line (SpectralLine l)
         {
-            _spectrum.add (l);
-            _max_intensity = Math.max (_max_intensity, l.get_intensity ());
-            _min_intensity = Math.min (_min_intensity, l.get_intensity ());
+            _spectrum.Add (l);
+            _max_intensity = Math.Max (_max_intensity, l.get_intensity ());
+            _min_intensity = Math.Min (_min_intensity, l.get_intensity ());
             return this;
         }
 
-        public Builder add_spectral_line (double wavelen)
+        public virtual Builder add_spectral_line (double wavelen)
         {
             SpectralLine l = new SpectralLine(wavelen, 1.0);
-            _spectrum.add (l);
-            _max_intensity = Math.max (_max_intensity, l.get_intensity ());
-            _min_intensity = Math.min (_min_intensity, l.get_intensity ());
+            _spectrum.Add (l);
+            _max_intensity = Math.Max (_max_intensity, l.get_intensity ());
+            _min_intensity = Math.Min (_min_intensity, l.get_intensity ());
             return this;
         }
 

@@ -24,6 +24,10 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace Redukti.Nfotopix {
 
 
@@ -34,12 +38,13 @@ public class Lens : Group {
         SlopeEdge,
     }
 
-    OpticalSystem opticalSystem;
-    List<OpticalSurface> _surfaces;
-    readonly Stop _stop;
+    protected OpticalSystem _opticalSystem;
+    protected List<OpticalSurface> _surfaces;
+    protected readonly Stop _stop;
 
-    public Lens(int id, Vector3Pair position, Transform3 transform, List<OpticalSurface> surfaces, List<Element> elementList, Stop stop) {
-        super(id, position, transform, elementList);
+    public Lens(int id, Vector3Pair position, Transform3 transform, List<OpticalSurface> surfaces, List<Element> elementList, Stop stop)
+        : base(id, position, transform, elementList)
+    {
         this._stop = stop;
         this._surfaces = surfaces;
     }
@@ -53,29 +58,28 @@ public class Lens : Group {
     }
 
     
-    void set_system(OpticalSystem system) {
-        super.set_system(system);
+    public override void set_system(OpticalSystem system) {
+        base.set_system(system);
         _stop.set_system(system);
     }
 
     
-    public string toString() {
-        return "Lens{"+ super.toString() + "}";
+    public override string ToString() {
+        return "Lens{"+ base.ToString() + "}";
     }
 
-    public static class Builder extends Group.Builder {
+    public class Builder : Group.Builder {
         double _last_pos = 0;
         MaterialBase _next_mat = Air.air;
         Stop.Builder _stop = null;
 
         
         public Element build() {
-            ArrayList<Element> elements = getElements();
-            Stop stop = (Stop) elements.stream().filter(e -> e instanceof Stop).findFirst().orElse(null);
-            List<OpticalSurface> surfaces = elements.stream().filter(e -> e instanceof OpticalSurface)
-                    .map (e -> (OpticalSurface)e)
-                    .collect(Collectors.toList());
-            return new Lens(id, position, transform, surfaces, elements, stop);
+            List<Element> elements = getElements();
+            Stop stop = (Stop) elements.OfType<Stop>().FirstOrDefault(null);
+            List<OpticalSurface> surfaces = elements
+                .OfType<OpticalSurface>().ToList();
+            return new Lens(_id, _position, _transform, surfaces, elements, stop);
         }
 
         /**
@@ -88,7 +92,7 @@ public class Lens : Group {
          */
         public Lens.Builder add_surface(double curvature, double radius, double thickness, Abbe glass) {
             Curve curve;
-            if (curvature == 0.)
+            if (curvature == 0.0)
                 curve = Flat.flat;
             else
                 curve = new Sphere(curvature);
@@ -101,7 +105,6 @@ public class Lens : Group {
         }
 
         public Lens.Builder add_surface(Curve curve, Shape shape, double thickness, MaterialBase glass) {
-            assert (thickness >= 0.);
             if (glass == null) {
                 glass = Air.air;
             }
@@ -123,7 +126,7 @@ public class Lens : Group {
 
         public Lens.Builder add_stop(Shape shape, double thickness) {
             if (_stop != null)
-                throw new IllegalArgumentException("Can not add more than one stop per Lens");
+                throw new InvalidOperationException("Can not add more than one stop per Lens");
             _stop = new Stop.Builder()
                     .position(new Vector3Pair(new Vector3(0, 0, _last_pos), Vector3.vector3_001))
                     .curve(Flat.flat)
@@ -134,13 +137,13 @@ public class Lens : Group {
         }
 
         
-        public void compute_global_transforms(Transform3Cache tcache) {
-            super.compute_global_transforms(tcache);
+        public override void compute_global_transforms(Transform3Cache tcache) {
+            base.compute_global_transforms(tcache);
         }
 
         
-        public Lens.Builder position(Vector3Pair position) {
-            return (Lens.Builder) super.position(position);
+        public override Lens.Builder position(Vector3Pair position) {
+            return (Lens.Builder) base.position(position);
         }
     }
 }
