@@ -33,33 +33,23 @@ public enum PlotStyleMask {
     /**
      * Draw lines between knots
      */
-    LinePlot(1),
+    LinePlot = 1,
     /**
      * Draw points for each knot
      */
-    PointPlot(2),
+    PointPlot = 2,
     /**
      * Draw a smooth curve
      */
-    InterpolatePlot(4),
+    InterpolatePlot = 4,
     /**
      * Print ploted values near knots
      */
-    ValuePlot(8),
+    ValuePlot = 8,
     /**
      * Draw filled 3d surface
      */
-    Filled(16);
-
-    PlotStyleMask(int value) {
-        this._value = value;
-    }
-
-    readonly int _value;
-
-    public int value() {
-        return _value;
-    }
+    Filled = 16
 }
 
 }

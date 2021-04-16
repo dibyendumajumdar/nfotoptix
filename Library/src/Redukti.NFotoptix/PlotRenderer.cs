@@ -23,15 +23,17 @@ Original GNU Optical License and Authors are as follows:
       Author: Alexandre Becoulet
  */
 
+using System;
+
 namespace Redukti.Nfotopix {
 
 
 public class PlotRenderer {
 
-    readonly DecimalFormat _decimal_format;
+    //readonly DecimalFormat _decimal_format;
 
     public PlotRenderer() {
-        _decimal_format = MathUtils.decimal_format(0);
+        //_decimal_format = MathUtils.decimal_format(0);
     }
 
     void draw_plot(RendererViewport r, Plot plot) {
@@ -44,11 +46,11 @@ public class PlotRenderer {
                 Vector2Pair _window2d = r.get_window2d();
                 Vector2Pair _window2d_fit = r.get_window2d_fit();
                 r.draw_text(
-                        new Vector2((_window2d.v0.x() + _window2d.v1.x()) / 2.,
-                                (_window2d_fit.v1.y() + _window2d.v1.y()) / 2.),
+                        new Vector2((_window2d.v0.x() + _window2d.v1.x()) / 2.0,
+                                (_window2d_fit.v1.y() + _window2d.v1.y()) / 2.0),
                         Vector2.vector2_10, plot.get_title(),
-                        EnumSet.of(TextAlignCenter, TextAlignMiddle), 18,
-                        r.get_style_color(StyleForeground));
+                        (int)Renderer.TextAlignMask.TextAlignCenter | (int)Renderer.TextAlignMask.TextAlignMiddle, 18,
+                        r.get_style_color(Renderer.Style.StyleForeground));
 
                 // plot data
                 for (int i = 0; i < plot.get_plot_count(); i++) {
@@ -59,7 +61,7 @@ public class PlotRenderer {
                 break;
             }
             default:
-                throw new IllegalArgumentException("Unsupported dimensions " + plot.get_dimensions());
+                throw new InvalidOperationException("Unsupported dimensions " + plot.get_dimensions());
         }
     }
 
@@ -69,12 +71,12 @@ public class PlotRenderer {
         Vector2Pair _window2d_fit = r.get_window2d_fit();
         Vector2Pair _window2d = r.get_window2d();
         Vector2 _2d_output_res = r.get_2d_output_res();
-        if ((style.get_style() & PlotStyleMask.InterpolatePlot.value()) != 0) {
-            const double x_step
+        if ((style.get_style() & (int)PlotStyleMask.InterpolatePlot) != 0) {
+            double x_step
                     = (_window2d.v1.x() - _window2d.v0.x()) / _2d_output_res.x();
             Range xr = data.get_x_range(0);
-            double x_low = Math.max(_window2d_fit.v0.x(), xr.first);
-            double x_high = Math.min(_window2d_fit.v1.x(), xr.second);
+            double x_low = Math.Max(_window2d_fit.v0.x(), xr.first);
+            double x_high = Math.Min(_window2d_fit.v1.x(), xr.second);
             double y1 = data.interpolate(x_low);
 
             for (double x = x_low + x_step; x < x_high + x_step / 2; x += x_step) {
@@ -90,7 +92,7 @@ public class PlotRenderer {
 
         // line plot
 
-        if ((style.get_style() & PlotStyleMask.LinePlot.value()) != 0) {
+        if ((style.get_style() & (int)PlotStyleMask.LinePlot) != 0) {
             Range p1 = new Range(data.get_x_value(0),
                     data.get_y_value(0));
 
@@ -109,19 +111,19 @@ public class PlotRenderer {
 
         // draw cross tic for each point
 
-        if ((style.get_style() & PlotStyleMask.PointPlot.value()) != 0) {
+        if ((style.get_style() & (int)PlotStyleMask.PointPlot) != 0) {
             for (int j = 0; j < data.get_count(); j++) {
                 Vector2 p = new Vector2(data.get_x_value(j), data.get_y_value(j));
 
-                r.draw_point(p, style.get_color(), PointStyleCross);
+                r.draw_point(p, style.get_color(), Renderer.PointStyle.PointStyleCross);
             }
         }
 
         // print value for each point
 
-        if ((style.get_style() & PlotStyleMask.ValuePlot.value()) != 0) {
+        if ((style.get_style() & (int)PlotStyleMask.ValuePlot) != 0) {
             for (int j = 0; j < data.get_count(); j++) {
-                EnumSet<Renderer.TextAlignMask> a;
+                int a;
                 // FIXME remove use of data pair
                 Range p = new Range(data.get_x_value(j),
                         data.get_y_value(j));
@@ -134,14 +136,14 @@ public class PlotRenderer {
                         > prev) // FIXME use derivative to find best text position
                 {
                     if (p.second > next)
-                        a = EnumSet.of(TextAlignBottom, TextAlignCenter);
+                        a = (int)Renderer.TextAlignMask.TextAlignBottom | (int)Renderer.TextAlignMask.TextAlignCenter;
                     else
-                        a = EnumSet.of(TextAlignBottom, TextAlignRight);
+                        a = (int)Renderer.TextAlignMask.TextAlignBottom | (int)Renderer.TextAlignMask.TextAlignRight;
                 } else {
                     if (p.second > next)
-                        a = EnumSet.of(TextAlignTop, TextAlignRight);
+                        a = (int)Renderer.TextAlignMask.TextAlignTop | (int) Renderer.TextAlignMask.TextAlignRight;
                     else
-                        a = EnumSet.of(TextAlignBottom, TextAlignLeft);
+                        a = (int)Renderer.TextAlignMask.TextAlignBottom | (int) Renderer.TextAlignMask.TextAlignLeft;
                 }
 
                 string s = string.format(".2f", p.second);
@@ -161,7 +163,7 @@ public class PlotRenderer {
         fr[2] = _window2d_fit.v1;
         fr[3] = new Vector2(_window2d_fit.v1.x(), _window2d_fit.v0.y());
 
-        r.draw_polygon(fr, r.get_style_color(StyleForeground), false, true);
+        r.draw_polygon(fr, r.get_style_color(Renderer.Style.StyleForeground), false, true);
     }
 
     void set_2d_plot_window(RendererViewport r, Plot plot) {
@@ -180,7 +182,7 @@ public class PlotRenderer {
                 false);
     }
 
-    static final string[] sc = {"y", "z", "a", "f", "p", "n", "u", "m", "",
+    static string[] sc = {"y", "z", "a", "f", "p", "n", "u", "m", "",
                                 "k", "M", "G", "T", "P", "E", "Z", "Y"};
 
 
@@ -201,12 +203,12 @@ public class PlotRenderer {
             PlotAxes.Axis ax = a._axes[i];
             Range r = new Range(_window2d_fit.v0.v(i), _window2d_fit.v1.v(i));
 
-            double s = step[i] = Math.abs(a.get_tics_step(i, r));
+            double s = step[i] = Math.Abs(a.get_tics_step(i, r));
 
             min[i] = MathUtils.trunc((r.first - p.v(i)) / s);
             max[i] = MathUtils.trunc((r.second - p.v(i)) / s);
 
-            pow10 = ax._pow10_scale ? (int) Math.floor(Math.log10(s)) : 0;
+            pow10 = ax._pow10_scale ? (int) Math.Floor(Math.Log10(s)) : 0;
 
             string si_unit = "";
 
@@ -224,27 +226,27 @@ public class PlotRenderer {
             switch (i) {
                 case 0:
                     lp = new Vector2(
-                            (_window2d.v0.x() + _window2d.v1.x()) / 2.,
-                            (_window2d_fit.v0.y() * .50 + _window2d.v0.y() * 1.50) / 2.);
+                            (_window2d.v0.x() + _window2d.v1.x()) / 2.0,
+                            (_window2d_fit.v0.y() * .50 + _window2d.v0.y() * 1.50) / 2.0);
                     ld = Vector2.vector2_10;
                     break;
                 case 1:
                     lp = new Vector2(
-                            (_window2d_fit.v0.x() * .50 + _window2d.v0.x() * 1.50) / 2.,
-                            (_window2d.v0.y() + _window2d.v1.y()) / 2.);
+                            (_window2d_fit.v0.x() * .50 + _window2d.v0.x() * 1.50) / 2.0,
+                            (_window2d.v0.y() + _window2d.v1.y()) / 2.0);
                     ld = Vector2.vector2_01;
                     break;
                 default:
-                    throw new IllegalArgumentException("Invalid axis " + i);
+                    throw new InvalidOperationException("Invalid axis " + i);
             }
 
             // axis label
             {
                 string lx = ax._label;
-                bool useunit = !ax._unit.isEmpty();
+                bool useunit = ax._unit.Length > 0;
                 bool usep10 = pow10 != 0;
 
-                if (!si_unit.isEmpty())
+                if (si_unit.Length > 0)
                     lx += " (" + si_unit + ")";
                 else if (useunit || usep10) {
                     lx += " (";
@@ -258,21 +260,21 @@ public class PlotRenderer {
                     lx += ")";
                 }
 
-                renderer.draw_text(lp, ld, lx, EnumSet.of(TextAlignCenter, TextAlignMiddle), 12,
-                        renderer.get_style_color(StyleForeground));
+                renderer.draw_text(lp, ld, lx, (int)Renderer.TextAlignMask.TextAlignCenter | (int)Renderer.TextAlignMask.TextAlignMiddle, 12,
+                        renderer.get_style_color(Renderer.Style.StyleForeground));
             }
 
             // skip out of range axis
             bool oor = false;
             for (int j = 0; j < N; j++)
                 oor |= (j != i
-                        && ((p.v(j) <= Math.min(_window2d_fit.v0.v(j), _window2d_fit.v1.v(j)))
-                        || (p.v(j) >= Math.max(_window2d_fit.v0.v(j), _window2d_fit.v1.v(j)))));
+                        && ((p.v(j) <= Math.Min(_window2d_fit.v0.v(j), _window2d_fit.v1.v(j)))
+                        || (p.v(j) >= Math.Max(_window2d_fit.v0.v(j), _window2d_fit.v1.v(j)))));
 
             // draw axis
             if (!oor && ax._axis) {
                 Vector2Pair seg = new Vector2Pair(p.set(i, r.first), p.set(i, r.second));
-                renderer.draw_segment(seg, renderer.get_style_color(StyleForeground));
+                renderer.draw_segment(seg, renderer.get_style_color(Renderer.Style.StyleForeground));
             }
 
             // draw tics on axis
@@ -298,7 +300,7 @@ public class PlotRenderer {
                         case 2:
                             renderer.draw_point(
                                     new Vector2(p.v(0) + x * step[0], p.v(1) + y * step[1]),
-                                    renderer.get_style_color(StyleForeground), Renderer.PointStyle.PointStyleDot);
+                                    renderer.get_style_color(Renderer.Style.StyleForeground), Renderer.PointStyle.PointStyleDot);
                             break;
                     }
                 }
@@ -317,32 +319,32 @@ public class PlotRenderer {
         if (!oor && ax._axis) {
             vtic = p;
             vtic = vtic.set(i, x + p.v(i));
-            r.draw_point(vtic, r.get_style_color(StyleForeground), PointStyleCross);
+            r.draw_point(vtic, r.get_style_color(Renderer.Style.StyleForeground), Renderer.PointStyle.PointStyleCross);
         }
 
         if (a._frame) {
             vtic = _window2d_fit.v1;
             vtic = vtic.set(i, x + p.v(i));
-            r.draw_point(vtic, r.get_style_color(StyleForeground), PointStyleCross);
+            r.draw_point(vtic, r.get_style_color(Renderer.Style.StyleForeground), Renderer.PointStyle.PointStyleCross);
 
             vtic = _window2d_fit.v0;
             vtic = vtic.set(i, x + p.v(i));
-            r.draw_point(vtic, r.get_style_color(StyleForeground), PointStyleCross);
+            r.draw_point(vtic, r.get_style_color(Renderer.Style.StyleForeground), Renderer.PointStyle.PointStyleCross);
         }
 
         // draw tic value text
         if (ax._values) {
-            EnumSet<Renderer.TextAlignMask> align0 = EnumSet.of(TextAlignCenter, TextAlignTop);
-            EnumSet<Renderer.TextAlignMask> align1 = EnumSet.of(TextAlignRight, TextAlignMiddle);
-            EnumSet<Renderer.TextAlignMask> align2 = EnumSet.of(TextAlignTop, TextAlignCenter);
+            int align0 = (int)Renderer.TextAlignMask.TextAlignCenter | (int)Renderer.TextAlignMask.TextAlignTop;
+            int align1 = (int)Renderer.TextAlignMask.TextAlignRight | (int)Renderer.TextAlignMask.TextAlignMiddle;
+            int align2 = (int)Renderer.TextAlignMask.TextAlignTop | (int)Renderer.TextAlignMask.TextAlignCenter;
 
-            string s = _decimal_format.format((x + p.v(i) - a._origin.v(i)) / Math.pow(10., pow10));
+            string s = _decimal_format.format((x + p.v(i) - a._origin.v(i)) / Math.Pow(10.0, pow10));
             switch (N) {
                 case 2:
-                    EnumSet<Renderer.TextAlignMask> align = i == 0 ? align0
+                    int align = i == 0 ? align0
                             : (i == 1 ? align1 : align2);
                     r.draw_text(vtic, Vector2.vector2_10, s, align, 12,
-                            r.get_style_color(StyleForeground));
+                            r.get_style_color(Renderer.Style.StyleForeground));
                     break;
             }
         }

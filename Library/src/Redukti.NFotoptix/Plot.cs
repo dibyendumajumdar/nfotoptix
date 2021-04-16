@@ -23,6 +23,9 @@ Original GNU Optical License and Authors are as follows:
       Author: Alexandre Becoulet
  */
 
+using System;
+using System.Collections.Generic;
+
 namespace Redukti.Nfotopix {
 
 
@@ -39,7 +42,7 @@ namespace Redukti.Nfotopix {
 public class Plot {
 
     string _title = "";
-    List<PlotData> _plots = new ArrayList<>();
+    List<PlotData> _plots = new ();
 
     PlotAxes _axes = new PlotAxes();
 
@@ -51,7 +54,7 @@ public class Plot {
     PlotData add_plot_data(DataSet data, Rgb color,
                            string label, int style) {
         PlotData plotdata = new PlotData(data);
-        _plots.add(plotdata);
+        _plots.Add(plotdata);
 
         plotdata.set_color(color);
         plotdata.set_label(label);
@@ -64,28 +67,28 @@ public class Plot {
      * Add plot data
      */
     void add_plot_data(PlotData data) {
-        _plots.add(data);
+        _plots.Add(data);
     }
 
     /**
      * Discard all plot data set
      */
     void erase_plot_data() {
-        _plots.clear();
+        _plots.Clear();
     }
 
     /**
      * Get plot data set count
      */
-    int get_plot_count() {
-        return _plots.size();
+    public int get_plot_count() {
+        return _plots.Count;
     }
 
     /**
      * Get plot data set at given index
      */
-    PlotData get_plot_data(int index) {
-        return _plots.get(index);
+    public PlotData get_plot_data(int index) {
+        return _plots[index];
     }
 
     /**
@@ -98,7 +101,7 @@ public class Plot {
     /**
      * Get plot main title
      */
-    string get_title() {
+    public string get_title() {
         return _title;
     }
 
@@ -106,7 +109,7 @@ public class Plot {
      * Set color for all plots
      */
     void set_color(Rgb color) {
-        for (PlotData i : _plots)
+        foreach (PlotData i in _plots)
             i.set_color(color);
     }
 
@@ -117,7 +120,7 @@ public class Plot {
         Rgb color;
         int n = 1;
 
-        for (PlotData i : _plots) {
+        foreach (PlotData i in _plots) {
             double r = (double) ((n >> 0) & 0x01);
             double g = (double) ((n >> 1) & 0x01);
             double b = (double) ((n >> 2) & 0x01);
@@ -131,7 +134,7 @@ public class Plot {
      * Set plot style for all plot
      */
     void set_style(int style) {
-        for (PlotData i : _plots)
+        foreach (PlotData i in _plots)
             i.set_style(style);
     }
 
@@ -165,24 +168,24 @@ public class Plot {
                 _axes.set_range(get_y_data_range(), PlotAxes.AxisMask.Z);
                 break;
             default:
-                throw new IllegalArgumentException("inconsistent dimensions of data sets in plot");
+                throw new InvalidOperationException("inconsistent dimensions of data sets in plot");
         }
     }
 
     /**
      * Get plot axes object
      */
-    PlotAxes get_axes() {
+    public PlotAxes get_axes() {
         return _axes;
     }
 
     /**
      * Get data sets dimensions, return 0 if inconsistent
      */
-    int get_dimensions() {
+    public int get_dimensions() {
         int dimension = 0;
 
-        for (PlotData i : _plots) {
+        foreach (PlotData i in _plots) {
             int d = i.get_set().get_dimensions();
 
             if (dimension == 0)
@@ -197,10 +200,10 @@ public class Plot {
     /**
      * Get range of x data in sets
      */
-    Range get_x_data_range(int dimension) {
-        Range r = new Range(Double.MAX_VALUE, Double.MIN_VALUE);
+    public Range get_x_data_range(int dimension) {
+        Range r = new Range(Double.MaxValue, Double.MinValue);
 
-        for (PlotData i : _plots) {
+        foreach (PlotData i in  _plots) {
             Range ri = i.get_set().get_x_range(dimension);
 
             if (ri.first < r.first)
@@ -217,9 +220,9 @@ public class Plot {
      * Get range of y data in sets
      */
     Range get_y_data_range() {
-        Range r = new Range(Double.MAX_VALUE, Double.MIN_VALUE);
+        Range r = new Range(Double.MaxValue, Double.MinValue);
 
-        for (PlotData i : _plots) {
+        foreach (PlotData i in _plots) {
             Range ri = i.get_set().get_y_range();
 
             if (ri.first < r.first)

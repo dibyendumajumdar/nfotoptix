@@ -46,11 +46,11 @@ public class Image : Surface {
             return (Image.Builder) base.shape(shape);
         }
 
-        public Image.Builder curve(Curve curve) {
+        public override Image.Builder curve(Curve curve) {
             return (Image.Builder) base.curve(curve);
         }
 
-        public Image build() {
+        public override Image build() {
             return new Image(_id, _position, _transform, _curve, _shape);
         }
     }

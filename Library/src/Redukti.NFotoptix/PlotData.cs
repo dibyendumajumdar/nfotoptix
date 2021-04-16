@@ -40,21 +40,21 @@ public class PlotData {
     public PlotData(DataSet s) {
         _set = s;
         _color = Rgb.rgb_red;
-        _style = (PlotStyleMask.InterpolatePlot.value() | PlotStyleMask.PointPlot._value);
+        _style = ((int)PlotStyleMask.InterpolatePlot | (int)PlotStyleMask.PointPlot);
         _label = "";
     }
 
     /**
      * Get the described data set
      */
-    DataSet get_set() {
+    public DataSet get_set() {
         return _set;
     }
 
     /**
      * Set data set plotting label
      */
-    void set_label(string title) {
+    public void set_label(string title) {
         _label = title;
     }
 
@@ -68,14 +68,14 @@ public class PlotData {
     /**
      * Set data set plotting color
      */
-    void set_color(Rgb color) {
+    public void set_color(Rgb color) {
         _color = color;
     }
 
     /**
      * Set data set plotting color
      */
-    Rgb get_color() {
+    public Rgb get_color() {
         return _color;
     }
 
@@ -83,27 +83,27 @@ public class PlotData {
      * Enable a plotting style
      */
     void enable_style(PlotStyleMask style) {
-        this._style |= style.value();
+        this._style |= (int)style;
     }
 
     /**
      * Disable a plotting style
      */
-    void disable_style(PlotStyleMask style) {
-        this._style &= ~style.value();
+    public void disable_style(PlotStyleMask style) {
+        this._style &= ~((int)style);
     }
 
     /**
      * Set the plotting style mask
      */
-    void set_style(int style) {
+    public void set_style(int style) {
         this._style = style;
     }
 
     /**
      * Get the plotting style mask
      */
-    int get_style() {
+    public int get_style() {
         return _style;
     }
 

@@ -39,16 +39,16 @@ public class PlotAxes {
         XY = 3,
         YZ = 6,
         XZ = 5,
-        XYZ = 7;
+        XYZ = 7
     }
 
-    enum step_mode_e {
+    public enum step_mode_e {
         step_interval,
         step_count,
         step_base
     }
 
-    class Axis {
+    public class Axis {
         public Axis() {
             _axis = true;
             _tics = true;
@@ -80,11 +80,11 @@ public class PlotAxes {
         public Range _range;
     }
 
-    Axis[] _axes = new Axis[]{new Axis(), new Axis(), new Axis()};
-    bool _grid;
-    bool _frame;
+    public Axis[] _axes = new Axis[]{new Axis(), new Axis(), new Axis()};
+    public bool _grid;
+    public bool _frame;
     Vector3 _pos;
-    Vector3 _origin;
+    public Vector3 _origin;
 
     public PlotAxes() {
         _grid = false;
@@ -172,7 +172,7 @@ public class PlotAxes {
     /**
      * This returns axis position
      */
-    Vector3 get_position() {
+    public Vector3 get_position() {
         return _pos;
     }
 
@@ -310,7 +310,7 @@ public class PlotAxes {
      * Set value range for given axis. Default range is [0,0] which
      * means automatic range.
      */
-    void set_range(Range r, AxisMask a) {
+    public void set_range(Range r, AxisMask a) {
         for (int i = 0; i < _axes_bits.Length; i++) {
             if (((int)a & _axes_bits[i]) != 0) {
                 _axes[i]._range = r;
@@ -321,7 +321,7 @@ public class PlotAxes {
     /**
      * get distance between axis tics
      */
-    double get_tics_step(int index, Range r) {
+    public double get_tics_step(int index, Range r) {
         Axis a = _axes[index];
         double d = r.second - r.first;
 
