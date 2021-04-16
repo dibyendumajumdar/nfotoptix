@@ -88,7 +88,7 @@ public class Group : Element,  Container {
         return sb.ToString();
     }
 
-    public class Builder: Element.Builder {
+    public new class Builder: Element.Builder {
         protected List<Element.Builder> _elements = new List<Element.Builder>();
 
         public override Group.Builder position(Vector3Pair position) {
@@ -101,7 +101,7 @@ public class Group : Element,  Container {
             return this;
         }
 
-        public Group.Builder setId(AtomicInteger id) {
+        public override Group.Builder setId(AtomicInteger id) {
             this._id = id.incrementAndGet();
             foreach (Element.Builder e in _elements) {
                 e.setId(id);

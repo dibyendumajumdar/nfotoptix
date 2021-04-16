@@ -32,7 +32,7 @@ public class MirrorSurface : OpticalSurface {
     public MirrorSurface(int id, Vector3Pair p, Transform3 transform, Curve curve, Shape shape, MaterialBase left, MaterialBase right): base(id, p, transform, curve, shape, left, right) {
     }
 
-    public class Builder : OpticalSurface.Builder {
+    public new class Builder : OpticalSurface.Builder {
 
         bool _light_from_left = true;
 
@@ -91,7 +91,7 @@ public class MirrorSurface : OpticalSurface {
         }
 
         
-        public OpticalSurface build() {
+        public override OpticalSurface build() {
             return new MirrorSurface(_id, _position, _transform, _curve, _shape,
                     _light_from_left ?  air() : metal(),
                     _light_from_left ? metal() : air() );

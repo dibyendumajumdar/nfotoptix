@@ -68,13 +68,13 @@ public class Lens : Group {
         return "Lens{"+ base.ToString() + "}";
     }
 
-    public class Builder : Group.Builder {
+    public new class Builder : Group.Builder {
         double _last_pos = 0;
         MaterialBase _next_mat = Air.air;
         Stop.Builder _stop = null;
 
         
-        public Element build() {
+        public override Element build() {
             List<Element> elements = getElements();
             Stop stop = (Stop) elements.OfType<Stop>().FirstOrDefault(null);
             List<OpticalSurface> surfaces = elements

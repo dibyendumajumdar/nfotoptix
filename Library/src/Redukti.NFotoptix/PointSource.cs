@@ -62,7 +62,7 @@ public class PointSource : RaySource {
         return "PointSource{" + base.ToString() + "}";
     }
 
-    public class Builder : RaySource.Builder {
+    public new class Builder : RaySource.Builder {
 
         protected SourceInfinityMode _mode;
 

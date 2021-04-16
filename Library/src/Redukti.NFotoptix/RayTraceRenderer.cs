@@ -62,7 +62,7 @@ public class RayTraceRenderer {
                     draw_traced_ray_recurs(renderer, ray, lost_len, ref_, hit_image, 2, false);
                     renderer.group_end();
                 }
-            } catch (Exception e) {
+            } catch (Exception) {
                 // FIXME e.printStackTrace();
             }
         }

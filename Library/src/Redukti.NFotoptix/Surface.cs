@@ -88,7 +88,7 @@ public class Surface : Element {
                 ", curve=" + _curve;
     }
 
-    public class Builder : Element.Builder {
+    public new class Builder : Element.Builder {
         protected Shape _shape;
         protected Curve _curve;
 

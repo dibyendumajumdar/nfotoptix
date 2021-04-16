@@ -203,7 +203,7 @@ public abstract class RendererViewport : Renderer {
         return x_scale(x - _page.v0.x());
     }
 
-    public double y_trans_pos(double y) {
+    public virtual double y_trans_pos(double y) {
         return y_scale(y - _page.v0.y());
     }
 

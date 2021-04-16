@@ -58,7 +58,7 @@ public class OpticalSurface : Surface {
                 '}';
     }
 
-    public class Builder : Surface.Builder {
+    public new class Builder : Surface.Builder {
         protected MaterialBase _left = Air.air;
         protected MaterialBase _right = Air.air;
 

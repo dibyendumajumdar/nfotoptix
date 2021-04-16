@@ -42,7 +42,8 @@ public class RendererSvg : Renderer2d {
 
     string format(double value) {
         //return string.format("%.3f", value);
-        return _decimal_format.format(value);
+        //return _decimal_format.format(value);
+        return String.Format("{0:G3}", value);
     }
 
     /**
@@ -110,7 +111,7 @@ public class RendererSvg : Renderer2d {
     }
 
     StringBuilder write_srgb(Rgb rgb) {
-        _out.Append(string.format("#%02x%02x%02x", (int) (rgb.r * 255.0),
+        _out.Append(string.Format("#{0:X2}{1:X2}{2:X2}", (int) (rgb.r * 255.0),
                 (int) (rgb.g * 255.0), (int) (rgb.b * 255.0)));
         return _out;
     }
@@ -281,7 +282,7 @@ public class RendererSvg : Renderer2d {
 
         _out.Append("\" x=\"").Append(format(x)).Append("\" y=\"").Append(format(y)).Append("\"");
 
-        double ra = Math.toDegrees(Math.Atan2(-dir.y(), dir.x()));
+        double ra = MathUtils.ToDegrees(Math.Atan2(-dir.y(), dir.x()));
         if (ra != 0)
             _out.Append(" transform=\"rotate(").Append(format(ra)).Append(",").Append(format(xo)).Append(",").Append(format(yo)).Append(")\"");
 
@@ -329,7 +330,7 @@ public class RendererSvg : Renderer2d {
         return new Vector2(x_trans_pos(v.x()), y_trans_pos(v.y()));
     }
 
-    double y_trans_pos(double y) {
+    public override double y_trans_pos(double y) {
         return (((y - _page.v1.y()) / (_page.v0.y() - _page.v1.y()))
                 * _2d_output_res.y());
     }

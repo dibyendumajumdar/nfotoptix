@@ -117,7 +117,6 @@ public class Plot {
      * Automatically choose different colors for each plot
      */
     void set_different_colors() {
-        Rgb color;
         int n = 1;
 
         foreach (PlotData i in _plots) {
@@ -219,7 +218,7 @@ public class Plot {
     /**
      * Get range of y data in sets
      */
-    Range get_y_data_range() {
+    public Range get_y_data_range() {
         Range r = new Range(Double.MaxValue, Double.MinValue);
 
         foreach (PlotData i in _plots) {

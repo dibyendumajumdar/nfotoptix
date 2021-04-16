@@ -39,7 +39,11 @@ public class MathUtils {
         {
             return (Math.PI / 180) * degrees;
         }
-
+        public static double ToDegrees(double radians)
+        {
+            return (180 / Math.PI) * radians;
+        }
+        
         public static double Hypot(double x, double y)
         {
             return Math.Sqrt(x*x + y*y);

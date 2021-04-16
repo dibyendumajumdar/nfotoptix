@@ -180,7 +180,7 @@ public abstract class Dielectric : Solid {
     public override double get_internal_transmittance(double wavelen) {
         try {
             return _transmittance.interpolate(wavelen);
-        } catch (Exception e) {
+        } catch (Exception) {
             return 1.0;
         }
     }

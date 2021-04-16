@@ -49,7 +49,7 @@ public class RaySource : Element {
         return _mat;
     }
 
-    public abstract class Builder : Element.Builder {
+    public new abstract class Builder : Element.Builder {
 
         protected List<SpectralLine> _spectrum = new List<SpectralLine>();
         protected double _min_intensity = 1.0;

@@ -146,7 +146,7 @@ public class PlotRenderer {
                         a = (int)Renderer.TextAlignMask.TextAlignBottom | (int) Renderer.TextAlignMask.TextAlignLeft;
                 }
 
-                string s = string.format(".2f", p.second);
+                string s = string.Format("{0:F2}", p.second);
 
                 r.draw_text(new Vector2(p.first, p.second), Vector2.vector2_10,
                         s, a, 12, style.get_color());
@@ -252,7 +252,7 @@ public class PlotRenderer {
                     lx += " (";
                     if (usep10)
                         //lx += string.format("x10^%i", pow10);
-                        lx += string.format("x10^%d", pow10);
+                        lx += string.Format("x10^{0:D}", pow10);
                     if (useunit && usep10)
                         lx += " ";
                     if (useunit)
@@ -338,7 +338,7 @@ public class PlotRenderer {
             int align1 = (int)Renderer.TextAlignMask.TextAlignRight | (int)Renderer.TextAlignMask.TextAlignMiddle;
             int align2 = (int)Renderer.TextAlignMask.TextAlignTop | (int)Renderer.TextAlignMask.TextAlignCenter;
 
-            string s = _decimal_format.format((x + p.v(i) - a._origin.v(i)) / Math.Pow(10.0, pow10));
+            string s = String.Format("{0:G3}", (x + p.v(i) - a._origin.v(i)) / Math.Pow(10.0, pow10));
             switch (N) {
                 case 2:
                     int align = i == 0 ? align0

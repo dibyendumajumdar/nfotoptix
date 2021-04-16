@@ -36,7 +36,7 @@ public class Image : Surface {
         return "Image{" + base.ToString() + "}";
     }
 
-    public class Builder : Surface.Builder {
+    public new class Builder : Surface.Builder {
         
         public override Image.Builder position(Vector3Pair position) {
             return (Image.Builder) base.position(position);

@@ -46,7 +46,7 @@ public class Stop : Surface {
         return _external_radius;
     }
 
-    public class Builder : Surface.Builder {
+    public new class Builder : Surface.Builder {
         
         public override Stop.Builder position(Vector3Pair position) {
             return (Stop.Builder) base.position(position);
