@@ -24,6 +24,8 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
+using System.Collections.Generic;
+
 namespace Redukti.Nfotopix {
 
 
@@ -35,25 +37,25 @@ public class RayGenerator {
             PointSource source,
             Element target,
             PointSource.SourceInfinityMode mode) {
-        if (!(target instanceof OpticalSurface)) {
-            return Collections.emptyList();
+        if (!(target is OpticalSurface)) {
+            return new();
         }
-        final OpticalSurface target_surface = (OpticalSurface) target;
+        OpticalSurface target_surface = (OpticalSurface) target;
         double rlen = parameters.get_lost_ray_length();
         Distribution d = parameters.get_distribution(target_surface);
-        final List<TracedRay> rays = new ArrayList<>();
-        Consumer<Vector3> de = (Vector3 v) -> {
+        List<TracedRay> rays = new ();
+        ConsumerVector3 de = (Vector3 v) => {
             Vector3 r = target_surface.get_transform_to(source).transform(v); // pattern point on target surface
             Vector3 direction;
             Vector3 position;
 
             switch (mode) {
-                case SourceAtFiniteDistance:
+                case PointSource.SourceInfinityMode.SourceAtFiniteDistance:
                     position = Vector3.vector3_0;
                     direction = r.normalize();
                     break;
                 default:
-                case SourceAtInfinity:
+                case PointSource.SourceInfinityMode.SourceAtInfinity:
                     direction = Vector3.vector3_001;
                     position = new Vector3Pair(
                             target_surface.get_position(source).minus(Vector3.vector3_001.times(rlen)),
@@ -61,7 +63,7 @@ public class RayGenerator {
                             .pl_ln_intersect(new Vector3Pair(r, direction));
                     break;
             }
-            for (SpectralLine l : source.spectrum()) {
+            foreach (SpectralLine l in source.spectrum()) {
                 // generated rays use source coordinates
                 TracedRay ray = result.newRay(position, direction);
                 ray.set_creator(source);
@@ -73,7 +75,7 @@ public class RayGenerator {
                     material = Air.air; // FIXME centralize as env - original uses env proxy.
                 }
                 ray.set_material(material);
-                rays.add(ray);
+                rays.Add(ray);
             }
         };
         target_surface.get_pattern(de, d, parameters.get_unobstructed());
@@ -81,9 +83,9 @@ public class RayGenerator {
     }
 
     public List<TracedRay> generate_rays_simple(RayTraceResults result, RayTraceParameters parameters, PointSource source, List<Element> targets) {
-        List<TracedRay> rays = new ArrayList<>();
-        for (Element target : targets) {
-            rays.addAll(generate_rays(result, parameters, source, target, source.mode()));
+        List<TracedRay> rays = new ();
+        foreach (Element target in targets) {
+            rays.AddRange(generate_rays(result, parameters, source, target, source.mode()));
         }
         return rays;
     }

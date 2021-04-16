@@ -24,6 +24,9 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
+using System;
+using System.Collections.Generic;
+
 namespace Redukti.Nfotopix {
 
 
@@ -35,32 +38,32 @@ public class RayTraceRenderer {
      * hit_image is set.
      */
     public static void draw_2d(Renderer r, RayTraceResults result, bool hit_image /*= false*/,
-                               Element ref /* = null */) {
+                               Element ref_ /* = null */) {
         r.group_begin("rays");
-        draw_trace_result2d(r, result, ref, hit_image);
+        draw_trace_result2d(r, result, ref_, hit_image);
         r.group_end();
 
     }
 
-    private static void draw_trace_result2d(Renderer renderer, RayTraceResults result, Element ref, bool hit_image) {
+    private static void draw_trace_result2d(Renderer renderer, RayTraceResults result, Element ref_, bool hit_image) {
         List<RaySource> sl = result.get_source_list();
         double lost_len = result.get_params().get_lost_ray_length();
 
-        if (sl.isEmpty())
-            throw new IllegalArgumentException("No source found in trace result");
+        if (sl.Count == 0)
+            throw new InvalidOperationException("No source found in trace result");
 
         double max_intensity = result.get_max_ray_intensity();
 
-        for (RaySource s : sl) {
+        foreach (RaySource s in sl) {
             try {
                 List<TracedRay> rl = result.get_generated(s);
-                for (TracedRay ray : rl) {
+                foreach (TracedRay ray in rl) {
                     renderer.group_begin("ray");
-                    draw_traced_ray_recurs(renderer, ray, lost_len, ref, hit_image, 2, false);
+                    draw_traced_ray_recurs(renderer, ray, lost_len, ref_, hit_image, 2, false);
                     renderer.group_end();
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                // FIXME e.printStackTrace();
             }
         }
     }
@@ -81,9 +84,9 @@ public class RayTraceRenderer {
     }
 
     static bool draw_traced_ray_recurs(Renderer renderer, TracedRay ray, double lost_len,
-                                          Element ref, bool hit_image, int D, bool draw_lost) {
+                                          Element ref_, bool hit_image, int D, bool draw_lost) {
 
-        Transform3 t1 = ray.get_creator().get_transform_to(ref);
+        Transform3 t1 = ray.get_creator().get_transform_to(ref_);
         Element i_element = null;
 
         Vector3 v0 = t1.transform(ray.get_ray().origin());
@@ -94,24 +97,24 @@ public class RayTraceRenderer {
             v1 = t1.transform(ray.get_ray().origin().plus(ray.get_ray().direction().times(lost_len)));
         } else {
             i_element = ray.get_intercept_element();
-            Transform3 t2 = i_element.get_transform_to(ref);
+            Transform3 t2 = i_element.get_transform_to(ref_);
             v1 = t2.transform(ray.get_intercept_point());
         }
         Vector3Pair p = new Vector3Pair(v0, v1);
         bool done = false;
 
         for (TracedRay child_ray = ray.get_first_child(); child_ray != null; child_ray = child_ray.get_next_child()) {
-            if (draw_traced_ray_recurs(renderer, child_ray, lost_len, ref, hit_image, 2, false))
+            if (draw_traced_ray_recurs(renderer, child_ray, lost_len, ref_, hit_image, 2, false))
                 done = true;
         }
 
-        if (!done && hit_image && !(i_element instanceof Image))
+        if (!done && hit_image && !(i_element is Image))
             return false;
 
         switch (D) {
             case 2:
                 // skip non tangential rays in 2d mode
-                if (Math.abs(p.x1()) > 1e-6)
+                if (Math.Abs(p.x1()) > 1e-6)
                     return false;
 
                 draw_ray_line(renderer, new Vector2Pair(p.v0.project_zy(), p.v1.project_zy()), ray);

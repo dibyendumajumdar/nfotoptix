@@ -45,15 +45,15 @@ public class RayTraceParameters {
     };
 
 
-    List<Element> _sequence;
-    Distribution _default_distribution;
-    Dictionary<OpticalSurface, Distribution> _s_distribution = new Dictionary<OpticalSurface, Distribution>();
-    int _max_bounce;
-    RayTracer.TraceIntensityMode _intensity_mode;
-    bool _sequential_mode;
-    PropagationMode _propagation_mode;
-    bool _unobstructed;
-    double _lost_ray_length;
+    public List<Element> _sequence;
+    public Distribution _default_distribution;
+    public Dictionary<OpticalSurface, Distribution> _s_distribution = new Dictionary<OpticalSurface, Distribution>();
+    public int _max_bounce;
+    public RayTracer.TraceIntensityMode _intensity_mode;
+    public bool _sequential_mode;
+    public PropagationMode _propagation_mode;
+    public bool _unobstructed;
+    public double _lost_ray_length;
 
     public RayTraceParameters(OpticalSystem system) {
         this._sequence = new List<Element>();
@@ -66,7 +66,7 @@ public class RayTraceParameters {
         foreach (Element e in system.elements()) {
             add(e);
         }
-        _sequence.sort((a,b) -> {
+        _sequence.Sort((a,b) => {
             double z1 = a.get_position().z();
             double z2 = b.get_position().z();
             if (z1 > z2)
@@ -87,7 +87,7 @@ public class RayTraceParameters {
             }
         }
         else
-            _sequence.add(e);
+            _sequence.Add(e);
     }
 
     public double get_lost_ray_length () {
@@ -113,8 +113,8 @@ public class RayTraceParameters {
     public Distribution get_default_distribution() { return _default_distribution; }
 
     public StringBuilder sequenceToString(StringBuilder sb) {
-        for (Element e: _sequence) {
-            sb.append(e.toString()).append(System.lineSeparator());
+        foreach (Element e in _sequence) {
+            sb.Append(e.ToString()).Append('\n');
         }
         return sb;
     }

@@ -24,6 +24,9 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
+using System;
+using System.Collections.Generic;
+
 namespace Redukti.Nfotopix {
 
 
@@ -53,40 +56,40 @@ public class RayTracer {
     public RayTraceResults trace(OpticalSystem system, RayTraceParameters parameters) {
         RayTraceResults result = new RayTraceResults(parameters);
         switch (parameters._intensity_mode) {
-            case Simpletrace:
+            case RayTracer.TraceIntensityMode.Simpletrace:
                 if (!parameters._sequential_mode)
                     //trace_template<Simpletrace> ();
-                    throw new UnsupportedOperationException();
+                    throw new InvalidOperationException();
                 else
                     trace_sequential(parameters._intensity_mode, parameters, result);
                 break;
 
-            case Intensitytrace:
+            case RayTracer.TraceIntensityMode.Intensitytrace:
 //                if (!parameters._sequential_mode)
 //                    trace_template<Intensitytrace> ();
 //                else
 //                    trace_seq_template<Intensitytrace> ();
-                throw new UnsupportedOperationException();
+                throw new InvalidOperationException();
                 //break;
 
-            case Polarizedtrace:
+            case RayTracer.TraceIntensityMode.Polarizedtrace:
 //                if (!parameters._sequential_mode)
 //                    trace_template<Polarizedtrace> ();
 //                else
 //                    trace_seq_template<Polarizedtrace> ();
-                throw new UnsupportedOperationException();
+                throw new InvalidOperationException();
                 //break;
         }
         return result;
     }
 
-    static final class RayCollection {
-        List<TracedRay> rays = new ArrayList<>();
+    class RayCollection {
+        public List<TracedRay> rays = new ();
     }
 
     void trace_sequential(RayTracer.TraceIntensityMode m, RayTraceParameters parameters, RayTraceResults result) {
         // stack of rays to propagate
-        RayCollection tmp[] = new RayCollection[]{new RayCollection(), new RayCollection()};
+        RayCollection[] tmp = new RayCollection[]{new RayCollection(), new RayCollection()};
         RayGenerator rayGenerator = new RayGenerator();
 
         int swaped = 0;
@@ -96,15 +99,15 @@ public class RayTracer {
         Element entrance = null;
 
         // find entry element (first non source)
-        for (int i = 0; i < seq.size(); i++) {
-            if (!(seq.get(i) instanceof RaySource)) {
-                entrance = seq.get(i);
+        for (int i = 0; i < seq.Count; i++) {
+            if (!(seq[i] is RaySource)) {
+                entrance = seq[i];
                 break;
             }
         }
 
-        for (int i = 0; i < seq.size(); i++) {
-            Element element = seq.get(i);
+        for (int i = 0; i < seq.Count; i++) {
+            Element element = seq[i];
 
 //            if (!element->is_enabled ())
 //                continue;
@@ -112,20 +115,20 @@ public class RayTracer {
             RayTraceResults.RaysAtElement er = result.get_element_result(element);
 
             generated = er._generated != null ? er._generated : tmp[swaped].rays;
-            generated.clear();
+            generated.Clear();
 
-            if (element instanceof PointSource) {
+            if (element is PointSource) {
                 PointSource source = (PointSource) element;
                 result.add_source(source);
-                List<Element> elist = new ArrayList<>();
+                List<Element> elist = new ();
                 if (entrance != null)
-                    elist.add(entrance);
+                    elist.Add(entrance);
                 List<TracedRay> rays = rayGenerator.generate_rays_simple(result, parameters, source, elist);
-                generated.addAll(rays);
+                generated.AddRange(rays);
             } else {
                 List<TracedRay> rays = process_rays(element, m, result, source_rays);
                 // swap ray buffers
-                generated.addAll(rays);
+                generated.AddRange(rays);
             }
             source_rays = generated;
             swaped ^= 1;
@@ -134,53 +137,55 @@ public class RayTracer {
 
     List<TracedRay> process_rays(Element e, TraceIntensityMode m, RayTraceResults result, List<TracedRay> input) {
         switch (m) {
-            case Simpletrace:
+            case TraceIntensityMode.Simpletrace:
                 return process_rays_simple(e, result, input);
-            case Intensitytrace:
+            case TraceIntensityMode.Intensitytrace:
                 return process_rays_intensity(e, result, input);
-            case Polarizedtrace:
+            case TraceIntensityMode.Polarizedtrace:
                 return process_rays_polarized(e, result, input);
         }
-        return Collections.emptyList();
+        return new();
     }
 
     private List<TracedRay> process_rays_polarized(Element e, RayTraceResults result, List<TracedRay> input) {
-        throw new UnsupportedOperationException();
+        throw new InvalidOperationException();
     }
 
     private List<TracedRay> process_rays_intensity(Element e, RayTraceResults result, List<TracedRay> input) {
-        throw new UnsupportedOperationException();
+        throw new InvalidOperationException();
     }
 
     private List<TracedRay> process_rays_simple(Element e, RayTraceResults result, List<TracedRay> input) {
-        if (e instanceof Stop) {
+        if (e is Stop) {
             Stop surface = (Stop) e;
             return process_rays(surface, TraceIntensityMode.Simpletrace, result, input);
-        } else if (e instanceof Surface) {
+        } else if (e is Surface) {
             Surface surface = (Surface) e;
             return process_rays(surface, TraceIntensityMode.Simpletrace, result, input);
         } else {
-            throw new UnsupportedOperationException();
+            throw new InvalidOperationException();
         }
     }
 
     List<TracedRay> process_rays(Surface surface, TraceIntensityMode m, RayTraceResults result,
                                  List<TracedRay> input) {
-        RayTraceParameters params = result._parameters;
-        List<TracedRay> rays = new ArrayList<>();
-        for (TracedRay i : input) {
+        RayTraceParameters params_ = result._parameters;
+        List<TracedRay> rays = new ();
+        foreach (TracedRay i in input) {
             TracedRay ray = i;
 
             Transform3 t
                     = ray.get_creator().get_transform_to(surface);
-            Vector3Pair local = t.transform_line(ray.get_ray());
+            Vector3Pair local1 = t.transform_line(ray.get_ray());
 
-            Vector3Pair pt = intersect(surface, params, local);
+            Vector3Pair pt = surface is Stop ?
+                intersect((Stop)surface, params_, local1) :
+                intersect(surface, params_, local1);
             if (pt != null) {
                 result.add_intercepted(surface, ray);
-                TracedRay cray = trace_ray(surface, m, result, ray, local, pt);
+                TracedRay cray = trace_ray(surface, m, result, ray, local1, pt);
                 if (cray != null)
-                    rays.add(cray);
+                    rays.Add(cray);
             }
         }
         return rays;
@@ -214,14 +219,14 @@ public class RayTracer {
             else if (m == TraceIntensityMode.Polarizedtrace)
                 return trace_ray_polarized(surface, result, incident, local, pt);
             else
-                throw new UnsupportedOperationException();
+                throw new InvalidOperationException();
         }
     }
 
     private TracedRay trace_ray_simple(Surface surface, RayTraceResults result, TracedRay incident, Vector3Pair local, Vector3Pair pt) {
-        if (surface instanceof OpticalSurface) {
+        if (surface is OpticalSurface) {
             return trace_ray_simple((OpticalSurface) surface, result, incident, local, pt);
-        } else if (surface instanceof Stop) {
+        } else if (surface is Stop) {
             return trace_ray_simple((Stop) surface, result, incident, local, pt);
         } else {
             return null;
@@ -230,11 +235,11 @@ public class RayTracer {
 
 
     private TracedRay trace_ray_polarized(Surface surface, RayTraceResults result, TracedRay incident, Vector3Pair local, Vector3Pair pt) {
-        throw new UnsupportedOperationException();
+        throw new InvalidOperationException();
     }
 
     private TracedRay trace_ray_intensity(Surface surface, RayTraceResults result, TracedRay incident, Vector3Pair local, Vector3Pair pt) {
-        throw new UnsupportedOperationException();
+        throw new InvalidOperationException();
     }
 
     private TracedRay trace_ray_simple(OpticalSurface surface, RayTraceResults result, TracedRay incident, Vector3Pair local, Vector3Pair intersect) {
@@ -315,8 +320,8 @@ public class RayTracer {
         // See Feder paper p632
         double O2 = N.dot(N);
         double E1 = ray.direction().dot(N);
-        double E1_ = Math.sqrt(O2 * (1.0 - mu * mu) + mu * mu * E1 * E1);
-        if (Double.isNaN(E1_)) {
+        double E1_ = Math.Sqrt(O2 * (1.0 - mu * mu) + mu * mu * E1 * E1);
+        if (Double.IsNaN(E1_)) {
             return null;
         }
         double g1 = (E1_ - mu * E1) / O2;
@@ -329,8 +334,8 @@ public class RayTracer {
         // Algorithm from Bram de Greve article "Reflections & Refractions in
         // Raytracing" http://www.bramz.org/
 
-        assert (Math.abs(normal.len() - 1.0) < 1e-10);
-        assert (Math.abs((ray.direction().len()) - 1.0) < 1e-10);
+        // assert (Math.abs(normal.len() - 1.0) < 1e-10);
+        // assert (Math.abs((ray.direction().len()) - 1.0) < 1e-10);
 
         double cosi = normal.dot(ray.direction());
         double sint2 = MathUtils.square(refract_index) * (1.0 - MathUtils.square(cosi));
@@ -339,7 +344,7 @@ public class RayTracer {
             return null; // total internal reflection
 
         Vector3 dir = ray.direction().times(refract_index).minus(
-                normal.times(refract_index * cosi + Math.sqrt(1.0 - sint2)));
+                normal.times(refract_index * cosi + Math.Sqrt(1.0 - sint2)));
 
         // This uses Feder refractive formula
         Vector3 dir2 = compute_refraction(surface, ray, normal, refract_index);
@@ -361,20 +366,20 @@ public class RayTracer {
         // Algorithm from Bram de Greve article "Reflections & Refractions in
         // Raytracing" http://www.bramz.org/
 
-        assert (Math.abs(normal.len() - 1.0) < 1e-10);
-        assert (Math.abs((ray.direction().len()) - 1.0) < 1e-10);
+        // assert (Math.abs(normal.len() - 1.0) < 1e-10);
+        // assert (Math.abs((ray.direction().len()) - 1.0) < 1e-10);
 
         double cosi = normal.dot(ray.direction());
 
         return ray.direction().minus(normal.times(2.0 * cosi));
     }
 
-    private Vector3Pair intersect(Surface surface, RayTraceParameters params, Vector3Pair ray) {
+    private Vector3Pair intersect(Surface surface, RayTraceParameters params_, Vector3Pair ray) {
         Vector3 origin = surface.get_curve().intersect(ray);
         if (origin == null)
             return null;
 
-        if (!params.get_unobstructed()
+        if (!params_.get_unobstructed()
                 && !surface.get_shape().inside(origin.project_xy()))
             return null;
 
@@ -385,7 +390,7 @@ public class RayTracer {
         return new Vector3Pair(origin, normal);
     }
 
-    private Vector3Pair intersect(Stop surface, RayTraceParameters params, Vector3Pair ray) {
+    private Vector3Pair intersect(Stop surface, RayTraceParameters params_, Vector3Pair ray) {
         Vector3 origin = surface.get_curve().intersect(ray);
         if (origin == null)
             return null;
@@ -428,8 +433,8 @@ public class RayTracer {
     }
 
     List<TracedRay> process_rays(Stop surface, TraceIntensityMode m, RayTraceResults result, List<TracedRay> input) {
-        List<TracedRay> rays = new ArrayList<>();
-        for (TracedRay i : input) {
+        List<TracedRay> rays = new ();
+        foreach (TracedRay i in input) {
             TracedRay ray = i;
 
             Transform3 t = ray.get_creator().get_transform_to(surface);
@@ -447,7 +452,7 @@ public class RayTracer {
 
                     TracedRay cray = trace_ray(surface, m, result, ray, local, new Vector3Pair(origin, normal));
                     if (cray != null)
-                        rays.add(cray);
+                        rays.Add(cray);
                 }
             }
         }
