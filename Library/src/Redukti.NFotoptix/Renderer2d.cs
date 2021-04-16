@@ -23,6 +23,8 @@ Original GNU Optical License and Authors are as follows:
       Author: Alexandre Becoulet
  */
 
+using System;
+
 namespace Redukti.Nfotopix {
 
 
@@ -37,7 +39,7 @@ namespace Redukti.Nfotopix {
 public abstract class Renderer2d : RendererViewport {
     enum ProjectionType {
         Ortho,
-        Perspective;
+        Perspective
     }
 
     ProjectionType _projection_type = ProjectionType.Ortho;
@@ -45,30 +47,30 @@ public abstract class Renderer2d : RendererViewport {
     double _eye_dist;
 
     
-    public void set_perspective() {
+    public override void set_perspective() {
         double out_ratio
                 = (_2d_output_res.y() / _rows) / (_2d_output_res.x() / _cols);
 
-        if (out_ratio < 1.)
-            _window2d = new Vector2Pair(new Vector2(-1. / out_ratio, -1.), new Vector2(1. / out_ratio, 1.));
+        if (out_ratio < 1.0)
+            _window2d = new Vector2Pair(new Vector2(-1.0 / out_ratio, -1.0), new Vector2(1.0 / out_ratio, 1.0));
         else
-            _window2d = new Vector2Pair(new Vector2(-1, -out_ratio), new Vector2(1., out_ratio));
+            _window2d = new Vector2Pair(new Vector2(-1.0, -out_ratio), new Vector2(1.0, out_ratio));
         _window2d_fit = _window2d;
         update_2d_window();
         set_page(_pageid);
         _projection_type = ProjectionType.Perspective;
-        _eye_dist = 1. / Math.tan(Math.toRadians(_fov) / 2.);
+        _eye_dist = 1.0 / Math.Tan(MathUtils.ToRadians(_fov) / 2.0);
     }
 
     
-    public void set_orthographic() {
+    public override void set_orthographic() {
         this._projection_type = ProjectionType.Ortho;
     }
 
     /** project in 2d space */
     public Vector2 project(Vector3 v) {
         switch (_projection_type) {
-            case Perspective:
+            case ProjectionType.Perspective:
                 return projection_perspective(v);
             default:
                 return projection_ortho(v);
@@ -95,24 +97,24 @@ public abstract class Renderer2d : RendererViewport {
         draw_point(project(p), rgb, s);
     }
 
-    public void draw_segment(Vector3Pair l, Rgb rgb) {
+    public override void draw_segment(Vector3Pair l, Rgb rgb) {
         draw_segment(new Vector2Pair(project(l.point()), project(l.direction())), rgb);
     }
 
     public void draw_text(Vector3 pos, Vector3 dir,
-                          string str, TextAlignMask a, int size,
+                          string str, int a, int size,
                           Rgb rgb) {
-        draw_text(project(pos), project(dir), str, EnumSet.of(a), size, rgb);
+        draw_text(project(pos), project(dir), str, a, size, rgb);
     }
 
     /** Get reference to 3d camera transform */
     
-    public Transform3 get_camera_transform () {
+    public override Transform3 get_camera_transform () {
         return _cam_transform;
     }
     /** Get modifiable reference to 3d camera transform */
     
-    public void set_camera_transform (Transform3 t) {
+    public override void set_camera_transform (Transform3 t) {
         this._cam_transform = t;
     }
 }

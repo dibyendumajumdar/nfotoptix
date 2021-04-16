@@ -24,6 +24,9 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
+using System;
+using System.Text;
+
 namespace Redukti.Nfotopix {
 
 
@@ -35,7 +38,7 @@ namespace Redukti.Nfotopix {
 public class RendererSvg : Renderer2d {
 
     StringBuilder _out = new StringBuilder();
-    readonly DecimalFormat _decimal_format;
+    //readonly DecimalFormat _decimal_format;
 
     string format(double value) {
         //return string.format("%.3f", value);
@@ -50,18 +53,15 @@ public class RendererSvg : Renderer2d {
      */
     public RendererSvg(double width, double height,
                 Rgb bg) {
-        super();
-
-        _decimal_format = MathUtils.decimal_format();
+        // _decimal_format = MathUtils.decimal_format();
         _2d_output_res = new Vector2(width, height);
-        _styles_color[StyleBackground.value] = bg;
-        _styles_color[Style.StyleForeground.value] = bg.negate();
+        _styles_color[(int)Style.StyleBackground] = bg;
+        _styles_color[(int)Style.StyleForeground] = bg.negate();
 
         clear();
     }
 
-    public RendererSvg(double width, double height) {
-        this(width, height, Rgb.rgb_white);
+    public RendererSvg(double width, double height): this(width, height, Rgb.rgb_white) {
     }
 
     /**
@@ -70,167 +70,166 @@ public class RendererSvg : Renderer2d {
      * write function must be used to write svg to output
      * stream.
      */
-    RendererSvg() {
-        this(800, 600, Rgb.rgb_white);
+    public RendererSvg(): this(800, 600, Rgb.rgb_white) {
     }
 
     void svg_begin_rect(double x1, double y1, double x2, double y2,
                         bool terminate) {
-        _out.append("<rect ")
-                .append("x=\"").append(format(x1)).append("\" ")
-                .append("y=\"").append(format(y1)).append("\" ")
-                .append("width=\"").append(format(x2 - x1)).append("\" ")
-                .append("height=\"").append(format(y2 - y1)).append("\" ");
+        _out.Append("<rect ")
+                .Append("x=\"").Append(format(x1)).Append("\" ")
+                .Append("y=\"").Append(format(y1)).Append("\" ")
+                .Append("width=\"").Append(format(x2 - x1)).Append("\" ")
+                .Append("height=\"").Append(format(y2 - y1)).Append("\" ");
 
         if (terminate)
-            _out.append(" />").append(System.lineSeparator());
+            _out.Append(" />").Append('\n');
     }
 
     void svg_begin_line(double x1, double y1, double x2, double y2,
                         bool terminate) {
-        _out.append("<line ")
-                .append("x1=\"").append(format(x1)).append("\" ")
-                .append("y1=\"").append(format(y1)).append("\" ")
-                .append("x2=\"").append(format(x2)).append("\" ")
-                .append("y2=\"").append(format(y2)).append("\" ");
+        _out.Append("<line ")
+                .Append("x1=\"").Append(format(x1)).Append("\" ")
+                .Append("y1=\"").Append(format(y1)).Append("\" ")
+                .Append("x2=\"").Append(format(x2)).Append("\" ")
+                .Append("y2=\"").Append(format(y2)).Append("\" ");
 
         if (terminate)
-            _out.append(" />").append(System.lineSeparator());
+            _out.Append(" />").Append('\n');
     }
 
     void svg_begin_ellipse(double x, double y, double rx, double ry,
                            bool terminate) {
-        _out.append("<ellipse ")
-                .append("cx=\"").append(format(x)).append("\" ")
-                .append("cy=\"").append(format(y)).append("\" ")
-                .append("rx=\"").append(format(rx)).append("\" ")
-                .append("ry=\"").append(format(ry)).append("\" ");
+        _out.Append("<ellipse ")
+                .Append("cx=\"").Append(format(x)).Append("\" ")
+                .Append("cy=\"").Append(format(y)).Append("\" ")
+                .Append("rx=\"").Append(format(rx)).Append("\" ")
+                .Append("ry=\"").Append(format(ry)).Append("\" ");
 
         if (terminate)
-            _out.append(" />").append(System.lineSeparator());
+            _out.Append(" />").Append('\n');
     }
 
     StringBuilder write_srgb(Rgb rgb) {
-        _out.append(string.format("#%02x%02x%02x", (int) (rgb.r * 255.0),
+        _out.Append(string.format("#%02x%02x%02x", (int) (rgb.r * 255.0),
                 (int) (rgb.g * 255.0), (int) (rgb.b * 255.0)));
         return _out;
     }
 
     void svg_add_fill(Rgb rgb) {
-        _out.append(" fill=\"");
+        _out.Append(" fill=\"");
         write_srgb(rgb);
-        _out.append("\"");
+        _out.Append("\"");
     }
 
     void svg_end() {
-        _out.append(" />").append(System.lineSeparator());
+        _out.Append(" />").Append('\n');
     }
 
     public void clear() {
-        _out.setLength(0);
+        _out.Clear();
 
         // background
         svg_begin_rect(0.0, 0.0, _2d_output_res.x(), _2d_output_res.y(), false);
-        svg_add_fill(get_style_color(StyleBackground));
+        svg_add_fill(get_style_color(Style.StyleBackground));
         svg_end();
 
-        _out.append("<defs>").append(System.lineSeparator());
+        _out.Append("<defs>").Append('\n');
 
         // dot shaped point
-        _out.append("<g id=\"")
-                .append("dot")
-                .append("\">").append(System.lineSeparator());
+        _out.Append("<g id=\"")
+                .Append("dot")
+                .Append("\">").Append('\n');
         svg_begin_line(1, 1, 0, 0, true);
-        _out.append("</g>").append(System.lineSeparator());
+        _out.Append("</g>").Append('\n');
 
         // cross shaped point
-        _out.append("<g id=\"")
-                .append("cross")
-                .append("\">").append(System.lineSeparator());
+        _out.Append("<g id=\"")
+                .Append("cross")
+                .Append("\">").Append('\n');
         svg_begin_line(-3, 0, 3, 0, true);
         svg_begin_line(0, -3, 0, 3, true);
-        _out.append("</g>").append(System.lineSeparator());
+        _out.Append("</g>").Append('\n');
 
         // square shaped point
-        _out.append("<g id=\"")
-                .append("square")
-                .append("\">").append(System.lineSeparator());
+        _out.Append("<g id=\"")
+                .Append("square")
+                .Append("\">").Append('\n');
         svg_begin_line(-3, -3, -3, 3, true);
         svg_begin_line(-3, 3, 3, 3, true);
         svg_begin_line(3, 3, 3, -3, true);
         svg_begin_line(3, -3, -3, -3, true);
-        _out.append("</g>").append(System.lineSeparator());
+        _out.Append("</g>").Append('\n');
 
         // round shaped point
-        _out.append("<g id=\"")
-                .append("round")
-                .append("\">").append(System.lineSeparator());
+        _out.Append("<g id=\"")
+                .Append("round")
+                .Append("\">").Append('\n');
         svg_begin_ellipse(0, 0, 3, 3, false);
-        _out.append(" fill=\"none\" />");
-        _out.append("</g>").append(System.lineSeparator());
+        _out.Append(" fill=\"none\" />");
+        _out.Append("</g>").Append('\n');
 
         // triangle shaped point
-        _out.append("<g id=\"")
-                .append("triangle")
-                .append("\">").append(System.lineSeparator());
+        _out.Append("<g id=\"")
+                .Append("triangle")
+                .Append("\">").Append('\n');
         svg_begin_line(0, -3, -3, 3, true);
         svg_begin_line(-3, 3, 3, 3, true);
         svg_begin_line(0, -3, +3, +3, true);
-        _out.append("</g>").append(System.lineSeparator());
+        _out.Append("</g>").Append('\n');
 
-        _out.append("</defs>").append(System.lineSeparator());
+        _out.Append("</defs>").Append('\n');
     }
 
     
-    public void group_begin(string name) {
-        _out.append("<g>");
-        if (!name.isEmpty())
-            _out.append("<title>").append(name).append("</title>");
-        _out.append(System.lineSeparator());
+    public override void group_begin(string name) {
+        _out.Append("<g>");
+        if (name.Length == 0)
+            _out.Append("<title>").Append(name).Append("</title>");
+        _out.Append('\n');
     }
 
     
-    public void group_end() {
-        _out.append("</g>").append(System.lineSeparator());
+    public override void group_end() {
+        _out.Append("</g>").Append('\n');
     }
 
     void svg_begin_use(string id, double x, double y,
                        bool terminate) {
-        _out.append("<use ")
-                .append("x=\"").append(format(x)).append("\" ")
-                .append("y=\"").append(format(y)).append("\" ")
-                .append("xlink:href=\"#").append(id).append("\" ");
+        _out.Append("<use ")
+                .Append("x=\"").Append(format(x)).Append("\" ")
+                .Append("y=\"").Append(format(y)).Append("\" ")
+                .Append("xlink:href=\"#").Append(id).Append("\" ");
 
         if (terminate)
-            _out.append(" />").append(System.lineSeparator());
+            _out.Append(" />").Append('\n');
     }
 
     void svg_add_stroke(Rgb rgb) {
-        _out.append(" stroke=\"");
+        _out.Append(" stroke=\"");
         write_srgb(rgb);
-        _out.append("\"");
+        _out.Append("\"");
     }
 
     void svg_add_id(string id) {
-        _out.append(" fill=\"").append(id).append("\"");
+        _out.Append(" fill=\"").Append(id).Append("\"");
     }
 
     static string[] ids = {"dot", "cross", "round", "square", "triangle"};
 
     
-    public void draw_point(Vector2 p, Rgb rgb, PointStyle s) {
-        if (s.value >= ids.length)
-            s = PointStyleCross;
+    public override void draw_point(Vector2 p, Rgb rgb, PointStyle s) {
+        if ((int)s >= ids.Length)
+            s = PointStyle.PointStyleCross;
 
         Vector2 v2d = trans_pos(p);
 
-        svg_begin_use(ids[s.value], v2d.x(), v2d.y(), false);
+        svg_begin_use(ids[(int)s], v2d.x(), v2d.y(), false);
         svg_add_stroke(rgb);
         svg_end();
     }
 
     
-    public void draw_segment(Vector2Pair l, Rgb rgb) {
+    public override void draw_segment(Vector2Pair l, Rgb rgb) {
         Vector2 v2da = trans_pos(l.v0);
         Vector2 v2db = trans_pos(l.v1);
 
@@ -240,7 +239,7 @@ public class RendererSvg : Renderer2d {
     }
 
     
-    public void draw_circle(Vector2 c, double r, Rgb rgb, bool filled) {
+    public override void draw_circle(Vector2 c, double r, Rgb rgb, bool filled) {
         Vector2 v2d = trans_pos(c);
 
         svg_begin_ellipse(v2d.x(), v2d.y(), x_scale(r), y_scale(r), false);
@@ -248,13 +247,13 @@ public class RendererSvg : Renderer2d {
         if (filled)
             svg_add_fill(rgb);
         else
-            _out.append(" fill=\"none\"");
+            _out.Append(" fill=\"none\"");
         svg_end();
     }
 
     
-    public void draw_text(Vector2 v, Vector2 dir,
-                          string str, EnumSet<TextAlignMask> a, int size,
+    public override void draw_text(Vector2 v, Vector2 dir,
+                          string str, int a, int size,
                           Rgb rgb) {
         int margin = size / 2;
         Vector2 v2d = trans_pos(v);
@@ -262,67 +261,67 @@ public class RendererSvg : Renderer2d {
         double y = v2d.y();
         double yo = y, xo = x;
 
-        _out.append("<text style=\"font-size:").append(size).append(";");
+        _out.Append("<text style=\"font-size:").Append(size).Append(";");
 
-        if (a.contains(TextAlignMask.TextAlignLeft)) {
+        if ((a & (int)TextAlignMask.TextAlignLeft) != 0) {
             //_out << "text-align:left;text-anchor:start;";
             x += margin;
-        } else if (a.contains(TextAlignMask.TextAlignRight)) {
-            _out.append("text-align:right;text-anchor:end;");
+        } else if ((a & (int)TextAlignMask.TextAlignRight) != 0) {
+            _out.Append("text-align:right;text-anchor:end;");
             x -= margin;
         } else
-            _out.append("text-align:center;text-anchor:middle;");
+            _out.Append("text-align:center;text-anchor:middle;");
 
-        if (a.contains(TextAlignMask.TextAlignTop))
+        if ((a & (int)TextAlignMask.TextAlignTop) != 0)
             y += size + margin;
-        else if (a.contains(TextAlignMask.TextAlignBottom))
+        else if ((a & (int)TextAlignMask.TextAlignBottom) != 0)
             y -= margin;
         else
             y += size / 2.0;
 
-        _out.append("\" x=\"").append(format(x)).append("\" y=\"").append(format(y)).append("\"");
+        _out.Append("\" x=\"").Append(format(x)).Append("\" y=\"").Append(format(y)).Append("\"");
 
-        double ra = Math.toDegrees(Math.atan2(-dir.y(), dir.x()));
+        double ra = Math.toDegrees(Math.Atan2(-dir.y(), dir.x()));
         if (ra != 0)
-            _out.append(" transform=\"rotate(").append(format(ra)).append(",").append(format(xo)).append(",").append(format(yo)).append(")\"");
+            _out.Append(" transform=\"rotate(").Append(format(ra)).Append(",").Append(format(xo)).Append(",").Append(format(yo)).Append(")\"");
 
         svg_add_fill(rgb);
 
-        _out.append(">").append(str).append("</text>").append(System.lineSeparator());
+        _out.Append(">").Append(str).Append("</text>").Append('\n');
     }
 
     
-    public void draw_polygon(Vector2[] array,
+    public override void draw_polygon(Vector2[] array,
                              Rgb rgb, bool filled, bool closed) {
-        if (array.length < 3)
+        if (array.Length < 3)
             return;
 
         closed = closed || filled;
 
         if (closed) {
-            _out.append("<polygon");
+            _out.Append("<polygon");
 
             if (filled)
                 svg_add_fill(rgb);
             else {
-                _out.append(" fill=\"none\"");
+                _out.Append(" fill=\"none\"");
                 svg_add_stroke(rgb);
             }
         } else {
-            _out.append("<polyline fill=\"none\"");
+            _out.Append("<polyline fill=\"none\"");
 
             svg_add_stroke(rgb);
         }
 
-        _out.append(" points=\"");
+        _out.Append(" points=\"");
 
-        for (int i = 0; i < array.length; i++) {
+        for (int i = 0; i < array.Length; i++) {
             Vector2 v2d = trans_pos(array[i]);
 
-            _out.append(format(v2d.x())).append(",").append(format(v2d.y())).append(" ");
+            _out.Append(format(v2d.x())).Append(",").Append(format(v2d.y())).Append(" ");
         }
 
-        _out.append("\" />").append(System.lineSeparator());
+        _out.Append("\" />").Append('\n');
     }
 
 
@@ -336,18 +335,18 @@ public class RendererSvg : Renderer2d {
     }
 
     public StringBuilder write(StringBuilder s) {
-        s.append("<?xml version=\"1.0\" standalone=\"no\"?>").append(System.lineSeparator());
+        s.Append("<?xml version=\"1.0\" standalone=\"no\"?>").Append('\n');
 
-        s.append("<svg width=\"").append(format(_2d_output_res.x())).append("px\" height=\"")
-                .append(format(_2d_output_res.y())).append("px\" ")
-                .append("version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" ")
-                .append("xmlns:xlink=\"http://www.w3.org/1999/xlink\">")
-                .append(System.lineSeparator());
+        s.Append("<svg width=\"").Append(format(_2d_output_res.x())).Append("px\" height=\"")
+                .Append(format(_2d_output_res.y())).Append("px\" ")
+                .Append("version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" ")
+                .Append("xmlns:xlink=\"http://www.w3.org/1999/xlink\">")
+                .Append('\n');
 
         // content
-        s.append(_out);
+        s.Append(_out);
 
-        s.append("</svg>").append(System.lineSeparator());
+        s.Append("</svg>").Append('\n');
         return s;
     }
 

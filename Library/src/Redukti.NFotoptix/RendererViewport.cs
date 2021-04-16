@@ -24,6 +24,8 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
+using System;
+
 namespace Redukti.Nfotopix {
 
 
@@ -32,19 +34,19 @@ public abstract class RendererViewport : Renderer {
     /**
      * Current 2d viewport window
      */
-    Vector2Pair _window2d_fit;
+    protected Vector2Pair _window2d_fit;
 
     /**
      * Current 2d viewport window (with margins)
      */
-    Vector2Pair _window2d;
+    protected Vector2Pair _window2d;
 
     /**
      * 2d device resolution
      */
-    Vector2 _2d_output_res;
+    protected Vector2 _2d_output_res;
 
-    enum margin_type_e {
+    protected enum margin_type_e {
         /**
          * _margin contains a size ratio
          */
@@ -59,37 +61,37 @@ public abstract class RendererViewport : Renderer {
         MarginOutput,
     }
 
-    margin_type_e _margin_type;
+    protected margin_type_e _margin_type;
 
     /**
      * Margin size or ratio
      */
-    Vector2Pair _margin;
+    protected Vector2Pair _margin;
 
     /**
      * Current layout rows and columns counts
      */
-    int _rows, _cols;
+    protected int _rows, _cols;
 
     /**
      * Current page id
      */
-    int _pageid;
+    protected int _pageid;
 
     /**
      * Current 2d page window
      */
-    Vector2Pair _page;
+    protected Vector2Pair _page;
 
-    double _fov;
+    protected double _fov;
 
-    RendererViewport() {
+    protected RendererViewport() {
         _margin_type = margin_type_e.MarginRatio;
         _margin = new Vector2Pair(new Vector2(0.13, 0.13), new Vector2(0.13, 0.13));
         _rows = 1;
         _cols = 1;
         _pageid = 0;
-        _fov = 45.;
+        _fov = 45.0;
         _page = Vector2Pair.vector2_pair_00;
         _window2d = Vector2Pair.vector2_pair_00;
         _window2d_fit = Vector2Pair.vector2_pair_00;
@@ -107,7 +109,7 @@ public abstract class RendererViewport : Renderer {
         if (keep_aspect) {
             double out_ratio
                     = (_2d_output_res.x() / _cols) / (_2d_output_res.y() / _rows);
-            if (Math.abs(s.x() / s.y()) < out_ratio)
+            if (Math.Abs(s.x() / s.y()) < out_ratio)
                 //s.x () = s.y () * out_ratio;
                 s = new Vector2(s.y() * out_ratio, s.y());
             else
@@ -123,19 +125,19 @@ public abstract class RendererViewport : Renderer {
         Vector2 ms1 = sby2;
 
         switch (_margin_type) {
-            case MarginLocal:
+            case margin_type_e.MarginLocal:
 //                ms[0] = ms[0] + _margin[0];
 //                ms[1] = ms[1] + _margin[1];
                 ms0 = ms0.plus(_margin.v0);
                 ms1 = ms1.plus(_margin.v1);
                 break;
-            case MarginRatio:
+            case margin_type_e.MarginRatio:
 //                ms[0] = ms[0] + s.mul (_margin[0]);
 //                ms[1] = ms[1] + s.mul (_margin[1]);
                 ms0 = ms0.plus(s.ebeTimes(_margin.v0));
                 ms1 = ms1.plus(s.ebeTimes(_margin.v1));
                 break;
-            case MarginOutput:
+            case margin_type_e.MarginOutput:
 //                ms[0] = ms[0] / (math::vector2_1 - _margin[0] / _2d_output_res * 2);
 //                ms[1] = ms[1] / (math::vector2_1 - _margin[1] / _2d_output_res * 2);
                 ms0 = ms0.ebeDivide(Vector2.vector2_1.minus(_margin.v0.ebeDivide(_2d_output_res.times(2.0))));
@@ -158,7 +160,7 @@ public abstract class RendererViewport : Renderer {
         set_window (center, size, keep_aspect);
     }
 
-    void update_2d_window() {
+    protected void update_2d_window() {
     }
 
     /**
@@ -172,7 +174,7 @@ public abstract class RendererViewport : Renderer {
 
     public void set_page(int page) {
         if (page >= _cols * _rows)
-            throw new IllegalArgumentException("set_page: no such page number in current layout");
+            throw new InvalidOperationException("set_page: no such page number in current layout");
 
         _pageid = page;
         int row = page / _cols;
@@ -189,19 +191,19 @@ public abstract class RendererViewport : Renderer {
         _page = new Vector2Pair(a, b);
     }
 
-    double x_scale(double x) {
+    public virtual double x_scale(double x) {
         return ((x / (_page.v1.x() - _page.v0.x())) * _2d_output_res.x());
     }
 
-    double y_scale(double y) {
+    public virtual double y_scale(double y) {
         return ((y / (_page.v1.y() - _page.v0.y())) * _2d_output_res.y());
     }
 
-    double x_trans_pos(double x) {
+    public double x_trans_pos(double x) {
         return x_scale(x - _page.v0.x());
     }
 
-    double y_trans_pos(double y) {
+    public double y_trans_pos(double y) {
         return y_scale(y - _page.v0.y());
     }
 
@@ -267,7 +269,7 @@ public abstract class RendererViewport : Renderer {
         fr[2] = _window2d_fit.v1;
         fr[3] = new Vector2(_window2d_fit.v1.x(), _window2d_fit.v0.y());
 
-        draw_polygon(fr, get_style_color(StyleForeground), false, true);
+        draw_polygon(fr, get_style_color(Style.StyleForeground), false, true);
     }
 
     public void set_page_layout (int cols, int rows)

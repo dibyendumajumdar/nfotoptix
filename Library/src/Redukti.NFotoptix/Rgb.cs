@@ -39,7 +39,7 @@ public class Rgb {
         this.a = alpha;
     }
 
-    Rgb negate ()
+    public Rgb negate ()
     {
         return new Rgb (1.0 - r, 1.0 - g, 1.0 - b, a);
     }

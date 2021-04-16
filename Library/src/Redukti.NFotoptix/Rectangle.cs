@@ -36,12 +36,12 @@ namespace Redukti.Nfotopix
 
         public Rectangle(double sqwidth)
         {
-            this._halfsize = new Vector2(sqwidth / 2., sqwidth / 2.);
+            this._halfsize = new Vector2(sqwidth / 2.0, sqwidth / 2.0);
         }
 
         public Rectangle(double width, double height)
         {
-            this._halfsize = new Vector2(width / 2., height / 2.);
+            this._halfsize = new Vector2(width / 2.0, height / 2.0);
         }
 
 

@@ -24,6 +24,8 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
+using System;
+
 namespace Redukti.Nfotopix {
 
 
@@ -46,9 +48,8 @@ public class TracedRay : LightRay {
     TracedRay _next;                      // pointer to sibling generated ray
     bool _lost;                      // does the ray intersect with an element ?
 
-    public TracedRay(Vector3 origin, Vector3 direction) {
-        super(new Vector3Pair(origin, direction));
-        _len = Double.MAX_VALUE;
+    public TracedRay(Vector3 origin, Vector3 direction): base(new Vector3Pair(origin, direction)) {
+        _len = Double.MaxValue;
         _creator = null;
         _parent = null;
         _child = null;
@@ -56,7 +57,6 @@ public class TracedRay : LightRay {
     }
 
     public void add_generated(TracedRay r) {
-        assert (r._parent == null);
         r._parent = this;
         r._next = _child;
         _child = r;
@@ -132,7 +132,7 @@ public class TracedRay : LightRay {
         return _child;
     }
 
-    public string toString() {
+    public override string ToString() {
         return "TracedRay{src=" + _creator.id() + ",wavelen=" + _wavelen + ",origin=" + _ray.origin() + ",direction=" + _ray.direction() + ",len=" + _len + '}';
     }
 }
