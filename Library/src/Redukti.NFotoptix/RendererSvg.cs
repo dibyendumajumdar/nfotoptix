@@ -185,7 +185,7 @@ public class RendererSvg : Renderer2d {
     
     public override void group_begin(string name) {
         _out.Append("<g>");
-        if (name.Length == 0)
+        if (!String.IsNullOrEmpty(name))
             _out.Append("<title>").Append(name).Append("</title>");
         _out.Append('\n');
     }
