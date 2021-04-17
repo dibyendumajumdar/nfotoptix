@@ -52,44 +52,44 @@ namespace Redukti.Nfotopix
 
 
 
-        override public double get_xy_ratio()
+        public override double get_xy_ratio()
         {
             return _xy_ratio;
         }
 
 
-        override public double get_external_xradius()
+        public override double get_external_xradius()
         {
             return _xr;
         }
 
 
-        override public double get_internal_xradius()
+        public override double get_internal_xradius()
         {
             return 0.0;
         }
 
 
-        override public bool inside(Vector2 point)
+        public override bool inside(Vector2 point)
         {
             return (MathUtils.square(point.x()) + MathUtils.square(point.y() * _xy_ratio)
                     <= MathUtils.square(_xr));
         }
 
 
-        override public double max_radius()
+        public override double max_radius()
         {
             return Math.Max(_yr, _xr);
         }
 
 
-        override public double min_radius()
+        public override double min_radius()
         {
             return Math.Min(_yr, _xr);
         }
 
 
-        override public double get_outter_radius(Vector2 dir)
+        public override double get_outter_radius(Vector2 dir)
         {
             return _xr > _yr
                     ? Math.Sqrt(MathUtils.square(_yr) / (1.0 - _e2 * MathUtils.square(dir.x())))
@@ -98,7 +98,7 @@ namespace Redukti.Nfotopix
         }
 
 
-        override public Vector2Pair get_bounding_box()
+        public override Vector2Pair get_bounding_box()
         {
             Vector2 hs = new Vector2(_xr, _yr);
 

@@ -37,7 +37,7 @@ namespace Redukti.Nfotopix
     public class Vector3
     {
 
-        private static readonly int N = 3;
+        const int N = 3;
 
         public static readonly Vector3 vector3_0 = new Vector3(0.0, 0.0, 0.0);
         public static readonly Vector3 vector3_1 = new Vector3(1.0, 1.0, 1.0);
@@ -193,7 +193,7 @@ namespace Redukti.Nfotopix
         }
 
 
-        override public string ToString()
+        public override string ToString()
         {
             return "[" + x() + ',' + y() + ',' + z() + ']';
         }
