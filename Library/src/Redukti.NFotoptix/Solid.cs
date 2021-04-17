@@ -26,7 +26,7 @@ Original GNU Optical License and Authors are as follows:
 
 namespace Redukti.Nfotopix
 {
-    public abstract class Solid : MaterialBase
+    public abstract class Solid : Medium
     {
         public readonly double _thermal_expansion; // thermal expansion coefficient
         public readonly double _thermal_conductivity; // thermal conductivity W/m.K

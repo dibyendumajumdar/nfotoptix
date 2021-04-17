@@ -26,7 +26,7 @@ Original GNU Optical License and Authors are as follows:
 
 namespace Redukti.Nfotopix
 {
-    public class Mirror : MaterialBase
+    public class Mirror : Medium
     {
         public static readonly Mirror mirror = new Mirror();
 

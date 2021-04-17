@@ -28,8 +28,8 @@ namespace Redukti.Nfotopix
 {
     public class MirrorSurface : OpticalSurface
     {
-        public MirrorSurface(int id, Vector3Pair p, Transform3 transform, Curve curve, Shape shape, MaterialBase left,
-            MaterialBase right) : base(id, p, transform, curve, shape, left, right)
+        public MirrorSurface(int id, Vector3Pair p, Transform3 transform, Curve curve, Shape shape, Medium left,
+            Medium right) : base(id, p, transform, curve, shape, left, right)
         {
         }
 
@@ -63,23 +63,23 @@ namespace Redukti.Nfotopix
             }
 
 
-            public override MirrorSurface.Builder leftMaterial(MaterialBase left)
+            public override MirrorSurface.Builder leftMaterial(Medium left)
             {
                 return (MirrorSurface.Builder) base.leftMaterial(left);
             }
 
-            public MirrorSurface.Builder metal(MaterialBase left)
+            public MirrorSurface.Builder metal(Medium left)
             {
                 return (MirrorSurface.Builder) base.leftMaterial(left);
             }
 
 
-            public override MirrorSurface.Builder rightMaterial(MaterialBase right)
+            public override MirrorSurface.Builder rightMaterial(Medium right)
             {
                 return (MirrorSurface.Builder) base.rightMaterial(right);
             }
 
-            public MirrorSurface.Builder air(MaterialBase right)
+            public MirrorSurface.Builder air(Medium right)
             {
                 return (MirrorSurface.Builder) base.rightMaterial(right);
             }
@@ -96,12 +96,12 @@ namespace Redukti.Nfotopix
                 return this;
             }
 
-            MaterialBase metal()
+            Medium metal()
             {
                 return this._left;
             }
 
-            MaterialBase air()
+            Medium air()
             {
                 return this._right;
             }

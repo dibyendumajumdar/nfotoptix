@@ -76,7 +76,7 @@ namespace Redukti.Nfotopix
         public new class Builder : Group.Builder
         {
             double _last_pos = 0;
-            MaterialBase _next_mat = Air.air;
+            Medium _next_mat = Air.air;
             Stop.Builder _stop = null;
 
 
@@ -113,7 +113,7 @@ namespace Redukti.Nfotopix
                 return add_surface(curvature, radius, thickness, null);
             }
 
-            public Lens.Builder add_surface(Curve curve, Shape shape, double thickness, MaterialBase glass)
+            public Lens.Builder add_surface(Curve curve, Shape shape, double thickness, Medium glass)
             {
                 if (glass == null)
                 {

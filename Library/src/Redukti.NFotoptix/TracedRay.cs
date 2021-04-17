@@ -40,7 +40,7 @@ namespace Redukti.Nfotopix
         double _intercept_intensity; // intersection point intensity
         double _len; // ray length
         Element _creator; // element which generated this ray
-        MaterialBase _material; // material
+        Medium _material; // material
         Element _i_element; // intersect element
         TracedRay _parent; // ray which generated this one
         TracedRay _child; // pointer to generated ray
@@ -115,12 +115,12 @@ namespace Redukti.Nfotopix
             this._intercept_intensity = v;
         }
 
-        public MaterialBase get_material()
+        public Medium get_material()
         {
             return _material;
         }
 
-        public void set_material(MaterialBase mat)
+        public void set_material(Medium mat)
         {
             _material = mat;
         }

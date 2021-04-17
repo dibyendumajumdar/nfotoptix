@@ -43,7 +43,7 @@ namespace Redukti.Nfotopix
      * Global variables air and std_air are available with
      * default parameters and Birch model.
      */
-    public class Air : MaterialBase
+    public class Air : Medium
     {
 
         /**

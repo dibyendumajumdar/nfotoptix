@@ -28,26 +28,26 @@ namespace Redukti.Nfotopix
 {
     public class OpticalSurface : Surface
     {
-        protected MaterialBase[] _mat = new MaterialBase[2];
+        protected Medium[] _mat = new Medium[2];
 
         public OpticalSurface(int id,
             Vector3Pair p,
             Transform3 transform,
             Curve curve,
             Shape shape,
-            MaterialBase left,
-            MaterialBase right) : base(id, p, transform, curve, shape)
+            Medium left,
+            Medium right) : base(id, p, transform, curve, shape)
         {
             _mat[0] = left;
             _mat[1] = right;
         }
 
-        public MaterialBase get_material(int i)
+        public Medium get_material(int i)
         {
             return _mat[i];
         }
 
-        private string toString(MaterialBase mat)
+        private string toString(Medium mat)
         {
             return mat == null ? "none" : mat.ToString();
         }
@@ -63,8 +63,8 @@ namespace Redukti.Nfotopix
 
         public new class Builder : Surface.Builder
         {
-            protected MaterialBase _left = Air.air;
-            protected MaterialBase _right = Air.air;
+            protected Medium _left = Air.air;
+            protected Medium _right = Air.air;
 
 
             public override OpticalSurface.Builder position(Vector3Pair position)
@@ -82,13 +82,13 @@ namespace Redukti.Nfotopix
                 return (OpticalSurface.Builder) base.curve(curve);
             }
 
-            public virtual OpticalSurface.Builder leftMaterial(MaterialBase left)
+            public virtual OpticalSurface.Builder leftMaterial(Medium left)
             {
                 this._left = left;
                 return this;
             }
 
-            public virtual OpticalSurface.Builder rightMaterial(MaterialBase right)
+            public virtual OpticalSurface.Builder rightMaterial(Medium right)
             {
                 this._right = right;
                 return this;

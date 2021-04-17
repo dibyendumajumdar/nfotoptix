@@ -76,7 +76,7 @@ namespace Redukti.Nfotopix
                     ray.set_intensity(l.get_intensity()); // FIXME depends on distance from
                     // source and pattern density
                     ray.set_wavelen(l.get_wavelen());
-                    MaterialBase material = source.get_material();
+                    Medium material = source.get_material();
                     if (material == null)
                     {
                         material = Air.air; // FIXME centralize as env - original uses env proxy.

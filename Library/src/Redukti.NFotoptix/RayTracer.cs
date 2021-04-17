@@ -289,8 +289,8 @@ namespace Redukti.Nfotopix
             Vector3Pair local, Vector3Pair intersect)
         {
             bool right_to_left = intersect.normal().z() > 0;
-            MaterialBase prev_mat = surface.get_material(right_to_left ? 1 : 0);
-            MaterialBase next_mat = surface.get_material(!right_to_left ? 1 : 0);
+            Medium prev_mat = surface.get_material(right_to_left ? 1 : 0);
+            Medium next_mat = surface.get_material(!right_to_left ? 1 : 0);
 
             // check ray didn't "escaped" from its material
             // std::cout << prev_mat->name << " " << next_mat->name <<

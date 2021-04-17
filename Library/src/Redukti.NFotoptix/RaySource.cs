@@ -33,7 +33,7 @@ namespace Redukti.Nfotopix
     {
         protected List<SpectralLine> _spectrum;
         protected double _min_intensity, _max_intensity;
-        protected MaterialBase _mat = Air.air; // FIXME - should be settable
+        protected Medium _mat = Air.air; // FIXME - should be settable
 
         public RaySource(int id, Vector3Pair p, Transform3 transform, double min_intensity, double max_intensity,
             List<SpectralLine> spectrum) : base(id, p, transform)
@@ -48,7 +48,7 @@ namespace Redukti.Nfotopix
             return _spectrum;
         }
 
-        public MaterialBase get_material()
+        public Medium get_material()
         {
             return _mat;
         }
@@ -58,7 +58,7 @@ namespace Redukti.Nfotopix
             protected List<SpectralLine> _spectrum = new List<SpectralLine>();
             protected double _min_intensity = 1.0;
             protected double _max_intensity = 1.0;
-            protected MaterialBase _mat = null;
+            protected Medium _mat = null;
 
             public virtual Builder add_spectral_line(SpectralLine l)
             {
@@ -77,7 +77,7 @@ namespace Redukti.Nfotopix
                 return this;
             }
 
-            public Builder set_material(MaterialBase mat)
+            public Builder set_material(Medium mat)
             {
                 _mat = mat;
                 return this;

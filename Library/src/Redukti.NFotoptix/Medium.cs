@@ -27,18 +27,18 @@ using System;
 
 namespace Redukti.Nfotopix
 {
-    public abstract class MaterialBase
+    public abstract class Medium
     {
         public readonly string name;
         public double _temperature; // celcius
 
-        public MaterialBase(string name, double temp)
+        public Medium(string name, double temp)
         {
             this.name = name;
             this._temperature = temp;
         }
 
-        public MaterialBase(string name) : this(name, 20.0)
+        public Medium(string name) : this(name, 20.0)
         {
         }
 
@@ -80,7 +80,7 @@ namespace Redukti.Nfotopix
 
         /** Get material relative refractive index in given medium at specified
          * wavelen in @em nm. */
-        public virtual double get_refractive_index(double wavelen, MaterialBase env)
+        public virtual double get_refractive_index(double wavelen, Medium env)
         {
             return get_refractive_index(wavelen) / env.get_refractive_index(wavelen);
         }
@@ -97,7 +97,7 @@ namespace Redukti.Nfotopix
 
 
         /** Get reflectance at normal incidence */
-        public virtual double get_normal_reflectance(MaterialBase from,
+        public virtual double get_normal_reflectance(Medium from,
             double wavelen)
         {
             // default reflectance at normal incidence, valid for metal and dielectric
@@ -113,7 +113,7 @@ namespace Redukti.Nfotopix
         }
 
         /** Get transmittance at normal incidence */
-        public virtual double get_normal_transmittance(MaterialBase from,
+        public virtual double get_normal_transmittance(Medium from,
             double wavelen)
         {
             // default transmittance at normal incidence, valid for non absorbing material
