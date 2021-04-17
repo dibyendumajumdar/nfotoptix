@@ -33,8 +33,6 @@ namespace Redukti.Nfotopix
         OpticalSystem system = systemBuilder.build();
         Console.WriteLine(system);
         // draw 2d system layout
-//        system.draw_2d_fit(renderer);
-//        system.draw_2d(renderer);
         SystemLayout2D systemLayout2D = new SystemLayout2D();
         systemLayout2D.layout2d(renderer, system);
 
@@ -49,9 +47,9 @@ namespace Redukti.Nfotopix
         RayTraceResults result = rayTracer.trace(system, parameters);
         RayTraceRenderer.draw_2d(renderer, result, false, null);
 
-//        renderer =  new RendererSvg (300, 300, Rgb.rgb_black);
-//        AnalysisSpot spot = new AnalysisSpot(system);
-//        spot.draw_diagram(renderer, true);
+        renderer =  new RendererSvg (300, 300, Rgb.rgb_black);
+        AnalysisSpot spot = new AnalysisSpot(system);
+        spot.draw_diagram(renderer, true);
         Console.WriteLine(renderer.write(new StringBuilder()).ToString());
 
         }
