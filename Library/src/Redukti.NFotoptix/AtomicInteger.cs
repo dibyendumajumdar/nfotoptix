@@ -11,7 +11,8 @@
         
         public int incrementAndGet()
         {
-            throw new System.NotImplementedException();
+            _i++;
+            return _i;
         }
     }
 }

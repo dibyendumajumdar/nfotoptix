@@ -76,7 +76,7 @@ public class Lens : Group {
         
         public override Element build() {
             List<Element> elements = getElements();
-            Stop stop = (Stop) elements.OfType<Stop>().FirstOrDefault(null);
+            Stop stop = elements.OfType<Stop>().First();
             List<OpticalSurface> surfaces = elements
                 .OfType<OpticalSurface>().ToList();
             return new Lens(_id, _position, _transform, surfaces, elements, stop);

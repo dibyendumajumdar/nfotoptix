@@ -35,7 +35,11 @@ public class Transform3Cache {
 
     public Transform3 get(int from, int to) {
         ElementPair pair = new ElementPair(from, to);
-        return _cache[pair];
+        if (_cache.TryGetValue(pair, out Transform3 t))
+            {
+                return t;
+            }
+        return null;
     }
 
     private void put(int from, int to, Transform3 transform) {
@@ -88,6 +92,10 @@ public class Transform3Cache {
             return from == that.from && to == that.to;
         }
 
+        public override int GetHashCode()
+        {
+            return @from.GetHashCode() ^ to.GetHashCode();
+        }
     }
 
 }

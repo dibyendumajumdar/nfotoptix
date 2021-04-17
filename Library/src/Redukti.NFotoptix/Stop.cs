@@ -30,7 +30,8 @@ public class Stop : Surface {
 
     double _external_radius;
 
-    public Stop(int id, Vector3Pair p, Transform3 transform, Curve curve, Shape shape): base(id, p, transform, curve, shape) {
+    public Stop(int id, Vector3Pair p, Transform3 transform, Curve curve, Shape shape): 
+            base(id, p, transform, curve, shape) {
         _external_radius = shape.max_radius () * 2.0;
     }
 

@@ -107,8 +107,8 @@ public class RayTraceResults {
     }
 
     public RaysAtElement get_element_result(Element e) {
-        RaysAtElement re = raysByElement[e.id()]; // FIXME
-        if (re == null) {
+        if (!raysByElement.TryGetValue(e.id(), out RaysAtElement re)) // FIXME
+        {
             re = new RaysAtElement();
             raysByElement[e.id()] =  re;
         }

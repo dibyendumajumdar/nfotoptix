@@ -41,7 +41,7 @@ namespace Redukti.Nfotopix
         public static readonly Vector2 vector2_10 = new Vector2(1.0, 0.0);
         public static readonly Vector2 vector2_01 = new Vector2(0.0, 1.0);
 
-        private static readonly int N = 2;
+        const int N = 2;
 
         readonly double[] _values;
 

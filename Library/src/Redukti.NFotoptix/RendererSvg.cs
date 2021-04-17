@@ -39,11 +39,12 @@ public class RendererSvg : Renderer2d {
 
     StringBuilder _out = new StringBuilder();
     //readonly DecimalFormat _decimal_format;
+  
 
     string format(double value) {
         //return string.format("%.3f", value);
         //return _decimal_format.format(value);
-        return String.Format("{0:G3}", value);
+        return String.Format("{0:G6}", value);
     }
 
     /**
