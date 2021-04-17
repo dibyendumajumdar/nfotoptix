@@ -42,7 +42,7 @@ public abstract class Element {
         this._transform = transform;
     }
 
-    public Vector3 local_position() {
+    public virtual Vector3 local_position() {
         return this._transform.translation;
     }
 
@@ -79,12 +79,12 @@ public abstract class Element {
         this._system = system;
     }
 
-    public Vector3 get_position (Element e)
+    public virtual Vector3 get_position (Element e)
     {
         return _system.get_transform (this, e).transform (Vector3.vector3_0);
     }
 
-    public Vector3 get_position ()
+    public virtual Vector3 get_position ()
     {
         return _system.get_global_transform (this).transform (Vector3.vector3_0);
     }

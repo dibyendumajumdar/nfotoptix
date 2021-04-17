@@ -38,7 +38,7 @@ public class Group : Element,  Container {
     }
 
     
-    public List<Element> elements() {
+    public virtual List<Element> elements() {
         return _elements;
     }
 
