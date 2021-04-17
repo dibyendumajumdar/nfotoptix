@@ -84,8 +84,8 @@ public class OpticalSystem : Container {
     
     public override string ToString() {
         return "OpticalSystem{" +
-                "elements=" + _elements +
-                ", transform3Cache=" + _transform3Cache +
+                "elements={" + string.Join(",", _elements) +
+                "}, transform3Cache=" + _transform3Cache +
                 ", keep_aspect=" + _keep_aspect +
                 '}';
     }
