@@ -28,10 +28,8 @@ using System;
 
 namespace Redukti.Nfotopix
 {
-
     public class Vector2Pair
     {
-
         public readonly Vector2 v0;
         public readonly Vector2 v1;
 
@@ -84,5 +82,4 @@ namespace Redukti.Nfotopix
             return "[" + v0.ToString() + "," + v1.ToString() + "]";
         }
     }
-
 }

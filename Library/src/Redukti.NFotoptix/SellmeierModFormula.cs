@@ -24,13 +24,13 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
-namespace Redukti.Nfotopix {
-
-/** Specify Sellmeier variation used by the @ref SellmeierMod class */
-public enum SellmeierModFormula {
-    SellmeierMod2Formula,
-    Handbook1Formula,
-    Handbook2Formula
-}
-
+namespace Redukti.Nfotopix
+{
+    /** Specify Sellmeier variation used by the @ref SellmeierMod class */
+    public enum SellmeierModFormula
+    {
+        SellmeierMod2Formula,
+        Handbook1Formula,
+        Handbook2Formula
+    }
 }

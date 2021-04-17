@@ -28,8 +28,6 @@ using System;
 
 namespace Redukti.Nfotopix
 {
-
-
     public class Quaternion
     {
         public readonly double x, y, z, w;
@@ -91,5 +89,4 @@ namespace Redukti.Nfotopix
             return that.w == w;
         }
     }
-
 }

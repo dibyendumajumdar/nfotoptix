@@ -27,7 +27,6 @@ using System;
 
 namespace Redukti.Nfotopix
 {
-
     /**
      Ray distribution pattern descriptor
 
@@ -40,7 +39,6 @@ namespace Redukti.Nfotopix
      */
     public class Distribution
     {
-
         Pattern _pattern;
         int _radial_density;
         double _scaling;
@@ -51,8 +49,8 @@ namespace Redukti.Nfotopix
          The scaling ratio parameter may be used to avoid
          distributing rays too close to the surface edge. */
         public Distribution(Pattern pattern,
-                             int radial_density,
-                             double scaling)
+            int radial_density,
+            double scaling)
         {
             if (radial_density < 1)
                 throw new InvalidOperationException("ray distribution radial density must be greater than 1");
@@ -109,10 +107,7 @@ namespace Redukti.Nfotopix
                     break;
                 default:
                     break;
-
             }
         }
-
     }
-
 }

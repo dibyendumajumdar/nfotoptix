@@ -26,11 +26,8 @@ Original GNU Optical License and Authors are as follows:
 
 namespace Redukti.Nfotopix
 {
-
-
     public class Disk : Round
     {
-
         double _radius;
 
         public Disk(double radius) : base(false)
@@ -92,9 +89,8 @@ namespace Redukti.Nfotopix
         public override string ToString()
         {
             return "Disk{" +
-                    "radius=" + _radius +
-                    '}';
+                   "radius=" + _radius +
+                   '}';
         }
     }
-
 }

@@ -22,15 +22,13 @@ Original GNU Optical License and Authors are as follows:
       Copyright (C) 2010-2011 Free Software Foundation, Inc
       Author: Alexandre Becoulet
  */
+
 using System;
 
 namespace Redukti.Nfotopix
 {
-
-
     public abstract class Rotational : CurveBase
     {
-
         /**
          * Get curve sagitta (z) at specified distance from origin.
          * A derived class need only implement this method, in which case
@@ -89,5 +87,4 @@ namespace Redukti.Nfotopix
             }
         }
     }
-
 }

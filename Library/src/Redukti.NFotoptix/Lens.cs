@@ -28,61 +28,68 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Redukti.Nfotopix {
-
-
-public class Lens : Group {
-
-    public enum LensEdge {
-        StraightEdge,
-        SlopeEdge,
-    }
-
-    protected OpticalSystem _opticalSystem;
-    protected List<OpticalSurface> _surfaces;
-    protected readonly Stop _stop;
-
-    public Lens(int id, Vector3Pair position, Transform3 transform, List<OpticalSurface> surfaces, List<Element> elementList, Stop stop)
-        : base(id, position, transform, elementList)
+namespace Redukti.Nfotopix
+{
+    public class Lens : Group
     {
-        this._stop = stop;
-        this._surfaces = surfaces;
-    }
-
-    public Stop stop() {
-        return _stop;
-    }
-
-    public List<OpticalSurface> surfaces() {
-        return _surfaces;
-    }
-
-    
-    public override void set_system(OpticalSystem system) {
-        base.set_system(system);
-        _stop.set_system(system);
-    }
-
-    
-    public override string ToString() {
-        return "Lens{"+ base.ToString() + "}";
-    }
-
-    public new class Builder : Group.Builder {
-        double _last_pos = 0;
-        MaterialBase _next_mat = Air.air;
-        Stop.Builder _stop = null;
-
-        
-        public override Element build() {
-            List<Element> elements = getElements();
-            Stop stop = elements.OfType<Stop>().First();
-            List<OpticalSurface> surfaces = elements
-                .OfType<OpticalSurface>().ToList();
-            return new Lens(_id, _position, _transform, surfaces, elements, stop);
+        public enum LensEdge
+        {
+            StraightEdge,
+            SlopeEdge,
         }
 
-        /**
+        protected OpticalSystem _opticalSystem;
+        protected List<OpticalSurface> _surfaces;
+        protected readonly Stop _stop;
+
+        public Lens(int id, Vector3Pair position, Transform3 transform, List<OpticalSurface> surfaces,
+            List<Element> elementList, Stop stop)
+            : base(id, position, transform, elementList)
+        {
+            this._stop = stop;
+            this._surfaces = surfaces;
+        }
+
+        public Stop stop()
+        {
+            return _stop;
+        }
+
+        public List<OpticalSurface> surfaces()
+        {
+            return _surfaces;
+        }
+
+
+        public override void set_system(OpticalSystem system)
+        {
+            base.set_system(system);
+            _stop.set_system(system);
+        }
+
+
+        public override string ToString()
+        {
+            return "Lens{" + base.ToString() + "}";
+        }
+
+        public new class Builder : Group.Builder
+        {
+            double _last_pos = 0;
+            MaterialBase _next_mat = Air.air;
+            Stop.Builder _stop = null;
+
+
+            public override Element build()
+            {
+                List<Element> elements = getElements();
+                Stop stop = elements.OfType<Stop>().First();
+                List<OpticalSurface> surfaces = elements
+                    .OfType<OpticalSurface>().ToList();
+                return new Lens(_id, _position, _transform, surfaces, elements, stop);
+            }
+
+            /**
          * Add an optical surface
          *
          * @param curvature curvature of the surface, 1/r
@@ -90,62 +97,70 @@ public class Lens : Group {
          * @param thickness the thickness after this surface
          * @param glass     the material after this surface
          */
-        public Lens.Builder add_surface(double curvature, double radius, double thickness, Abbe glass) {
-            Curve curve;
-            if (curvature == 0.0)
-                curve = Flat.flat;
-            else
-                curve = new Sphere(curvature);
-            return add_surface(curve, new Disk(radius), thickness,
+            public Lens.Builder add_surface(double curvature, double radius, double thickness, Abbe glass)
+            {
+                Curve curve;
+                if (curvature == 0.0)
+                    curve = Flat.flat;
+                else
+                    curve = new Sphere(curvature);
+                return add_surface(curve, new Disk(radius), thickness,
                     glass);
-        }
-
-        public Lens.Builder add_surface(double curvature, double radius, double thickness) {
-            return add_surface(curvature, radius, thickness, null);
-        }
-
-        public Lens.Builder add_surface(Curve curve, Shape shape, double thickness, MaterialBase glass) {
-            if (glass == null) {
-                glass = Air.air;
             }
-            OpticalSurface.Builder surface = new OpticalSurface.Builder()
+
+            public Lens.Builder add_surface(double curvature, double radius, double thickness)
+            {
+                return add_surface(curvature, radius, thickness, null);
+            }
+
+            public Lens.Builder add_surface(Curve curve, Shape shape, double thickness, MaterialBase glass)
+            {
+                if (glass == null)
+                {
+                    glass = Air.air;
+                }
+
+                OpticalSurface.Builder surface = new OpticalSurface.Builder()
                     .position(new Vector3Pair(new Vector3(0, 0, _last_pos), Vector3.vector3_001))
                     .curve(curve)
                     .shape(shape)
                     .leftMaterial(_next_mat)
                     .rightMaterial(glass);
-            _next_mat = glass;
-            _last_pos += thickness;
-            add(surface);
-            return this;
-        }
+                _next_mat = glass;
+                _last_pos += thickness;
+                add(surface);
+                return this;
+            }
 
-        public Lens.Builder add_stop(double radius, double thickness) {
-            return add_stop(new Disk(radius), thickness);
-        }
+            public Lens.Builder add_stop(double radius, double thickness)
+            {
+                return add_stop(new Disk(radius), thickness);
+            }
 
-        public Lens.Builder add_stop(Shape shape, double thickness) {
-            if (_stop != null)
-                throw new InvalidOperationException("Can not add more than one stop per Lens");
-            _stop = new Stop.Builder()
+            public Lens.Builder add_stop(Shape shape, double thickness)
+            {
+                if (_stop != null)
+                    throw new InvalidOperationException("Can not add more than one stop per Lens");
+                _stop = new Stop.Builder()
                     .position(new Vector3Pair(new Vector3(0, 0, _last_pos), Vector3.vector3_001))
                     .curve(Flat.flat)
                     .shape(shape);
-            _last_pos += thickness;
-            add(_stop);
-            return this;
-        }
+                _last_pos += thickness;
+                add(_stop);
+                return this;
+            }
 
-        
-        public override void compute_global_transforms(Transform3Cache tcache) {
-            base.compute_global_transforms(tcache);
-        }
 
-        
-        public override Lens.Builder position(Vector3Pair position) {
-            return (Lens.Builder) base.position(position);
+            public override void compute_global_transforms(Transform3Cache tcache)
+            {
+                base.compute_global_transforms(tcache);
+            }
+
+
+            public override Lens.Builder position(Vector3Pair position)
+            {
+                return (Lens.Builder) base.position(position);
+            }
         }
     }
-}
-
 }

@@ -28,10 +28,8 @@ using System;
 
 namespace Redukti.Nfotopix
 {
-
     public class Ellipse : Round
     {
-
         double _xr, _yr;
         double _xy_ratio;
         double _e2;
@@ -42,14 +40,13 @@ namespace Redukti.Nfotopix
             _yr = y_radius;
             _xy_ratio = x_radius / y_radius;
             _e2 = MathUtils.square(Math.Sqrt(Math.Abs(_xr * _xr - _yr * _yr))
-                    / Math.Max(_xr, _yr));
+                                   / Math.Max(_xr, _yr));
         }
 
         public Ellipse(double x_radius, double y_radius) : base(false)
         {
             set_radius(x_radius, y_radius);
         }
-
 
 
         public override double get_xy_ratio()
@@ -92,9 +89,9 @@ namespace Redukti.Nfotopix
         public override double get_outter_radius(Vector2 dir)
         {
             return _xr > _yr
-                    ? Math.Sqrt(MathUtils.square(_yr) / (1.0 - _e2 * MathUtils.square(dir.x())))
-                    : Math.Sqrt(MathUtils.square(_xr)
-                    / (1.0 - _e2 * MathUtils.square(dir.y())));
+                ? Math.Sqrt(MathUtils.square(_yr) / (1.0 - _e2 * MathUtils.square(dir.x())))
+                : Math.Sqrt(MathUtils.square(_xr)
+                            / (1.0 - _e2 * MathUtils.square(dir.y())));
         }
 
 
@@ -105,5 +102,4 @@ namespace Redukti.Nfotopix
             return new Vector2Pair(hs.negate(), hs);
         }
     }
-
 }

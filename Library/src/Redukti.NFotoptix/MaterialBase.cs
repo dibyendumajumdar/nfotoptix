@@ -27,8 +27,6 @@ using System;
 
 namespace Redukti.Nfotopix
 {
-
-
     public abstract class MaterialBase
     {
         public readonly string name;
@@ -57,15 +55,15 @@ namespace Redukti.Nfotopix
          mm. Subclasses _must_ provide this function or the
          get_extinction_coef() function. */
         public virtual double get_internal_transmittance(double wavelen,
-                                                   double thickness)
+            double thickness)
         {
             // compute internal transmittance from extinction coefficient
             // Beer-Lambert law
 
             // FIXME simplify and check
             double tr
-                    = Math.Exp(-(4 * Math.PI * get_extinction_coef(wavelen) * 0.001 /* 1 mm */)
-                    / (wavelen * 1e-9f));
+                = Math.Exp(-(4 * Math.PI * get_extinction_coef(wavelen) * 0.001 /* 1 mm */)
+                           / (wavelen * 1e-9f));
 
             return Math.Pow(tr, thickness);
         }
@@ -94,13 +92,13 @@ namespace Redukti.Nfotopix
             // Beer-Lambert law
             // FIXME check this formula
             return -(Math.Log(get_internal_transmittance(wavelen, 1.0)) * (wavelen * 1e-9f))
-                    / (4 * Math.PI * 0.001 /* 1 mm */);
+                   / (4 * Math.PI * 0.001 /* 1 mm */);
         }
 
 
         /** Get reflectance at normal incidence */
         public virtual double get_normal_reflectance(MaterialBase from,
-                                               double wavelen)
+            double wavelen)
         {
             // default reflectance at normal incidence, valid for metal and dielectric
             // material
@@ -116,7 +114,7 @@ namespace Redukti.Nfotopix
 
         /** Get transmittance at normal incidence */
         public virtual double get_normal_transmittance(MaterialBase from,
-                                                 double wavelen)
+            double wavelen)
         {
             // default transmittance at normal incidence, valid for non absorbing material
             // McGraw Hill, Handbook of optics, vol1, 1995, 5-8 (23)
@@ -144,5 +142,4 @@ namespace Redukti.Nfotopix
             _temperature = temp;
         }
     }
-
 }

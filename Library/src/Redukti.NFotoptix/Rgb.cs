@@ -24,35 +24,36 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
-namespace Redukti.Nfotopix {
-
-public class Rgb {
-    public readonly double r;
-    public readonly double g;
-    public readonly double b;
-    public readonly double a;
-
-    public Rgb (double red, double green, double blue, double alpha) {
-        this.r = red;
-        this.g = green;
-        this.b = blue;
-        this.a = alpha;
-    }
-
-    public Rgb negate ()
+namespace Redukti.Nfotopix
+{
+    public class Rgb
     {
-        return new Rgb (1.0 - r, 1.0 - g, 1.0 - b, a);
+        public readonly double r;
+        public readonly double g;
+        public readonly double b;
+        public readonly double a;
+
+        public Rgb(double red, double green, double blue, double alpha)
+        {
+            this.r = red;
+            this.g = green;
+            this.b = blue;
+            this.a = alpha;
+        }
+
+        public Rgb negate()
+        {
+            return new Rgb(1.0 - r, 1.0 - g, 1.0 - b, a);
+        }
+
+        public static readonly Rgb rgb_black = new Rgb(0.0f, 0.0f, 0.0f, 1.0f);
+        public static readonly Rgb rgb_red = new Rgb(1.0f, 0.0f, 0.0f, 1.0f);
+        public static readonly Rgb rgb_green = new Rgb(0.0f, 1.0f, 0.0f, 1.0f);
+        public static readonly Rgb rgb_blue = new Rgb(0.0f, 0.0f, 1.0f, 1.0f);
+        public static readonly Rgb rgb_yellow = new Rgb(1.0f, 1.0f, 0.0f, 1.0f);
+        public static readonly Rgb rgb_cyan = new Rgb(0.0f, 1.0f, 1.0f, 1.0f);
+        public static readonly Rgb rgb_magenta = new Rgb(1.0f, 0.0f, 1.0f, 1.0f);
+        public static readonly Rgb rgb_gray = new Rgb(0.5f, 0.5f, 0.5f, 1.0f);
+        public static readonly Rgb rgb_white = new Rgb(1.0f, 1.0f, 1.0f, 1.0f);
     }
-
-    public static readonly Rgb rgb_black = new Rgb (0.0f, 0.0f, 0.0f, 1.0f);
-    public static readonly  Rgb rgb_red = new Rgb (1.0f, 0.0f, 0.0f, 1.0f);
-    public static readonly  Rgb rgb_green = new Rgb(0.0f, 1.0f, 0.0f, 1.0f);
-    public static readonly  Rgb rgb_blue = new Rgb(0.0f, 0.0f, 1.0f, 1.0f);
-    public static readonly  Rgb rgb_yellow = new Rgb(1.0f, 1.0f, 0.0f, 1.0f);
-    public static readonly  Rgb rgb_cyan = new Rgb(0.0f, 1.0f, 1.0f, 1.0f);
-    public static readonly  Rgb rgb_magenta = new Rgb(1.0f, 0.0f, 1.0f, 1.0f);
-    public static readonly  Rgb rgb_gray = new Rgb(0.5f, 0.5f, 0.5f, 1.0f);
-    public static readonly  Rgb rgb_white = new Rgb(1.0f, 1.0f, 1.0f, 1.0f);
-}
-
 }

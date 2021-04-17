@@ -23,17 +23,17 @@ Original GNU Optical License and Authors are as follows:
       Author: Alexandre Becoulet
  */
 
-namespace Redukti.Nfotopix {
+namespace Redukti.Nfotopix
+{
+    public class Range
+    {
+        public double first;
+        public double second;
 
-
-public class Range {
-    public double first;
-    public double second;
-
-    public Range(double first, double second) {
-        this.first = first;
-        this.second = second;
+        public Range(double first, double second)
+        {
+            this.first = first;
+            this.second = second;
+        }
     }
-}
-
 }

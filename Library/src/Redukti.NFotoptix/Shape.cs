@@ -26,18 +26,15 @@ Original GNU Optical License and Authors are as follows:
 
 namespace Redukti.Nfotopix
 {
-
-
     public interface Shape
     {
-
         /** Check if the (x,y) 2d point is inside 2d shape area */
         bool inside(Vector2 point);
 
         /** Get points distributed on shape area with given pattern */
         void get_pattern(PatternConsumer f,
-                          Distribution d,
-                          bool unobstructed);
+            Distribution d,
+            bool unobstructed);
 
         /** Get distance between origin and farthest shape edge */
         double max_radius();
@@ -63,12 +60,10 @@ namespace Redukti.Nfotopix
         /** Get contour polygone points for specified contour id. First
          contour is always outter edge. @see get_contour_count */
         void get_contour(int contour,
-                                PatternConsumer f,
-                                  double resolution);
+            PatternConsumer f,
+            double resolution);
 
         /** Get shape teselation triangles */
         void get_triangles(ConsumerTriangle2 f, double resolution);
-
     }
-
 }

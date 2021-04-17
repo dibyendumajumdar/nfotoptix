@@ -26,8 +26,6 @@ Original GNU Optical License and Authors are as follows:
 
 namespace Redukti.Nfotopix
 {
-
-
     /**
      Describe a spectral line
 
@@ -41,35 +39,49 @@ namespace Redukti.Nfotopix
 
         /** red colored line at 645nm */
         public static readonly double red = 645.0;
+
         /** green colored line at 510nm */
         public static readonly double green = 510.0;
+
         /** blue colored line at 440nm */
         public static readonly double blue = 440.0;
 
         /** infrared mercury line at 1013.98nm */
         public static readonly double t = 1013.98;
+
         /** infrared cesium line at 852.11nm */
         public static readonly double s = 852.11;
+
         /** red helium line at 706.5188nm */
         public static readonly double r = 706.5188;
+
         /** red hydrogen line at 656.2725nm */
         public static readonly double C = 656.2725;
+
         /** red cadmium line at 643.8469nm */
         public static readonly double C_ = 643.8469; // C'
+
         /** yellow sodium line at 589.2938nm */
         public static readonly double D = 589.2938;
+
         /** yellow helium line at 587.5618nm */
         public static readonly double d = 587.5618;
+
         /** green mercury line at 546.074nm */
         public static readonly double e = 546.074;
+
         /** blue hydrogen line at 486.1327nm */
         public static readonly double F = 486.1327;
+
         /** blue cadmium line at 479.9914nm */
         public static readonly double F_ = 479.9914; // F'
+
         /** blue mercury line at 435.8343nm */
         public static readonly double g = 435.8343;
+
         /** violet mercury line at 404.6561nm */
         public static readonly double h = 404.6561;
+
         /** ultraviolet mercury line at 365.0146nm */
         public static readonly double i = 365.0146;
 
@@ -86,11 +98,13 @@ namespace Redukti.Nfotopix
         {
             return _wavelen;
         }
+
         /** get spectral line intensity */
         public double get_intensity()
         {
             return _intensity;
         }
+
         /** get rgb color associated spectral line, ignore intensity */
         public Rgb get_color()
         {
@@ -147,7 +161,5 @@ namespace Redukti.Nfotopix
                 }
             }
         }
-
     }
-
 }

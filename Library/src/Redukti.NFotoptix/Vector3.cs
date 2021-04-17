@@ -28,15 +28,12 @@ using System;
 
 namespace Redukti.Nfotopix
 {
-
-
     /**
      * Vector with 3 components named x,y,z.
      * Note that in the optical system the lens axis is z.
      */
     public class Vector3
     {
-
         const int N = 3;
 
         public static readonly Vector3 vector3_0 = new Vector3(0.0, 0.0, 0.0);
@@ -54,11 +51,13 @@ namespace Redukti.Nfotopix
             {
                 throw new InvalidOperationException("NaN");
             }
+
             this.values = new double[N];
             this.values[0] = x;
             this.values[1] = y;
             this.values[2] = z;
         }
+
         public Vector3(double v) : this(v, v, v)
         {
         }
@@ -87,10 +86,12 @@ namespace Redukti.Nfotopix
         {
             return new Vector3(v, y(), z());
         }
+
         public Vector3 y(double v)
         {
             return new Vector3(x(), v, z());
         }
+
         public Vector3 z(double v)
         {
             return new Vector3(x(), y(), v);
@@ -114,8 +115,8 @@ namespace Redukti.Nfotopix
         public Vector3 cross(Vector3 b)
         {
             return new Vector3(y() * b.z() - z() * b.y(),
-                    z() * b.x() - x() * b.z(),
-                    x() * b.y() - y() * b.x());
+                z() * b.x() - x() * b.z(),
+                x() * b.y() - y() * b.x());
         }
 
         public Vector3 plus(Vector3 v)
@@ -146,6 +147,7 @@ namespace Redukti.Nfotopix
         {
             return new Vector2(x(), y());
         }
+
         public Vector2 project_zy()
         {
             return new Vector2(z(), y());
@@ -184,6 +186,7 @@ namespace Redukti.Nfotopix
         {
             return this.values[i];
         }
+
         public Vector3 v(int i, double d)
         {
             double[] val = new double[this.values.Length];
@@ -201,9 +204,8 @@ namespace Redukti.Nfotopix
         public bool isEqual(Vector3 other, double tolerance)
         {
             return Math.Abs(this.x() - other.x()) < tolerance &&
-                    Math.Abs(this.y() - other.y()) < tolerance &&
-                    Math.Abs(this.z() - other.z()) < tolerance;
+                   Math.Abs(this.y() - other.y()) < tolerance &&
+                   Math.Abs(this.z() - other.z()) < tolerance;
         }
     }
-
 }

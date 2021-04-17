@@ -22,18 +22,15 @@ Original GNU Optical License and Authors are as follows:
       Copyright (C) 2010-2011 Free Software Foundation, Inc
       Author: Alexandre Becoulet
  */
+
 using System;
 
 namespace Redukti.Nfotopix
 {
-
-
     public class Sphere : ConicBase
     {
-
         public Sphere(double roc) : base(roc, 0.0)
         {
-
         }
 
 
@@ -83,10 +80,10 @@ namespace Redukti.Nfotopix
             double ax_bx = ax * bx;
 
             double s = +MathUtils.square(_roc) // * bz2_by2_bx2
-                    + 2.0 * (ax_bx + ay_by) * bz * d + 2.0 * ax_bx * ay_by
-                    - MathUtils.square(ay * bx) - MathUtils.square(ax * by)
-                    - (MathUtils.square(bx) + MathUtils.square(by)) * MathUtils.square(d)
-                    - (MathUtils.square(ax) + MathUtils.square(ay)) * MathUtils.square(bz);
+                       + 2.0 * (ax_bx + ay_by) * bz * d + 2.0 * ax_bx * ay_by
+                       - MathUtils.square(ay * bx) - MathUtils.square(ax * by)
+                       - (MathUtils.square(bx) + MathUtils.square(by)) * MathUtils.square(d)
+                       - (MathUtils.square(ax) + MathUtils.square(ay)) * MathUtils.square(bz);
 
             // no sphere/ray colision
             if (s < 0)
@@ -119,5 +116,4 @@ namespace Redukti.Nfotopix
             return normal;
         }
     }
-
 }

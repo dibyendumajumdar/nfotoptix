@@ -23,34 +23,38 @@ Original GNU Optical License and Authors are as follows:
       Author: Alexandre Becoulet
  */
 
-namespace Redukti.Nfotopix {
+namespace Redukti.Nfotopix
+{
+    public class DiscreteSet : DiscreteSetBase, InterpolatableDataSet
+    {
+        Interpolated1d _interpolated_1d;
 
-public class DiscreteSet : DiscreteSetBase, InterpolatableDataSet {
+        public DiscreteSet()
+        {
+            this._interpolated_1d = new Interpolated1d(this);
+        }
 
-    Interpolated1d _interpolated_1d;
 
-    public DiscreteSet() {
-        this._interpolated_1d = new Interpolated1d(this);
+        override public double interpolate(double x)
+        {
+            return _interpolated_1d.interpolate(x);
+        }
+
+
+        override public double interpolate(double x, int deriv)
+        {
+            return _interpolated_1d.interpolate(x, deriv);
+        }
+
+
+        override protected void invalidate()
+        {
+            this._interpolated_1d.invalidate();
+        }
+
+        public void setInterpolation(Interpolation i)
+        {
+            this._interpolated_1d.set_interpolation(i);
+        }
     }
-
-    
-    override public double interpolate(double x) {
-        return _interpolated_1d.interpolate(x);
-    }
-
-    
-    override public double interpolate(double x, int deriv) {
-        return _interpolated_1d.interpolate(x, deriv);
-    }
-
-    
-    override protected void invalidate() {
-        this._interpolated_1d.invalidate();
-    }
-
-    public void setInterpolation(Interpolation i) {
-        this._interpolated_1d.set_interpolation(i);
-    }
-}
-
 }

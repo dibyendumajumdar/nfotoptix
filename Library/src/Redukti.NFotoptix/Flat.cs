@@ -22,12 +22,11 @@ Original GNU Optical License and Authors are as follows:
       Copyright (C) 2010-2011 Free Software Foundation, Inc
       Author: Alexandre Becoulet
  */
+
 namespace Redukti.Nfotopix
 {
-
     public class Flat : Rotational
     {
-
         public static Flat flat = new Flat();
 
 
@@ -77,5 +76,4 @@ namespace Redukti.Nfotopix
             return new Vector3(0, 0, -1);
         }
     }
-
 }

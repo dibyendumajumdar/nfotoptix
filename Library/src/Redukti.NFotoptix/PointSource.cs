@@ -26,68 +26,75 @@ Original GNU Optical License and Authors are as follows:
 
 using System.Collections.Generic;
 
-namespace Redukti.Nfotopix {
-
-
-public class PointSource : RaySource {
-
-    /**
+namespace Redukti.Nfotopix
+{
+    public class PointSource : RaySource
+    {
+        /**
      * Specifies point source location mode
      */
-    public enum SourceInfinityMode {
-        /**
+        public enum SourceInfinityMode
+        {
+            /**
          * In finite distance mode the point source is located at
          * specified position and all rays are traced from this
          * point.
          */
-        SourceAtFiniteDistance,
-        /**
+            SourceAtFiniteDistance,
+
+            /**
          * In infinity mode the point source generate parallel rays
          * oriented along source direction vector.
          */
-        SourceAtInfinity,
-    }
+            SourceAtInfinity,
+        }
 
-    SourceInfinityMode _mode;
+        SourceInfinityMode _mode;
 
-    public PointSource(int id, Vector3Pair p, Transform3 transform, double min_intensity, double max_intensity, List<SpectralLine> spectrum, SourceInfinityMode mode) : base(id, p, transform, min_intensity, max_intensity, spectrum){
-        _mode = mode;
-    }
+        public PointSource(int id, Vector3Pair p, Transform3 transform, double min_intensity, double max_intensity,
+            List<SpectralLine> spectrum, SourceInfinityMode mode) : base(id, p, transform, min_intensity, max_intensity,
+            spectrum)
+        {
+            _mode = mode;
+        }
 
-    public SourceInfinityMode mode() {
-        return _mode;
-    }
+        public SourceInfinityMode mode()
+        {
+            return _mode;
+        }
 
-    public override string ToString() {
-        return "PointSource{" + base.ToString() + "}";
-    }
+        public override string ToString()
+        {
+            return "PointSource{" + base.ToString() + "}";
+        }
 
-    public new class Builder : RaySource.Builder {
+        public new class Builder : RaySource.Builder
+        {
+            protected SourceInfinityMode _mode;
 
-        protected SourceInfinityMode _mode;
-
-        public Builder(SourceInfinityMode m, Vector3 pos_dir) {
-            position(m == SourceInfinityMode.SourceAtInfinity
+            public Builder(SourceInfinityMode m, Vector3 pos_dir)
+            {
+                position(m == SourceInfinityMode.SourceAtInfinity
                     // position of infinity source is only used for trace::Sequence
                     // sort See
                     // https://lists.gnu.org/archive/html/goptical/2013-06/msg00004.html
                     ? new Vector3Pair(pos_dir.times(-1e9), pos_dir)
                     : new Vector3Pair(pos_dir, Vector3.vector3_001));
-            _mode = m;
-        }
+                _mode = m;
+            }
 
-        
-        public override PointSource.Builder add_spectral_line(double wavelen) {
-            base.add_spectral_line(wavelen);
-            return this;
-        }
 
-        
-        public override PointSource build() {
-            return new PointSource(_id, _position, _transform, _min_intensity, _max_intensity, _spectrum, _mode);
+            public override PointSource.Builder add_spectral_line(double wavelen)
+            {
+                base.add_spectral_line(wavelen);
+                return this;
+            }
+
+
+            public override PointSource build()
+            {
+                return new PointSource(_id, _position, _transform, _min_intensity, _max_intensity, _spectrum, _mode);
+            }
         }
     }
-
-}
-
 }

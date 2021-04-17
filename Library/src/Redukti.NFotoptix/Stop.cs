@@ -24,47 +24,53 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
-namespace Redukti.Nfotopix {
+namespace Redukti.Nfotopix
+{
+    public class Stop : Surface
+    {
+        double _external_radius;
 
-public class Stop : Surface {
-
-    double _external_radius;
-
-    public Stop(int id, Vector3Pair p, Transform3 transform, Curve curve, Shape shape): 
-            base(id, p, transform, curve, shape) {
-        _external_radius = shape.max_radius () * 2.0;
-    }
-
-    
-    public override string ToString() {
-        return "Stop{" +
-                base.ToString() +
-                ", external_radius=" + _external_radius +
-                '}';
-    }
-
-    public double get_external_radius() {
-        return _external_radius;
-    }
-
-    public new class Builder : Surface.Builder {
-        
-        public override Stop.Builder position(Vector3Pair position) {
-            return (Stop.Builder) base.position(position);
+        public Stop(int id, Vector3Pair p, Transform3 transform, Curve curve, Shape shape) :
+            base(id, p, transform, curve, shape)
+        {
+            _external_radius = shape.max_radius() * 2.0;
         }
 
-        public override Stop.Builder shape(Shape shape) {
-            return (Stop.Builder) base.shape(shape);
+
+        public override string ToString()
+        {
+            return "Stop{" +
+                   base.ToString() +
+                   ", external_radius=" + _external_radius +
+                   '}';
         }
 
-        public override Stop.Builder curve(Curve curve) {
-            return (Stop.Builder) base.curve(curve);
+        public double get_external_radius()
+        {
+            return _external_radius;
         }
 
-        public override Stop build() {
-            return new Stop(_id, _position, _transform, _curve, _shape);
+        public new class Builder : Surface.Builder
+        {
+            public override Stop.Builder position(Vector3Pair position)
+            {
+                return (Stop.Builder) base.position(position);
+            }
+
+            public override Stop.Builder shape(Shape shape)
+            {
+                return (Stop.Builder) base.shape(shape);
+            }
+
+            public override Stop.Builder curve(Curve curve)
+            {
+                return (Stop.Builder) base.curve(curve);
+            }
+
+            public override Stop build()
+            {
+                return new Stop(_id, _position, _transform, _curve, _shape);
+            }
         }
     }
-}
-
 }

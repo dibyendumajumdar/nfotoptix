@@ -24,42 +24,45 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
-namespace Redukti.Nfotopix {
+namespace Redukti.Nfotopix
+{
+    public class Mirror : MaterialBase
+    {
+        public static readonly Mirror mirror = new Mirror();
+
+        public Mirror() : base("mirror")
+        {
+        }
 
 
-public class Mirror : MaterialBase {
+        public override bool is_opaque()
+        {
+            return true;
+        }
 
-    public static readonly Mirror mirror = new Mirror();
 
-    public Mirror(): base("mirror") {
+        public override bool is_reflecting()
+        {
+            return true;
+        }
+
+
+        public override double get_refractive_index(double wavelen)
+        {
+            return 1.0;
+        }
+
+
+        public override double get_internal_transmittance(double wavelen,
+            double thickness)
+        {
+            return 0.0;
+        }
+
+
+        public override double get_extinction_coef(double wavelen)
+        {
+            return 9999.0;
+        }
     }
-
-    
-    public override bool is_opaque() {
-        return true;
-    }
-
-    
-    public override bool is_reflecting() {
-        return true;
-    }
-
-    
-    public override double get_refractive_index(double wavelen) {
-        return 1.0;
-    }
-
-    
-    public override double get_internal_transmittance (double wavelen,
-                                              double thickness) {
-        return 0.0;
-    }
-
-    
-    public override double get_extinction_coef (double wavelen) {
-        return 9999.0;
-    }
-
-}
-
 }

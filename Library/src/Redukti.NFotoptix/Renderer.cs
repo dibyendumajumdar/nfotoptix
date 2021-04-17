@@ -28,8 +28,6 @@ using System;
 
 namespace Redukti.Nfotopix
 {
-
-
     /**
      Base class for rendering drivers
 
@@ -44,8 +42,10 @@ namespace Redukti.Nfotopix
             /** light ray intensity is ignored, no blending is performed while rendering
              ray */
             IntensityIgnore,
+
             /** light ray intensity is used to blend rendered ray */
             IntensityShade,
+
             /** light ray intensity logarithm is used to blend rendered ray. This enable
              faint rays to remain visible. */
             IntensityLogShade
@@ -56,6 +56,7 @@ namespace Redukti.Nfotopix
         {
             /** Compute ray color from its wavelength */
             RayColorWavelen,
+
             /** Use fixed ray color */
             RayColorFixed
         }
@@ -70,6 +71,7 @@ namespace Redukti.Nfotopix
             StyleGlass = 4,
             StyleLast = 5
         }
+
         public enum PointStyle
         {
             PointStyleDot = 0,
@@ -105,8 +107,9 @@ namespace Redukti.Nfotopix
 
         protected double _feature_size;
 
-        protected Rgb[] _styles_color = new Rgb[(int)Style.StyleLast];
+        protected Rgb[] _styles_color = new Rgb[(int) Style.StyleLast];
         protected RayColorMode _ray_color_mode;
+
         protected IntensityMode _intensity_mode;
         //double _max_intensity; // max ray intensity updated on
 
@@ -115,23 +118,30 @@ namespace Redukti.Nfotopix
             this._feature_size = 20.0;
             this._ray_color_mode = RayColorMode.RayColorWavelen;
             this._intensity_mode = IntensityMode.IntensityIgnore;
-            _styles_color[(int)Style.StyleForeground] = new Rgb(1.0, 1.0, 1.0, 1.0);
-            _styles_color[(int)Style.StyleBackground] = new Rgb(0.0, 0.0, 0.0, 1.0);
-            _styles_color[(int)Style.StyleRay] = new Rgb(1.0, 0.0, 0.0, 1.0);
-            _styles_color[(int)Style.StyleSurface] = new Rgb(0.5, 0.5, 1.0, 1.0);
-            _styles_color[(int)Style.StyleGlass] = new Rgb(0.8, 0.8, 1.0, 1.0);
+            _styles_color[(int) Style.StyleForeground] = new Rgb(1.0, 1.0, 1.0, 1.0);
+            _styles_color[(int) Style.StyleBackground] = new Rgb(0.0, 0.0, 0.0, 1.0);
+            _styles_color[(int) Style.StyleRay] = new Rgb(1.0, 0.0, 0.0, 1.0);
+            _styles_color[(int) Style.StyleSurface] = new Rgb(0.5, 0.5, 1.0, 1.0);
+            _styles_color[(int) Style.StyleGlass] = new Rgb(0.8, 0.8, 1.0, 1.0);
         }
+
         public Rgb get_style_color(Style s)
         {
-            return _styles_color[(int)s];
+            return _styles_color[(int) s];
         }
-        public double get_feature_size() { return _feature_size; }
+
+        public double get_feature_size()
+        {
+            return _feature_size;
+        }
 
         /** Draw a point in 2d */
         public abstract void draw_point(Vector2 p, Rgb rgb, PointStyle s);
+
         public abstract void draw_text(Vector2 pos, Vector2 dir,
-                                        string str, int alignMask, int size,
-                                        Rgb rgb);
+            string str, int alignMask, int size,
+            Rgb rgb);
+
         public abstract void draw_segment(Vector2Pair s, Rgb rgb);
         public abstract void draw_segment(Vector3Pair s, Rgb rgb);
 
@@ -151,6 +161,7 @@ namespace Redukti.Nfotopix
         {
             draw_segment(new Vector2Pair(a, b), rgb);
         }
+
         public virtual void draw_segment(Vector2 a, Vector2 b)
         {
             draw_segment(a, b, Rgb.rgb_gray);
@@ -182,7 +193,7 @@ namespace Redukti.Nfotopix
         public virtual void draw_circle(Vector2 v, double r, Rgb rgb, bool filled)
         {
             int count
-                = Math.Min(100, Math.Max(6, (int)(2.0 * Math.PI * r / _feature_size)));
+                = Math.Min(100, Math.Max(6, (int) (2.0 * Math.PI * r / _feature_size)));
 
             Vector2[] p = new Vector2[count];
             double astep = 2.0 * Math.PI / count;
@@ -220,5 +231,4 @@ namespace Redukti.Nfotopix
         //        _max_intensity = v;
         //    }
     }
-
 }

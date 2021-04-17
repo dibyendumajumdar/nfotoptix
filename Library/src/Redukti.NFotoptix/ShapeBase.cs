@@ -28,7 +28,6 @@ using System;
 
 namespace Redukti.Nfotopix
 {
-
     public abstract class ShapeBase : Shape
     {
         static Random random = new Random();
@@ -41,15 +40,15 @@ namespace Redukti.Nfotopix
 
 
         public virtual void get_pattern(PatternConsumer f,
-                                Distribution d,
-                                bool unobstructed)
+            Distribution d,
+            bool unobstructed)
         {
             get_base_pattern(f, d, unobstructed);
         }
 
         public void get_base_pattern(PatternConsumer f,
-                                Distribution d,
-                                bool unobstructed)
+            Distribution d,
+            bool unobstructed)
         {
             const double epsilon = 1e-8;
             // FIXME use bounding box instead of max radius
@@ -61,159 +60,159 @@ namespace Redukti.Nfotopix
             switch (p)
             {
                 case Pattern.MeridionalDist:
+                {
+                    double r = tr;
+
+                    add_pattern_point(Vector2.vector2_0, unobstructed, this, f);
+
+                    for (int i = 0; i < d.get_radial_density(); i++)
                     {
-
-                        double r = tr;
-
-                        add_pattern_point(Vector2.vector2_0, unobstructed, this, f);
-
-                        for (int i = 0; i < d.get_radial_density(); i++)
-                        {
-                            add_pattern_point(new Vector2(0, r), unobstructed, this, f);
-                            add_pattern_point(new Vector2(0, -r), unobstructed, this, f);
-                            r -= step;
-                        }
-                        break;
+                        add_pattern_point(new Vector2(0, r), unobstructed, this, f);
+                        add_pattern_point(new Vector2(0, -r), unobstructed, this, f);
+                        r -= step;
                     }
+
+                    break;
+                }
 
                 case Pattern.SagittalDist:
+                {
+                    double r = tr;
+
+                    add_pattern_point(new Vector2(0, 0), unobstructed, this, f);
+
+                    for (int i = 0; i < d.get_radial_density(); i++)
                     {
-
-                        double r = tr;
-
-                        add_pattern_point(new Vector2(0, 0), unobstructed, this, f);
-
-                        for (int i = 0; i < d.get_radial_density(); i++)
-                        {
-                            add_pattern_point(new Vector2(r, 0), unobstructed, this, f);
-                            add_pattern_point(new Vector2(-r, 0), unobstructed, this, f);
-                            r -= step;
-                        }
-                        break;
+                        add_pattern_point(new Vector2(r, 0), unobstructed, this, f);
+                        add_pattern_point(new Vector2(-r, 0), unobstructed, this, f);
+                        r -= step;
                     }
+
+                    break;
+                }
 
                 case Pattern.CrossDist:
+                {
+                    double r = step;
+
+                    add_pattern_point(Vector2.vector2_0, unobstructed, this, f);
+
+                    for (int i = 0; i < d.get_radial_density(); i++)
                     {
-
-                        double r = step;
-
-                        add_pattern_point(Vector2.vector2_0, unobstructed, this, f);
-
-                        for (int i = 0; i < d.get_radial_density(); i++)
-                        {
-                            add_pattern_point(new Vector2(0, r), unobstructed, this, f);
-                            add_pattern_point(new Vector2(r, 0), unobstructed, this, f);
-                            add_pattern_point(new Vector2(0, -r), unobstructed, this, f);
-                            add_pattern_point(new Vector2(-r, 0), unobstructed, this, f);
-                            r += step;
-                        }
-                        break;
+                        add_pattern_point(new Vector2(0, r), unobstructed, this, f);
+                        add_pattern_point(new Vector2(r, 0), unobstructed, this, f);
+                        add_pattern_point(new Vector2(0, -r), unobstructed, this, f);
+                        add_pattern_point(new Vector2(-r, 0), unobstructed, this, f);
+                        r += step;
                     }
+
+                    break;
+                }
 
                 case Pattern.RandomDist:
+                {
+                    double x, y;
+
+                    for (x = -tr; x < tr; x += step)
                     {
+                        double ybound = Math.Sqrt(MathUtils.square(tr) - MathUtils.square(x));
 
-                        double x, y;
-
-                        for (x = -tr; x < tr; x += step)
+                        for (y = -ybound; y < ybound; y += step)
                         {
-                            double ybound = Math.Sqrt(MathUtils.square(tr) - MathUtils.square(x));
-
-                            for (y = -ybound; y < ybound; y += step)
-                            {
-                                add_pattern_point(
-                                        new Vector2(x + (random.NextDouble() - .5) * step,
-                                                y + (random.NextDouble() - .5) * step), unobstructed, this, f);
-                            }
+                            add_pattern_point(
+                                new Vector2(x + (random.NextDouble() - .5) * step,
+                                    y + (random.NextDouble() - .5) * step), unobstructed, this, f);
                         }
-                        break;
                     }
+
+                    break;
+                }
 
                 case Pattern.HexaPolarDist:
+                {
+                    add_pattern_point(Vector2.vector2_0, unobstructed, this, f);
+
+                    for (double r = tr; r > epsilon; r -= step)
                     {
+                        double astep = (step / r) * (Math.PI / 3);
 
-                        add_pattern_point(Vector2.vector2_0, unobstructed, this, f);
-
-                        for (double r = tr; r > epsilon; r -= step)
-                        {
-                            double astep = (step / r) * (Math.PI / 3);
-
-                            for (double a = 0; a < 2 * Math.PI - epsilon; a += astep)
-                                add_pattern_point(new Vector2(Math.Sin(a) * r, Math.Cos(a) * r), unobstructed, this, f);
-                        }
-
-                        break;
+                        for (double a = 0; a < 2 * Math.PI - epsilon; a += astep)
+                            add_pattern_point(new Vector2(Math.Sin(a) * r, Math.Cos(a) * r), unobstructed, this, f);
                     }
+
+                    break;
+                }
 
                 case Pattern.SquareDist:
+                {
+                    add_pattern_point(Vector2.vector2_0, unobstructed, this, f);
+
+                    double x, y;
+
+                    for (x = tr; x > epsilon; x -= step)
                     {
+                        double ybound = Math.Sqrt(MathUtils.square(tr) - MathUtils.square(x));
 
-                        add_pattern_point(Vector2.vector2_0, unobstructed, this, f);
-
-                        double x, y;
-
-                        for (x = tr; x > epsilon; x -= step)
+                        for (y = step; y < ybound; y += step)
                         {
-                            double ybound = Math.Sqrt(MathUtils.square(tr) - MathUtils.square(x));
-
-                            for (y = step; y < ybound; y += step)
-                            {
-                                add_pattern_point(new Vector2(x, y), unobstructed, this, f);
-                                add_pattern_point(new Vector2(x, -y), unobstructed, this, f);
-                                add_pattern_point(new Vector2(-x, y), unobstructed, this, f);
-                                add_pattern_point(new Vector2(-x, -y), unobstructed, this, f);
-                            }
-
-                            add_pattern_point(new Vector2(x, 0), unobstructed, this, f);
-                            add_pattern_point(new Vector2(-x, 0), unobstructed, this, f);
+                            add_pattern_point(new Vector2(x, y), unobstructed, this, f);
+                            add_pattern_point(new Vector2(x, -y), unobstructed, this, f);
+                            add_pattern_point(new Vector2(-x, y), unobstructed, this, f);
+                            add_pattern_point(new Vector2(-x, -y), unobstructed, this, f);
                         }
 
-                        for (y = step; y < tr + epsilon; y += step)
-                        {
-                            add_pattern_point(new Vector2(0, y), unobstructed, this, f);
-                            add_pattern_point(new Vector2(0, -y), unobstructed, this, f);
-                        }
-                        break;
+                        add_pattern_point(new Vector2(x, 0), unobstructed, this, f);
+                        add_pattern_point(new Vector2(-x, 0), unobstructed, this, f);
                     }
+
+                    for (y = step; y < tr + epsilon; y += step)
+                    {
+                        add_pattern_point(new Vector2(0, y), unobstructed, this, f);
+                        add_pattern_point(new Vector2(0, -y), unobstructed, this, f);
+                    }
+
+                    break;
+                }
 
                 case Pattern.DefaultDist:
                 case Pattern.TriangularDist:
+                {
+                    const double sqrt_3_2 = 0.86602540378443864676;
+                    double x, y;
+                    int i = 1;
+
+                    for (x = step * sqrt_3_2; x < tr + epsilon; x += step * sqrt_3_2)
                     {
-                        const double sqrt_3_2 = 0.86602540378443864676;
-                        double x, y;
-                        int i = 1;
-
-                        for (x = step * sqrt_3_2; x < tr + epsilon; x += step * sqrt_3_2)
+                        for (y = step / (double) i; y < tr + epsilon; y += step)
                         {
-                            for (y = step / (double)i; y < tr + epsilon; y += step)
-                            {
-                                double h = MathUtils.Hypot(x, y);
+                            double h = MathUtils.Hypot(x, y);
 
-                                if (h > tr)
-                                    break;
+                            if (h > tr)
+                                break;
 
-                                add_pattern_point(new Vector2(x, y), unobstructed, this, f);
-                                add_pattern_point(new Vector2(-x, y), unobstructed, this, f);
-                                add_pattern_point(new Vector2(x, -y), unobstructed, this, f);
-                                add_pattern_point(new Vector2(-x, -y), unobstructed, this, f);
-                            }
-
-                            i ^= 3;
+                            add_pattern_point(new Vector2(x, y), unobstructed, this, f);
+                            add_pattern_point(new Vector2(-x, y), unobstructed, this, f);
+                            add_pattern_point(new Vector2(x, -y), unobstructed, this, f);
+                            add_pattern_point(new Vector2(-x, -y), unobstructed, this, f);
                         }
 
-                        for (y = step / 2.0; y < tr + epsilon; y += step)
-                        {
-                            add_pattern_point(new Vector2(0, y), unobstructed, this, f);
-                            add_pattern_point(new Vector2(0, -y), unobstructed, this, f);
-                        }
-
-                        for (x = step * sqrt_3_2; x < tr + epsilon; x += step * sqrt_3_2 * 2.0)
-                        {
-                            add_pattern_point(new Vector2(x, 0), unobstructed, this, f);
-                            add_pattern_point(new Vector2(-x, 0), unobstructed, this, f);
-                        }
-                        break;
+                        i ^= 3;
                     }
+
+                    for (y = step / 2.0; y < tr + epsilon; y += step)
+                    {
+                        add_pattern_point(new Vector2(0, y), unobstructed, this, f);
+                        add_pattern_point(new Vector2(0, -y), unobstructed, this, f);
+                    }
+
+                    for (x = step * sqrt_3_2; x < tr + epsilon; x += step * sqrt_3_2 * 2.0)
+                    {
+                        add_pattern_point(new Vector2(x, 0), unobstructed, this, f);
+                        add_pattern_point(new Vector2(-x, 0), unobstructed, this, f);
+                    }
+
+                    break;
+                }
 
                 default:
                     throw new InvalidOperationException("distribution pattern not supported for this shape");
@@ -235,5 +234,4 @@ namespace Redukti.Nfotopix
         public abstract void get_contour(int contour, PatternConsumer f, double resolution);
         public abstract void get_triangles(ConsumerTriangle2 f, double resolution);
     }
-
 }

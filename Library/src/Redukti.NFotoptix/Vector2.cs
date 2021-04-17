@@ -28,14 +28,11 @@ using System;
 
 namespace Redukti.Nfotopix
 {
-
-
     /**
      * Vector with 2 components named x,y.
      */
     public class Vector2
     {
-
         public static readonly Vector2 vector2_0 = new Vector2(0.0, 0.0);
         public static readonly Vector2 vector2_1 = new Vector2(1.0, 1.0);
         public static readonly Vector2 vector2_10 = new Vector2(1.0, 0.0);
@@ -51,6 +48,7 @@ namespace Redukti.Nfotopix
             {
                 throw new InvalidOperationException("NaN");
             }
+
             this._values = new double[N];
             this._values[0] = x;
             this._values[1] = y;
@@ -58,7 +56,6 @@ namespace Redukti.Nfotopix
 
         public Vector2(double v) : this(v, v)
         {
-
         }
 
         private Vector2(double[] values)
@@ -70,15 +67,27 @@ namespace Redukti.Nfotopix
         {
             return this._values[0];
         }
+
         public double y()
         {
             return this._values[1];
         }
 
-        public Vector2 x(double value) { return new Vector2(value, y()); }
-        public Vector2 y(double value) { return new Vector2(x(), value); }
+        public Vector2 x(double value)
+        {
+            return new Vector2(value, y());
+        }
 
-        public double v(int i) { return this._values[i]; }
+        public Vector2 y(double value)
+        {
+            return new Vector2(x(), value);
+        }
+
+        public double v(int i)
+        {
+            return this._values[i];
+        }
+
         public Vector2 set(int i, double v)
         {
             double[] values = new double[_values.Length];
@@ -172,8 +181,7 @@ namespace Redukti.Nfotopix
         public bool isEqual(Vector2 other, double tolerance)
         {
             return Math.Abs(this.x() - other.x()) < tolerance &&
-                    Math.Abs(this.y() - other.y()) < tolerance;
+                   Math.Abs(this.y() - other.y()) < tolerance;
         }
     }
-
 }

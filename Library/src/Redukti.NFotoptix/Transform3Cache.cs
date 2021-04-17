@@ -27,77 +27,87 @@ Original GNU Optical License and Authors are as follows:
 using System;
 using System.Collections.Generic;
 
-namespace Redukti.Nfotopix {
+namespace Redukti.Nfotopix
+{
+    public class Transform3Cache
+    {
+        Dictionary<ElementPair, Transform3> _cache = new();
 
-public class Transform3Cache {
-
-    Dictionary<ElementPair, Transform3> _cache = new ();
-
-    public Transform3 get(int from, int to) {
-        ElementPair pair = new ElementPair(from, to);
-        if (_cache.TryGetValue(pair, out Transform3 t))
+        public Transform3 get(int from, int to)
+        {
+            ElementPair pair = new ElementPair(from, to);
+            if (_cache.TryGetValue(pair, out Transform3 t))
             {
                 return t;
             }
-        return null;
-    }
 
-    private void put(int from, int to, Transform3 transform) {
-        ElementPair pair = new ElementPair(from, to);
-        _cache[pair] = transform;
-    }
-
-    public void put_local_2_global_transform(int id, Transform3 t) {
-        put(id, 0, t);
-    }
-
-    public Transform3 local_2_global_transform(int id) {
-        return get(id, 0);
-    }
-
-    public void put_global_2_local_transform(int id, Transform3 t) {
-        put(0, id, t);
-    }
-
-    public Transform3 global_2_local_transform(int id) {
-        return get(0, id);
-    }
-
-    public Transform3 transform_cache_update(int from, int to) {
-        Transform3 e = get(from, to);
-        if (e == null) {
-            Transform3 t1 = local_2_global_transform(from);
-            Transform3 t2 = local_2_global_transform(to);
-            e = Transform3.compose(t1, t2.inverse());
-            put(from, to, e);
-        }
-        return e;
-    }
-
-    class ElementPair : IEquatable<ElementPair> {
-        public readonly int from;
-        public readonly int to;
-
-        public ElementPair(int from, int to) {
-            this.from = from;
-            this.to = to;
+            return null;
         }
 
-        public bool Equals(ElementPair that)
+        private void put(int from, int to, Transform3 transform)
         {
-            if (that == null)
-                return false;
-            if (this == that)
-                return true;
-            return from == that.from && to == that.to;
+            ElementPair pair = new ElementPair(from, to);
+            _cache[pair] = transform;
         }
 
-        public override int GetHashCode()
+        public void put_local_2_global_transform(int id, Transform3 t)
         {
-            return @from.GetHashCode() ^ to.GetHashCode();
+            put(id, 0, t);
+        }
+
+        public Transform3 local_2_global_transform(int id)
+        {
+            return get(id, 0);
+        }
+
+        public void put_global_2_local_transform(int id, Transform3 t)
+        {
+            put(0, id, t);
+        }
+
+        public Transform3 global_2_local_transform(int id)
+        {
+            return get(0, id);
+        }
+
+        public Transform3 transform_cache_update(int from, int to)
+        {
+            Transform3 e = get(from, to);
+            if (e == null)
+            {
+                Transform3 t1 = local_2_global_transform(from);
+                Transform3 t2 = local_2_global_transform(to);
+                e = Transform3.compose(t1, t2.inverse());
+                put(from, to, e);
+            }
+
+            return e;
+        }
+
+        class ElementPair : IEquatable<ElementPair>
+        {
+            public readonly int from;
+            public readonly int to;
+
+            public ElementPair(int from, int to)
+            {
+                this.from = from;
+                this.to = to;
+            }
+
+            public bool Equals(ElementPair that)
+            {
+                if (that == null)
+                    return false;
+                if (this == that)
+                    return true;
+                return from == that.from && to == that.to;
+            }
+
+            public override int GetHashCode()
+            {
+                return @from.GetHashCode() ^ to.GetHashCode();
+            }
         }
     }
-
-}
-
 }

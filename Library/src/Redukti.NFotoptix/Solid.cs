@@ -24,23 +24,23 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
-namespace Redukti.Nfotopix {
-
-public abstract class Solid : MaterialBase {
-    public readonly double _thermal_expansion;    // thermal expansion coefficient
-    public readonly double _thermal_conductivity; // thermal conductivity W/m.K
-    public readonly double _density;              // density g/cm^3
-    public readonly double _young_modulus;
-    public readonly double _poisson_ratio;
-
-    public Solid (string name) : base(name)
+namespace Redukti.Nfotopix
+{
+    public abstract class Solid : MaterialBase
     {
-        _thermal_expansion = 0.0;
-        _thermal_conductivity = 0.0;
-        _density = 0.0;
-        _young_modulus = 0.0;
-        _poisson_ratio = 0.0;
-    }
-}
+        public readonly double _thermal_expansion; // thermal expansion coefficient
+        public readonly double _thermal_conductivity; // thermal conductivity W/m.K
+        public readonly double _density; // density g/cm^3
+        public readonly double _young_modulus;
+        public readonly double _poisson_ratio;
 
+        public Solid(string name) : base(name)
+        {
+            _thermal_expansion = 0.0;
+            _thermal_conductivity = 0.0;
+            _density = 0.0;
+            _young_modulus = 0.0;
+            _poisson_ratio = 0.0;
+        }
+    }
 }

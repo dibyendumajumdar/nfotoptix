@@ -24,16 +24,17 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
-namespace Redukti.Nfotopix {
+namespace Redukti.Nfotopix
+{
+    public class DerivResult
+    {
+        public readonly double result;
+        public readonly double abserr;
 
-public class DerivResult {
-    public readonly double result;
-    public readonly double abserr;
-
-    public DerivResult(double result, double abserr) {
-        this.result = result;
-        this.abserr = abserr;
+        public DerivResult(double result, double abserr)
+        {
+            this.result = result;
+            this.abserr = abserr;
+        }
     }
-}
-
 }

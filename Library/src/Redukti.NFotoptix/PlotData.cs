@@ -23,90 +23,97 @@ Original GNU Optical License and Authors are as follows:
       Author: Alexandre Becoulet
  */
 
-namespace Redukti.Nfotopix {
+namespace Redukti.Nfotopix
+{
+    public class PlotData
+    {
+        DataSet _set;
+        Rgb _color;
+        int _style;
+        string _label;
 
-
-
-public class PlotData {
-    DataSet _set;
-    Rgb _color;
-    int _style;
-    string _label;
-
-    /**
+        /**
      * Create a new data plot descriptor which describe the
      * specified dataset.
      */
-    public PlotData(DataSet s) {
-        _set = s;
-        _color = Rgb.rgb_red;
-        _style = ((int)PlotStyleMask.InterpolatePlot | (int)PlotStyleMask.PointPlot);
-        _label = "";
-    }
+        public PlotData(DataSet s)
+        {
+            _set = s;
+            _color = Rgb.rgb_red;
+            _style = ((int) PlotStyleMask.InterpolatePlot | (int) PlotStyleMask.PointPlot);
+            _label = "";
+        }
 
-    /**
+        /**
      * Get the described data set
      */
-    public DataSet get_set() {
-        return _set;
-    }
+        public DataSet get_set()
+        {
+            return _set;
+        }
 
-    /**
+        /**
      * Set data set plotting label
      */
-    public void set_label(string title) {
-        _label = title;
-    }
+        public void set_label(string title)
+        {
+            _label = title;
+        }
 
-    /**
+        /**
      * Get data set plotting label
      */
-    string get_label() {
-        return _label;
-    }
+        string get_label()
+        {
+            return _label;
+        }
 
-    /**
+        /**
      * Set data set plotting color
      */
-    public void set_color(Rgb color) {
-        _color = color;
-    }
+        public void set_color(Rgb color)
+        {
+            _color = color;
+        }
 
-    /**
+        /**
      * Set data set plotting color
      */
-    public Rgb get_color() {
-        return _color;
-    }
+        public Rgb get_color()
+        {
+            return _color;
+        }
 
-    /**
+        /**
      * Enable a plotting style
      */
-    void enable_style(PlotStyleMask style) {
-        this._style |= (int)style;
-    }
+        void enable_style(PlotStyleMask style)
+        {
+            this._style |= (int) style;
+        }
 
-    /**
+        /**
      * Disable a plotting style
      */
-    public void disable_style(PlotStyleMask style) {
-        this._style &= ~((int)style);
-    }
+        public void disable_style(PlotStyleMask style)
+        {
+            this._style &= ~((int) style);
+        }
 
-    /**
+        /**
      * Set the plotting style mask
      */
-    public void set_style(int style) {
-        this._style = style;
-    }
+        public void set_style(int style)
+        {
+            this._style = style;
+        }
 
-    /**
+        /**
      * Get the plotting style mask
      */
-    public int get_style() {
-        return _style;
+        public int get_style()
+        {
+            return _style;
+        }
     }
-
-}
-
 }

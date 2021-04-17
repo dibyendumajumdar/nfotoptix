@@ -25,8 +25,6 @@ Original GNU Optical License and Authors are as follows:
 
 namespace Redukti.Nfotopix
 {
-
-
     /*
     Notes:
     Plane can be represented as two vectors: point and normal
@@ -35,7 +33,6 @@ namespace Redukti.Nfotopix
 
     public class Vector3Pair
     {
-
         public static readonly Vector3Pair position_000_001 = new Vector3Pair(Vector3.vector3_0, Vector3.vector3_001);
 
         public readonly Vector3 v0;
@@ -71,8 +68,15 @@ namespace Redukti.Nfotopix
             return v1;
         }
 
-        public double z0() { return v0.z(); }
-        public double z1() { return v1.z(); }
+        public double z0()
+        {
+            return v0.z();
+        }
+
+        public double z1()
+        {
+            return v1.z();
+        }
 
         public bool isEquals(Vector3Pair other, double tolerance)
         {
@@ -83,12 +87,14 @@ namespace Redukti.Nfotopix
         {
             // See https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
             return (origin().dot(normal()) - normal().dot(line.origin())) /
-                    (line.normal().dot(normal()));
+                   (line.normal().dot(normal()));
         }
+
         public Vector3 pl_ln_intersect(Vector3Pair line)
         {
             return line.v0.plus(line.v1.times(pl_ln_intersect_scale(line)));
         }
+
         /**
          * Swap the given element between the member vectors and return a new pair
          */
@@ -112,6 +118,7 @@ namespace Redukti.Nfotopix
                     n1[i] = p.v1.v(i);
                 }
             }
+
             return new Vector3Pair(new Vector3(n0[0], n0[1], n0[2]), new Vector3(n0[0], n0[1], n0[2]));
         }
 
@@ -125,5 +132,4 @@ namespace Redukti.Nfotopix
             return v1.x();
         }
     }
-
 }

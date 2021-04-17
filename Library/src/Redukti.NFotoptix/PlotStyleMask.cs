@@ -23,33 +23,36 @@ Original GNU Optical License and Authors are as follows:
       Author: Alexandre Becoulet
  */
 
-namespace Redukti.Nfotopix {
-
-
-/**
+namespace Redukti.Nfotopix
+{
+    /**
  * Specifies available styles for 2d and 3d plot data rendering
  */
-public enum PlotStyleMask {
-    /**
+    public enum PlotStyleMask
+    {
+        /**
      * Draw lines between knots
      */
-    LinePlot = 1,
-    /**
+        LinePlot = 1,
+
+        /**
      * Draw points for each knot
      */
-    PointPlot = 2,
-    /**
+        PointPlot = 2,
+
+        /**
      * Draw a smooth curve
      */
-    InterpolatePlot = 4,
-    /**
+        InterpolatePlot = 4,
+
+        /**
      * Print ploted values near knots
      */
-    ValuePlot = 8,
-    /**
+        ValuePlot = 8,
+
+        /**
      * Draw filled 3d surface
      */
-    Filled = 16
-}
-
+        Filled = 16
+    }
 }

@@ -25,8 +25,6 @@ Original GNU Optical License and Authors are as follows:
 
 namespace Redukti.Nfotopix
 {
-
-
     /**
      * Describe a ray of light
      * <p>
@@ -48,17 +46,14 @@ namespace Redukti.Nfotopix
 
         public LightRay(Vector3Pair ray) : this(ray, 1.0, SpectralLine.d)
         {
-
         }
 
         public LightRay(LightRay ray) : this(ray._ray, ray._intensity, ray._wavelen)
         {
-
         }
 
         public LightRay() : this(Vector3Pair.position_000_001)
         {
-
         }
 
         public void set_intensity(double intensity)
@@ -90,7 +85,5 @@ namespace Redukti.Nfotopix
         {
             return "LightRay{wavelen=" + _wavelen + ",origin=" + _ray.origin() + ",direction=" + _ray.direction() + '}';
         }
-
     }
-
 }

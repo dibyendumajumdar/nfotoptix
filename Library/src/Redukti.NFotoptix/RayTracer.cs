@@ -27,332 +27,381 @@ Original GNU Optical License and Authors are as follows:
 using System;
 using System.Collections.Generic;
 
-namespace Redukti.Nfotopix {
-
-
-public class RayTracer {
-
-    /**
+namespace Redukti.Nfotopix
+{
+    public class RayTracer
+    {
+        /**
      * Specifies light intensity calculation mode to use by light propagation
      * algorithms.
      */
-    public enum TraceIntensityMode {
-        /**
+        public enum TraceIntensityMode
+        {
+            /**
          * No Intensity calculation is performed
          */
-        Simpletrace,
-        /**
+            Simpletrace,
+
+            /**
          * light intensity computation is performed without taking polarization into
          * account
          */
-        Intensitytrace,
-        /**
+            Intensitytrace,
+
+            /**
          * @experimental light intensity with polarization computation is performed
          * (not supported yet)
          */
-        Polarizedtrace
-    }
+            Polarizedtrace
+        }
 
-    public RayTraceResults trace(OpticalSystem system, RayTraceParameters parameters) {
-        RayTraceResults result = new RayTraceResults(parameters);
-        switch (parameters._intensity_mode) {
-            case TraceIntensityMode.Simpletrace:
-                if (!parameters._sequential_mode)
-                    //trace_template<Simpletrace> ();
-                    throw new InvalidOperationException();
-                else
-                    trace_sequential(parameters._intensity_mode, parameters, result);
-                break;
+        public RayTraceResults trace(OpticalSystem system, RayTraceParameters parameters)
+        {
+            RayTraceResults result = new RayTraceResults(parameters);
+            switch (parameters._intensity_mode)
+            {
+                case TraceIntensityMode.Simpletrace:
+                    if (!parameters._sequential_mode)
+                        //trace_template<Simpletrace> ();
+                        throw new InvalidOperationException();
+                    else
+                        trace_sequential(parameters._intensity_mode, parameters, result);
+                    break;
 
-            case TraceIntensityMode.Intensitytrace:
+                case TraceIntensityMode.Intensitytrace:
 //                if (!parameters._sequential_mode)
 //                    trace_template<Intensitytrace> ();
 //                else
 //                    trace_seq_template<Intensitytrace> ();
-                throw new InvalidOperationException();
+                    throw new InvalidOperationException();
                 //break;
 
-            case TraceIntensityMode.Polarizedtrace:
+                case TraceIntensityMode.Polarizedtrace:
 //                if (!parameters._sequential_mode)
 //                    trace_template<Polarizedtrace> ();
 //                else
 //                    trace_seq_template<Polarizedtrace> ();
-                throw new InvalidOperationException();
+                    throw new InvalidOperationException();
                 //break;
-        }
-        return result;
-    }
-
-    class RayCollection {
-        public List<TracedRay> rays = new ();
-    }
-
-    void trace_sequential(RayTracer.TraceIntensityMode m, RayTraceParameters parameters, RayTraceResults result) {
-        // stack of rays to propagate
-        RayCollection[] tmp = new[]{new RayCollection(), new RayCollection()};
-        RayGenerator rayGenerator = new RayGenerator();
-
-        int swaped = 0;
-        List<TracedRay> generated;
-        List<TracedRay> source_rays = tmp[1].rays;
-        List<Element> seq = parameters._sequence;
-        Element entrance = null;
-
-        // find entry element (first non source)
-        for (int i = 0; i < seq.Count; i++) {
-            if (!(seq[i] is RaySource)) {
-                entrance = seq[i];
-                break;
             }
+
+            return result;
         }
 
-        for (int i = 0; i < seq.Count; i++) {
-            Element element = seq[i];
+        class RayCollection
+        {
+            public List<TracedRay> rays = new();
+        }
+
+        void trace_sequential(RayTracer.TraceIntensityMode m, RayTraceParameters parameters, RayTraceResults result)
+        {
+            // stack of rays to propagate
+            RayCollection[] tmp = new[] {new RayCollection(), new RayCollection()};
+            RayGenerator rayGenerator = new RayGenerator();
+
+            int swaped = 0;
+            List<TracedRay> generated;
+            List<TracedRay> source_rays = tmp[1].rays;
+            List<Element> seq = parameters._sequence;
+            Element entrance = null;
+
+            // find entry element (first non source)
+            for (int i = 0; i < seq.Count; i++)
+            {
+                if (!(seq[i] is RaySource))
+                {
+                    entrance = seq[i];
+                    break;
+                }
+            }
+
+            for (int i = 0; i < seq.Count; i++)
+            {
+                Element element = seq[i];
 
 //            if (!element->is_enabled ())
 //                continue;
 
-            RayTraceResults.RaysAtElement er = result.get_element_result(element);
+                RayTraceResults.RaysAtElement er = result.get_element_result(element);
 
-            generated = er._generated != null ? er._generated : tmp[swaped].rays;
-            generated.Clear();
+                generated = er._generated != null ? er._generated : tmp[swaped].rays;
+                generated.Clear();
 
-            switch (element) {
-                case PointSource source:
+                switch (element)
                 {
-                    result.add_source(source);
-                    List<Element> elist = new();
-                    if (entrance != null)
-                        elist.Add(entrance);
-                    List<TracedRay> rays = rayGenerator.generate_rays_simple(result, parameters, source, elist);
-                    generated.AddRange(rays);
-                    break;
+                    case PointSource source:
+                    {
+                        result.add_source(source);
+                        List<Element> elist = new();
+                        if (entrance != null)
+                            elist.Add(entrance);
+                        List<TracedRay> rays = rayGenerator.generate_rays_simple(result, parameters, source, elist);
+                        generated.AddRange(rays);
+                        break;
+                    }
+                    default:
+                    {
+                        List<TracedRay> rays = process_rays(element, m, result, source_rays);
+                        // swap ray buffers
+                        generated.AddRange(rays);
+                        break;
+                    }
                 }
-                default:
-                {
-                    List<TracedRay> rays = process_rays(element, m, result, source_rays);
-                    // swap ray buffers
-                    generated.AddRange(rays);
-                    break;
-                }
+
+                source_rays = generated;
+                swaped ^= 1;
             }
-            source_rays = generated;
-            swaped ^= 1;
         }
-    }
 
-    List<TracedRay> process_rays(Element e, TraceIntensityMode m, RayTraceResults result, List<TracedRay> input) {
-        switch (m) {
-            case TraceIntensityMode.Simpletrace:
-                return process_rays_simple(e, result, input);
-            case TraceIntensityMode.Intensitytrace:
-                return process_rays_intensity(e, result, input);
-            case TraceIntensityMode.Polarizedtrace:
-                return process_rays_polarized(e, result, input);
+        List<TracedRay> process_rays(Element e, TraceIntensityMode m, RayTraceResults result, List<TracedRay> input)
+        {
+            switch (m)
+            {
+                case TraceIntensityMode.Simpletrace:
+                    return process_rays_simple(e, result, input);
+                case TraceIntensityMode.Intensitytrace:
+                    return process_rays_intensity(e, result, input);
+                case TraceIntensityMode.Polarizedtrace:
+                    return process_rays_polarized(e, result, input);
+            }
+
+            return new();
         }
-        return new();
-    }
 
-    private List<TracedRay> process_rays_polarized(Element e, RayTraceResults result, List<TracedRay> input) {
-        throw new InvalidOperationException();
-    }
-
-    private List<TracedRay> process_rays_intensity(Element e, RayTraceResults result, List<TracedRay> input) {
-        throw new InvalidOperationException();
-    }
-
-    private List<TracedRay> process_rays_simple(Element e, RayTraceResults result, List<TracedRay> input) {
-        switch (e) {
-        case Stop surface: 
-            return process_rays(surface, TraceIntensityMode.Simpletrace, result, input);
-        case Surface surface: 
-            return process_rays(surface, TraceIntensityMode.Simpletrace, result, input);
-        default:
+        private List<TracedRay> process_rays_polarized(Element e, RayTraceResults result, List<TracedRay> input)
+        {
             throw new InvalidOperationException();
         }
-    }
 
-    List<TracedRay> process_rays(Surface surface, TraceIntensityMode m, RayTraceResults result,
-                                 List<TracedRay> input) {
-        RayTraceParameters params_ = result._parameters;
-        List<TracedRay> rays = new ();
-        foreach (TracedRay i in input) {
-            TracedRay ray = i;
+        private List<TracedRay> process_rays_intensity(Element e, RayTraceResults result, List<TracedRay> input)
+        {
+            throw new InvalidOperationException();
+        }
 
-            Transform3 t
-                    = ray.get_creator().get_transform_to(surface);
-            Vector3Pair local1 = t.transform_line(ray.get_ray());
-
-            Vector3Pair pt = surface is Stop ?
-                intersect((Stop)surface, params_, local1) :
-                intersect(surface, params_, local1);
-            if (pt != null) {
-                result.add_intercepted(surface, ray);
-                TracedRay cray = trace_ray(surface, m, result, ray, local1, pt);
-                if (cray != null)
-                    rays.Add(cray);
+        private List<TracedRay> process_rays_simple(Element e, RayTraceResults result, List<TracedRay> input)
+        {
+            switch (e)
+            {
+                case Stop surface:
+                    return process_rays(surface, TraceIntensityMode.Simpletrace, result, input);
+                case Surface surface:
+                    return process_rays(surface, TraceIntensityMode.Simpletrace, result, input);
+                default:
+                    throw new InvalidOperationException();
             }
         }
-        return rays;
-    }
 
-    TracedRay trace_ray(Surface surface, TraceIntensityMode m,
-                        RayTraceResults result, TracedRay incident,
-                        Vector3Pair local,
-                        Vector3Pair pt) {
-        incident.set_len((pt.origin().minus(local.origin())).len());
-        incident.set_intercept(surface, pt.origin());
+        List<TracedRay> process_rays(Surface surface, TraceIntensityMode m, RayTraceResults result,
+            List<TracedRay> input)
+        {
+            RayTraceParameters params_ = result._parameters;
+            List<TracedRay> rays = new();
+            foreach (TracedRay i in input)
+            {
+                TracedRay ray = i;
 
-        if (m == TraceIntensityMode.Simpletrace) {
-            incident.set_intercept_intensity(1.0);
-            return trace_ray_simple(surface, result, incident, local, pt);
-        } else {
-            // apply absorbtion from current material
-            double i_intensity
+                Transform3 t
+                    = ray.get_creator().get_transform_to(surface);
+                Vector3Pair local1 = t.transform_line(ray.get_ray());
+
+                Vector3Pair pt = surface is Stop
+                    ? intersect((Stop) surface, params_, local1)
+                    : intersect(surface, params_, local1);
+                if (pt != null)
+                {
+                    result.add_intercepted(surface, ray);
+                    TracedRay cray = trace_ray(surface, m, result, ray, local1, pt);
+                    if (cray != null)
+                        rays.Add(cray);
+                }
+            }
+
+            return rays;
+        }
+
+        TracedRay trace_ray(Surface surface, TraceIntensityMode m,
+            RayTraceResults result, TracedRay incident,
+            Vector3Pair local,
+            Vector3Pair pt)
+        {
+            incident.set_len((pt.origin().minus(local.origin())).len());
+            incident.set_intercept(surface, pt.origin());
+
+            if (m == TraceIntensityMode.Simpletrace)
+            {
+                incident.set_intercept_intensity(1.0);
+                return trace_ray_simple(surface, result, incident, local, pt);
+            }
+            else
+            {
+                // apply absorbtion from current material
+                double i_intensity
                     = incident.get_intensity()
-                    * incident.get_material().get_internal_transmittance(
-                    incident.get_wavelen(), incident.get_len());
+                      * incident.get_material().get_internal_transmittance(
+                          incident.get_wavelen(), incident.get_len());
 
-            incident.set_intercept_intensity(i_intensity);
+                incident.set_intercept_intensity(i_intensity);
 
-            // FIXME
+                // FIXME
 //            if (i_intensity < _discard_intensity)
 //                return;
 
-            if (m == TraceIntensityMode.Intensitytrace)
-                return trace_ray_intensity(surface, result, incident, local, pt);
-            else if (m == TraceIntensityMode.Polarizedtrace)
-                return trace_ray_polarized(surface, result, incident, local, pt);
+                if (m == TraceIntensityMode.Intensitytrace)
+                    return trace_ray_intensity(surface, result, incident, local, pt);
+                else if (m == TraceIntensityMode.Polarizedtrace)
+                    return trace_ray_polarized(surface, result, incident, local, pt);
+                else
+                    throw new InvalidOperationException();
+            }
+        }
+
+        private TracedRay trace_ray_simple(Surface surface, RayTraceResults result, TracedRay incident,
+            Vector3Pair local, Vector3Pair pt)
+        {
+            if (surface is OpticalSurface)
+            {
+                return trace_ray_simple((OpticalSurface) surface, result, incident, local, pt);
+            }
+            else if (surface is Stop)
+            {
+                return trace_ray_simple((Stop) surface, result, incident, local, pt);
+            }
             else
-                throw new InvalidOperationException();
+            {
+                return null;
+            }
         }
-    }
 
-    private TracedRay trace_ray_simple(Surface surface, RayTraceResults result, TracedRay incident, Vector3Pair local, Vector3Pair pt) {
-        if (surface is OpticalSurface) {
-            return trace_ray_simple((OpticalSurface) surface, result, incident, local, pt);
-        } else if (surface is Stop) {
-            return trace_ray_simple((Stop) surface, result, incident, local, pt);
-        } else {
+
+        private TracedRay trace_ray_polarized(Surface surface, RayTraceResults result, TracedRay incident,
+            Vector3Pair local, Vector3Pair pt)
+        {
+            throw new InvalidOperationException();
+        }
+
+        private TracedRay trace_ray_intensity(Surface surface, RayTraceResults result, TracedRay incident,
+            Vector3Pair local, Vector3Pair pt)
+        {
+            throw new InvalidOperationException();
+        }
+
+        private TracedRay trace_ray_simple(OpticalSurface surface, RayTraceResults result, TracedRay incident,
+            Vector3Pair local, Vector3Pair intersect)
+        {
+            bool right_to_left = intersect.normal().z() > 0;
+            MaterialBase prev_mat = surface.get_material(right_to_left ? 1 : 0);
+            MaterialBase next_mat = surface.get_material(!right_to_left ? 1 : 0);
+
+            // check ray didn't "escaped" from its material
+            // std::cout << prev_mat->name << " " << next_mat->name <<
+            //          " " << incident.get_material()->name << std::endl;
+
+            if (prev_mat != incident.get_material())
+            {
+                return null;
+            }
+
+            double wl = incident.get_wavelen();
+            double index = prev_mat.get_refractive_index(wl)
+                           / next_mat.get_refractive_index(wl);
+
+            // refracted ray direction
+            Vector3 direction = refract(surface, local, intersect.normal(), index);
+            if (direction == null)
+            {
+                // total internal reflection
+                Vector3 o = intersect.origin();
+                Vector3 dir = reflect(surface, local, intersect.normal());
+                TracedRay r = result.newRay(o, dir);
+
+                r.set_wavelen(wl);
+                r.set_intensity(incident.get_intensity());
+                r.set_material(prev_mat);
+
+                r.set_creator(surface);
+                incident.add_generated(r);
+
+                return r;
+            }
+
+            // transmit
+            if (!next_mat.is_opaque())
+            {
+                Vector3 o = intersect.origin();
+                TracedRay r = result.newRay(o, direction);
+
+                r.set_wavelen(wl);
+                r.set_intensity(incident.get_intensity());
+                r.set_material(next_mat);
+
+                r.set_creator(surface);
+                incident.add_generated(r);
+                return r;
+            }
+
+            // reflect
+            if (next_mat.is_reflecting())
+            {
+                Vector3 o = intersect.origin();
+                Vector3 dir = reflect(surface, local, intersect.normal());
+
+                TracedRay r = result.newRay(o, dir);
+
+                r.set_wavelen(wl);
+                r.set_intensity(incident.get_intensity());
+                r.set_material(prev_mat);
+                r.set_creator(surface);
+                incident.add_generated(r);
+                return r;
+            }
+
             return null;
         }
-    }
 
-
-    private TracedRay trace_ray_polarized(Surface surface, RayTraceResults result, TracedRay incident, Vector3Pair local, Vector3Pair pt) {
-        throw new InvalidOperationException();
-    }
-
-    private TracedRay trace_ray_intensity(Surface surface, RayTraceResults result, TracedRay incident, Vector3Pair local, Vector3Pair pt) {
-        throw new InvalidOperationException();
-    }
-
-    private TracedRay trace_ray_simple(OpticalSurface surface, RayTraceResults result, TracedRay incident, Vector3Pair local, Vector3Pair intersect) {
-        bool right_to_left = intersect.normal().z() > 0;
-        MaterialBase prev_mat = surface.get_material(right_to_left ? 1 : 0);
-        MaterialBase next_mat = surface.get_material(!right_to_left ? 1 : 0);
-
-        // check ray didn't "escaped" from its material
-        // std::cout << prev_mat->name << " " << next_mat->name <<
-        //          " " << incident.get_material()->name << std::endl;
-
-        if (prev_mat != incident.get_material()) {
-            return null;
-        }
-
-        double wl = incident.get_wavelen();
-        double index = prev_mat.get_refractive_index(wl)
-                / next_mat.get_refractive_index(wl);
-
-        // refracted ray direction
-        Vector3 direction = refract(surface, local, intersect.normal(), index);
-        if (direction == null) {
-            // total internal reflection
-            Vector3 o = intersect.origin();
-            Vector3 dir = reflect(surface, local, intersect.normal());
-            TracedRay r = result.newRay(o, dir);
-
-            r.set_wavelen(wl);
-            r.set_intensity(incident.get_intensity());
-            r.set_material(prev_mat);
-
-            r.set_creator(surface);
-            incident.add_generated(r);
-
-            return r;
-        }
-
-        // transmit
-        if (!next_mat.is_opaque()) {
-            Vector3 o = intersect.origin();
-            TracedRay r = result.newRay(o, direction);
-
-            r.set_wavelen(wl);
-            r.set_intensity(incident.get_intensity());
-            r.set_material(next_mat);
-
-            r.set_creator(surface);
-            incident.add_generated(r);
-            return r;
-        }
-
-        // reflect
-        if (next_mat.is_reflecting()) {
-            Vector3 o = intersect.origin();
-            Vector3 dir = reflect(surface, local, intersect.normal());
-
-            TracedRay r = result.newRay(o, dir);
-
-            r.set_wavelen(wl);
-            r.set_intensity(incident.get_intensity());
-            r.set_material(prev_mat);
-            r.set_creator(surface);
-            incident.add_generated(r);
-            return r;
-        }
-        return null;
-    }
-
-    /**
+        /**
      * Compute refracted ray direction given
      *
      * @param ray    Original ray - position and direction
      * @param normal Normal to the intercept
      * @param mu     Ration of refractive index
      */
-    Vector3 compute_refraction(OpticalSurface surface, Vector3Pair ray, Vector3 normal, double mu) {
-        Vector3 N = normal.times(-1.0); // Because we changed sign at intersection
-        // See Feder paper p632
-        double O2 = N.dot(N);
-        double E1 = ray.direction().dot(N);
-        double E1_ = Math.Sqrt(O2 * (1.0 - mu * mu) + mu * mu * E1 * E1);
-        if (Double.IsNaN(E1_)) {
-            return null;
+        Vector3 compute_refraction(OpticalSurface surface, Vector3Pair ray, Vector3 normal, double mu)
+        {
+            Vector3 N = normal.times(-1.0); // Because we changed sign at intersection
+            // See Feder paper p632
+            double O2 = N.dot(N);
+            double E1 = ray.direction().dot(N);
+            double E1_ = Math.Sqrt(O2 * (1.0 - mu * mu) + mu * mu * E1 * E1);
+            if (Double.IsNaN(E1_))
+            {
+                return null;
+            }
+
+            double g1 = (E1_ - mu * E1) / O2;
+            return ray.direction().times(mu).plus(N.times(g1));
         }
-        double g1 = (E1_ - mu * E1) / O2;
-        return ray.direction().times(mu).plus(N.times(g1));
-    }
 
-    Vector3 refract(OpticalSurface surface, Vector3Pair ray,
-                    Vector3 normal,
-                    double refract_index) {
-        // Algorithm from Bram de Greve article "Reflections & Refractions in
-        // Raytracing" http://www.bramz.org/
+        Vector3 refract(OpticalSurface surface, Vector3Pair ray,
+            Vector3 normal,
+            double refract_index)
+        {
+            // Algorithm from Bram de Greve article "Reflections & Refractions in
+            // Raytracing" http://www.bramz.org/
 
-        // assert (Math.abs(normal.len() - 1.0) < 1e-10);
-        // assert (Math.abs((ray.direction().len()) - 1.0) < 1e-10);
+            // assert (Math.abs(normal.len() - 1.0) < 1e-10);
+            // assert (Math.abs((ray.direction().len()) - 1.0) < 1e-10);
 
-        double cosi = normal.dot(ray.direction());
-        double sint2 = MathUtils.square(refract_index) * (1.0 - MathUtils.square(cosi));
+            double cosi = normal.dot(ray.direction());
+            double sint2 = MathUtils.square(refract_index) * (1.0 - MathUtils.square(cosi));
 
-        if (sint2 > 1.0)
-            return null; // total internal reflection
+            if (sint2 > 1.0)
+                return null; // total internal reflection
 
-        Vector3 dir = ray.direction().times(refract_index).minus(
+            Vector3 dir = ray.direction().times(refract_index).minus(
                 normal.times(refract_index * cosi + Math.Sqrt(1.0 - sint2)));
 
-        // This uses Feder refractive formula
-        Vector3 dir2 = compute_refraction(surface, ray, normal, refract_index);
+            // This uses Feder refractive formula
+            Vector3 dir2 = compute_refraction(surface, ray, normal, refract_index);
 //        if ((fabs (dir.x () - dir2.x ()) > 1e-14
 //                || fabs (dir.y () - dir2.y ()) > 1e-14
 //                || fabs (dir.z () - dir2.z ()) > 1e-14))
@@ -363,106 +412,117 @@ public class RayTracer {
 //                    dir2.z ());
 //        }
 
-        dir = dir2;
-        return dir;
-    }
-
-    Vector3 reflect(OpticalSurface surface, Vector3Pair ray, Vector3 normal) {
-        // Algorithm from Bram de Greve article "Reflections & Refractions in
-        // Raytracing" http://www.bramz.org/
-
-        // assert (Math.abs(normal.len() - 1.0) < 1e-10);
-        // assert (Math.abs((ray.direction().len()) - 1.0) < 1e-10);
-
-        double cosi = normal.dot(ray.direction());
-
-        return ray.direction().minus(normal.times(2.0 * cosi));
-    }
-
-    private Vector3Pair intersect(Surface surface, RayTraceParameters params_, Vector3Pair ray) {
-        Vector3 origin = surface.get_curve().intersect(ray);
-        if (origin == null)
-            return null;
-
-        if (!params_.get_unobstructed()
-                && !surface.get_shape().inside(origin.project_xy()))
-            return null;
-
-        Vector3 normal = surface.get_curve().normal(origin);
-        if (ray.direction().z() < 0)
-            normal = normal.negate();
-
-        return new Vector3Pair(origin, normal);
-    }
-
-    private Vector3Pair intersect(Stop surface, RayTraceParameters params_, Vector3Pair ray) {
-        Vector3 origin = surface.get_curve().intersect(ray);
-        if (origin == null)
-            return null;
-
-        Vector2 v = origin.project_xy();
-
-        if (v.len() > surface.get_external_radius())
-            return null;
-
-        bool ir = true; // FIXME _intercept_reemit || params.is_sequential ();
-
-        if (!ir && surface.get_shape().inside(v))
-            return null;
-
-        Vector3 normal = surface.get_curve().normal(origin);
-        if (ray.direction().z() < 0)
-            normal = normal.negate();
-
-        return new Vector3Pair(origin, normal);
-    }
-
-    TracedRay trace_ray_simple(Stop surface, RayTraceResults result, TracedRay incident, Vector3Pair local, Vector3Pair intersect) {
-        Vector2 v = intersect.origin().project_xy();
-
-        bool ir = true; // FIXME  _intercept_reemit || result.get_params ().is_sequential ();
-
-        if (ir && surface.get_shape().inside(v)) {
-            // re-emit incident ray
-            TracedRay r = result.newRay(intersect.origin(), incident.get_ray().direction());
-
-            r.set_wavelen(incident.get_wavelen());
-            r.set_intensity(incident.get_intensity());
-            r.set_material(incident.get_material());
-            r.set_creator(surface);
-
-            incident.add_generated(r);
-            return r;
+            dir = dir2;
+            return dir;
         }
-        return null;
-    }
 
-    List<TracedRay> process_rays(Stop surface, TraceIntensityMode m, RayTraceResults result, List<TracedRay> input) {
-        List<TracedRay> rays = new ();
-        foreach (TracedRay i in input) {
-            TracedRay ray = i;
+        Vector3 reflect(OpticalSurface surface, Vector3Pair ray, Vector3 normal)
+        {
+            // Algorithm from Bram de Greve article "Reflections & Refractions in
+            // Raytracing" http://www.bramz.org/
 
-            Transform3 t = ray.get_creator().get_transform_to(surface);
-            Vector3Pair local = t.transform_line(ray.get_ray());
+            // assert (Math.abs(normal.len() - 1.0) < 1e-10);
+            // assert (Math.abs((ray.direction().len()) - 1.0) < 1e-10);
 
-            Vector3 origin = surface.get_curve().intersect(local);
-            if (origin != null) {
-                if (origin.project_xy().len() < surface.get_external_radius()) {
-                    Vector3 normal = surface.get_curve().normal(origin);
+            double cosi = normal.dot(ray.direction());
 
-                    if (local.direction().z() < 0)
-                        normal = normal.negate();
+            return ray.direction().minus(normal.times(2.0 * cosi));
+        }
 
-                    result.add_intercepted(surface, ray);
+        private Vector3Pair intersect(Surface surface, RayTraceParameters params_, Vector3Pair ray)
+        {
+            Vector3 origin = surface.get_curve().intersect(ray);
+            if (origin == null)
+                return null;
 
-                    TracedRay cray = trace_ray(surface, m, result, ray, local, new Vector3Pair(origin, normal));
-                    if (cray != null)
-                        rays.Add(cray);
+            if (!params_.get_unobstructed()
+                && !surface.get_shape().inside(origin.project_xy()))
+                return null;
+
+            Vector3 normal = surface.get_curve().normal(origin);
+            if (ray.direction().z() < 0)
+                normal = normal.negate();
+
+            return new Vector3Pair(origin, normal);
+        }
+
+        private Vector3Pair intersect(Stop surface, RayTraceParameters params_, Vector3Pair ray)
+        {
+            Vector3 origin = surface.get_curve().intersect(ray);
+            if (origin == null)
+                return null;
+
+            Vector2 v = origin.project_xy();
+
+            if (v.len() > surface.get_external_radius())
+                return null;
+
+            bool ir = true; // FIXME _intercept_reemit || params.is_sequential ();
+
+            if (!ir && surface.get_shape().inside(v))
+                return null;
+
+            Vector3 normal = surface.get_curve().normal(origin);
+            if (ray.direction().z() < 0)
+                normal = normal.negate();
+
+            return new Vector3Pair(origin, normal);
+        }
+
+        TracedRay trace_ray_simple(Stop surface, RayTraceResults result, TracedRay incident, Vector3Pair local,
+            Vector3Pair intersect)
+        {
+            Vector2 v = intersect.origin().project_xy();
+
+            bool ir = true; // FIXME  _intercept_reemit || result.get_params ().is_sequential ();
+
+            if (ir && surface.get_shape().inside(v))
+            {
+                // re-emit incident ray
+                TracedRay r = result.newRay(intersect.origin(), incident.get_ray().direction());
+
+                r.set_wavelen(incident.get_wavelen());
+                r.set_intensity(incident.get_intensity());
+                r.set_material(incident.get_material());
+                r.set_creator(surface);
+
+                incident.add_generated(r);
+                return r;
+            }
+
+            return null;
+        }
+
+        List<TracedRay> process_rays(Stop surface, TraceIntensityMode m, RayTraceResults result, List<TracedRay> input)
+        {
+            List<TracedRay> rays = new();
+            foreach (TracedRay i in input)
+            {
+                TracedRay ray = i;
+
+                Transform3 t = ray.get_creator().get_transform_to(surface);
+                Vector3Pair local = t.transform_line(ray.get_ray());
+
+                Vector3 origin = surface.get_curve().intersect(local);
+                if (origin != null)
+                {
+                    if (origin.project_xy().len() < surface.get_external_radius())
+                    {
+                        Vector3 normal = surface.get_curve().normal(origin);
+
+                        if (local.direction().z() < 0)
+                            normal = normal.negate();
+
+                        result.add_intercepted(surface, ray);
+
+                        TracedRay cray = trace_ray(surface, m, result, ray, local, new Vector3Pair(origin, normal));
+                        if (cray != null)
+                            rays.Add(cray);
+                    }
                 }
             }
-        }
-        return rays;
-    }
-}
 
+            return rays;
+        }
+    }
 }

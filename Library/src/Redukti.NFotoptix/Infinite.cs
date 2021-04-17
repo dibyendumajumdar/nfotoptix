@@ -28,7 +28,6 @@ using System;
 
 namespace Redukti.Nfotopix
 {
-
     public class Infinite : Shape
     {
         public static readonly Infinite infinite = new Infinite();
@@ -84,14 +83,11 @@ namespace Redukti.Nfotopix
 
         public void get_contour(int contour, PatternConsumer f, double resolution)
         {
-
         }
 
 
         public void get_triangles(ConsumerTriangle2 f, double resolution)
         {
-
         }
     }
-
 }

@@ -26,7 +26,6 @@ Original GNU Optical License and Authors are as follows:
 
 namespace Redukti.Nfotopix
 {
-
     public class Triangle2
     {
         readonly int N = 3;
@@ -45,5 +44,4 @@ namespace Redukti.Nfotopix
             return _v[0].plus(_v[1]).plus(_v[2]).divide(3.0);
         }
     }
-
 }

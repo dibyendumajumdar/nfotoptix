@@ -29,14 +29,11 @@ using System.Text;
 
 namespace Redukti.Nfotopix
 {
-
-
     /**
      * 3D Matrix class - immutable implementation.
      */
     public class Matrix3
     {
-
         /* row major storage for 3d matrix */
         readonly double[] _values;
 
@@ -114,8 +111,10 @@ namespace Redukti.Nfotopix
                 {
                     s += _values[idx(i, k)] * v.values[k];
                 }
+
                 r[i] = s;
             }
+
             return new Vector3(r[0], r[1], r[2]);
         }
 
@@ -135,6 +134,7 @@ namespace Redukti.Nfotopix
                     r[idx(i, j)] = s;
                 }
             }
+
             return new Matrix3(r);
         }
 
@@ -151,21 +151,21 @@ namespace Redukti.Nfotopix
             double[] r = new double[9];
             r[idx(0, 0)] = +s1 / det;
             r[idx(0, 1)]
-                    = -(_values[idx(0, 1)] * _values[idx(2, 2)] - _values[idx(0, 2)] * _values[idx(2, 1)]) / det;
+                = -(_values[idx(0, 1)] * _values[idx(2, 2)] - _values[idx(0, 2)] * _values[idx(2, 1)]) / det;
             r[idx(0, 2)]
-                    = +(_values[idx(0, 1)] * _values[idx(1, 2)] - _values[idx(0, 2)] * _values[idx(1, 1)]) / det;
+                = +(_values[idx(0, 1)] * _values[idx(1, 2)] - _values[idx(0, 2)] * _values[idx(1, 1)]) / det;
 
             r[idx(1, 0)] = -s2 / det;
             r[idx(1, 1)]
-                    = +(_values[idx(0, 0)] * _values[idx(2, 2)] - _values[idx(0, 2)] * _values[idx(2, 0)]) / det;
+                = +(_values[idx(0, 0)] * _values[idx(2, 2)] - _values[idx(0, 2)] * _values[idx(2, 0)]) / det;
             r[idx(1, 2)]
-                    = -(_values[idx(0, 0)] * _values[idx(1, 2)] - _values[idx(0, 2)] * _values[idx(1, 0)]) / det;
+                = -(_values[idx(0, 0)] * _values[idx(1, 2)] - _values[idx(0, 2)] * _values[idx(1, 0)]) / det;
 
             r[idx(2, 0)] = +s3 / det;
             r[idx(2, 1)]
-                    = -(_values[idx(0, 0)] * _values[idx(2, 1)] - _values[idx(0, 1)] * _values[idx(2, 0)]) / det;
+                = -(_values[idx(0, 0)] * _values[idx(2, 1)] - _values[idx(0, 1)] * _values[idx(2, 0)]) / det;
             r[idx(2, 2)]
-                    = +(_values[idx(0, 0)] * _values[idx(1, 1)] - _values[idx(0, 1)] * _values[idx(1, 0)]) / det;
+                = +(_values[idx(0, 0)] * _values[idx(1, 1)] - _values[idx(0, 1)] * _values[idx(1, 0)]) / det;
 
             return new Matrix3(r);
         }
@@ -237,6 +237,7 @@ namespace Redukti.Nfotopix
                 default:
                     throw new InvalidOperationException("Invalid rotation axis, must be 0=x, 1=y or 2=z");
             }
+
             return new Matrix3(r);
         }
 
@@ -251,6 +252,7 @@ namespace Redukti.Nfotopix
                 {
                     sb.Append(',');
                 }
+
                 sb.Append('[');
                 for (int j = 0; j < 3; j++)
                 {
@@ -258,10 +260,13 @@ namespace Redukti.Nfotopix
                     {
                         sb.Append(',');
                     }
+
                     sb.Append(_values[idx(i, j)]);
                 }
+
                 sb.Append(']');
             }
+
             sb.Append(']');
             return sb.ToString();
         }
@@ -273,8 +278,8 @@ namespace Redukti.Nfotopix
                 if (Math.Abs(_values[i] - other._values[i]) > tolerance)
                     return false;
             }
+
             return true;
         }
     }
-
 }

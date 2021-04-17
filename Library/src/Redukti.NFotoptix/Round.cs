@@ -28,11 +28,8 @@ using System;
 
 namespace Redukti.Nfotopix
 {
-
-
     public abstract class Round : ShapeBase
     {
-
         static Random random = new Random();
 
         bool hole;
@@ -49,18 +46,18 @@ namespace Redukti.Nfotopix
         }
 
         public override void get_pattern(PatternConsumer f,
-                                Distribution d,
-                                bool unobstructed)
+            Distribution d,
+            bool unobstructed)
         {
             const double epsilon = 1e-8;
             double xyr = 1.0 / get_xy_ratio();
             double tr = get_external_xradius() * d.get_scaling();
             bool obstructed = hole && !unobstructed;
             double hr = obstructed
-                    ? get_internal_xradius() * (2.0 - d.get_scaling())
-                    : 0.0;
-            int rdens = (int)Math.Floor((double)d.get_radial_density()
-                    - (d.get_radial_density() * (hr / tr)));
+                ? get_internal_xradius() * (2.0 - d.get_scaling())
+                : 0.0;
+            int rdens = (int) Math.Floor((double) d.get_radial_density()
+                                         - (d.get_radial_density() * (hr / tr)));
             rdens = Math.Max(1, rdens);
             double step = (tr - hr) / rdens;
 
@@ -69,112 +66,108 @@ namespace Redukti.Nfotopix
             switch (p)
             {
                 case Pattern.MeridionalDist:
+                {
+                    if (!obstructed)
+                        f(Vector2.vector2_0);
+
+                    double bound = obstructed ? hr - epsilon : epsilon;
+
+                    for (double r = tr; r > bound; r -= step)
                     {
-
-                        if (!obstructed)
-                            f(Vector2.vector2_0);
-
-                        double bound = obstructed ? hr - epsilon : epsilon;
-
-                        for (double r = tr; r > bound; r -= step)
-                        {
-                            f(new Vector2(0, r * xyr));
-                            f(new Vector2(0, -r * xyr));
-                        }
+                        f(new Vector2(0, r * xyr));
+                        f(new Vector2(0, -r * xyr));
                     }
+                }
                     break;
 
                 case Pattern.SagittalDist:
+                {
+                    if (!obstructed)
+                        f(Vector2.vector2_0);
+
+                    double bound = obstructed ? hr - epsilon : epsilon;
+
+                    for (double r = tr; r > bound; r -= step)
                     {
-
-                        if (!obstructed)
-                            f(Vector2.vector2_0);
-
-                        double bound = obstructed ? hr - epsilon : epsilon;
-
-                        for (double r = tr; r > bound; r -= step)
-                        {
-                            f(new Vector2(r, 0));
-                            f(new Vector2(-r, 0));
-                        }
+                        f(new Vector2(r, 0));
+                        f(new Vector2(-r, 0));
                     }
+                }
                     break;
 
                 case Pattern.CrossDist:
+                {
+                    if (!obstructed)
+                        f(Vector2.vector2_0);
+
+                    double bound = obstructed ? hr - epsilon : epsilon;
+
+                    for (double r = tr; r > bound; r -= step)
                     {
-
-                        if (!obstructed)
-                            f(Vector2.vector2_0);
-
-                        double bound = obstructed ? hr - epsilon : epsilon;
-
-                        for (double r = tr; r > bound; r -= step)
-                        {
-                            f(new Vector2(0, r * xyr));
-                            f(new Vector2(r, 0));
-                            f(new Vector2(0, -r * xyr));
-                            f(new Vector2(-r, 0));
-                        }
+                        f(new Vector2(0, r * xyr));
+                        f(new Vector2(r, 0));
+                        f(new Vector2(0, -r * xyr));
+                        f(new Vector2(-r, 0));
                     }
+                }
                     break;
 
                 case Pattern.RandomDist:
+                {
+                    if (!obstructed)
+                        f(Vector2.vector2_0);
+
+                    double bound = obstructed ? hr - epsilon : epsilon;
+
+                    double tr1 = tr / 20.0;
+                    for (double r = tr1; r > bound; r -= step)
                     {
-                        if (!obstructed)
-                            f(Vector2.vector2_0);
-
-                        double bound = obstructed ? hr - epsilon : epsilon;
-
-                        double tr1 = tr / 20.0;
-                        for (double r = tr1; r > bound; r -= step)
+                        double astep = (Math.PI / 3) / Math.Ceiling(r / step);
+                        // angle
+                        for (double a = 0; a < 2 * Math.PI - epsilon; a += astep)
                         {
-                            double astep = (Math.PI / 3) / Math.Ceiling(r / step);
-                            // angle
-                            for (double a = 0; a < 2 * Math.PI - epsilon; a += astep)
-                            {
-                                Vector2 v = new Vector2(Math.Sin(a) * r + (random.NextDouble() - .5) * step,
-                                        Math.Cos(a) * r * xyr + (random.NextDouble() - .5) * step);
-                                double h = MathUtils.Hypot(v.x(), v.y() / xyr);
-                                if (h < tr && (h > hr || unobstructed))
-                                    f(v);
-                            }
+                            Vector2 v = new Vector2(Math.Sin(a) * r + (random.NextDouble() - .5) * step,
+                                Math.Cos(a) * r * xyr + (random.NextDouble() - .5) * step);
+                            double h = MathUtils.Hypot(v.x(), v.y() / xyr);
+                            if (h < tr && (h > hr || unobstructed))
+                                f(v);
                         }
                     }
+                }
                     break;
 
                 case Pattern.DefaultDist:
                 case Pattern.HexaPolarDist:
+                {
+                    if (!obstructed)
+                        f(Vector2.vector2_0);
+
+                    double bound = obstructed ? hr - epsilon : epsilon;
+
+                    for (double r = tr; r > bound; r -= step)
                     {
+                        double astep = (Math.PI / 3) / Math.Ceiling(r / step);
 
-                        if (!obstructed)
-                            f(Vector2.vector2_0);
-
-                        double bound = obstructed ? hr - epsilon : epsilon;
-
-                        for (double r = tr; r > bound; r -= step)
-                        {
-                            double astep = (Math.PI / 3) / Math.Ceiling(r / step);
-
-                            for (double a = 0; a < 2 * Math.PI - epsilon; a += astep)
-                                f(new Vector2(Math.Sin(a) * r, Math.Cos(a) * r * xyr));
-                        }
+                        for (double a = 0; a < 2 * Math.PI - epsilon; a += astep)
+                            f(new Vector2(Math.Sin(a) * r, Math.Cos(a) * r * xyr));
                     }
+                }
                     break;
 
                 default:
+                {
+                    PatternConsumer f2 = (Vector2 v) =>
                     {
-                        PatternConsumer f2 = (Vector2 v) =>
-                        {
-                            // unobstructed pattern must be inside external
-                            // radius
-                            if (MathUtils.square(v.x())
-                                    + MathUtils.square(v.y() / xyr)
-                                    < MathUtils.square(tr))
-                                f(v);
-                        };
-                        base.get_pattern(f2, d, unobstructed);
-                        break;
-                    }
+                        // unobstructed pattern must be inside external
+                        // radius
+                        if (MathUtils.square(v.x())
+                            + MathUtils.square(v.y() / xyr)
+                            < MathUtils.square(tr))
+                            f(v);
+                    };
+                    base.get_pattern(f2, d, unobstructed);
+                    break;
+                }
             }
         }
 
@@ -188,9 +181,9 @@ namespace Redukti.Nfotopix
         {
             double xyr = 1.0 / get_xy_ratio();
             double width = xyr <= 1.0
-                    ? get_external_xradius() - get_internal_xradius()
-                    : get_external_xradius() * xyr
-                    - get_internal_xradius() * xyr;
+                ? get_external_xradius() - get_internal_xradius()
+                : get_external_xradius() * xyr
+                  - get_internal_xradius() * xyr;
 
             if (resolution < width / 30.0)
                 resolution = width / 30.0;
@@ -202,13 +195,13 @@ namespace Redukti.Nfotopix
                 resolution = get_internal_xradius();
 
             return (get_external_xradius() - get_internal_xradius())
-                    / Math.Ceiling(width / resolution);
+                   / Math.Ceiling(width / resolution);
         }
 
 
         public override void get_contour(int contour,
-                                PatternConsumer f,
-                                double resolution)
+            PatternConsumer f,
+            double resolution)
         {
             const double epsilon = 1e-8;
             double xyr = 1.0 / get_xy_ratio();
@@ -246,7 +239,7 @@ namespace Redukti.Nfotopix
                 {
                     Vector2 a = new Vector2(Math.Cos(a1) * rstep, Math.Sin(a1) * rstep * xyr);
                     Vector2 b = new Vector2(Math.Cos(a1 + astep1) * rstep,
-                            Math.Sin(a1 + astep1) * rstep * xyr);
+                        Math.Sin(a1 + astep1) * rstep * xyr);
                     Vector2 z = Vector2.vector2_0;
 
                     f(new Triangle2(b, a, z));
@@ -270,14 +263,14 @@ namespace Redukti.Nfotopix
                 {
                     Vector2 a = new Vector2(Math.Cos(a1) * r, Math.Sin(a1) * r * xyr);
                     Vector2 b = new Vector2(Math.Cos(a2) * (r + rstep),
-                            Math.Sin(a2) * (r + rstep) * xyr);
+                        Math.Sin(a2) * (r + rstep) * xyr);
                     Vector2 c;
 
                     if (a1 + epsilon > a2)
                     {
                         a2 += astep2;
                         c = new Vector2(Math.Cos(a2) * (r + rstep),
-                                Math.Sin(a2) * (r + rstep) * xyr);
+                            Math.Sin(a2) * (r + rstep) * xyr);
                     }
                     else
                     {
@@ -292,7 +285,5 @@ namespace Redukti.Nfotopix
                 astep1 = astep2;
             }
         }
-
     }
-
 }

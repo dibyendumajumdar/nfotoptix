@@ -26,43 +26,34 @@ Original GNU Optical License and Authors are as follows:
 
 using System;
 
-namespace Redukti.Nfotopix {
+namespace Redukti.Nfotopix
+{
+    public class MathUtils
+    {
+        public static double square(double x)
+        {
+            return x * x;
+        }
 
-
-public class MathUtils {
-    public static double square(double x) { return x*x; }
-    public static int trunc(double value) {
-        return (int)(value<0 ? Math.Ceiling(value) : Math.Floor(value));
-    }
+        public static int trunc(double value)
+        {
+            return (int) (value < 0 ? Math.Ceiling(value) : Math.Floor(value));
+        }
 
         public static double ToRadians(double degrees)
         {
             return (Math.PI / 180) * degrees;
         }
+
         public static double ToDegrees(double radians)
         {
             return (180 / Math.PI) * radians;
         }
-        
+
         public static double Hypot(double x, double y)
         {
-            return Math.Sqrt(x*x + y*y);
+            return Math.Sqrt(x * x + y * y);
         }
-
-        //public static DecimalFormat decimal_format(int maxFractionDigits) {
-        //    DecimalFormat _decimal_format = new DecimalFormat();
-        //    //formatter.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
-        //    _decimal_format.setMinimumIntegerDigits(1);
-        //    _decimal_format.setMaximumFractionDigits(maxFractionDigits);
-        //    _decimal_format.setMinimumFractionDigits(0);
-        //    _decimal_format.setDecimalSeparatorAlwaysShown(false);
-        //    _decimal_format.setGroupingUsed(false);
-        //    return _decimal_format;
-        //}
-        //public static DecimalFormat decimal_format() {
-        //    return decimal_format(3);
-        //}
-
+        
     }
-
 }

@@ -26,10 +26,9 @@ Original GNU Optical License and Authors are as follows:
 
 using System;
 
-namespace Redukti.Nfotopix {
-
-
-/**
+namespace Redukti.Nfotopix
+{
+    /**
  * Sellmeier model for optical glass material
  * This class models optical properties of dielectric
  * materials using @url http://en.wikipedia.org/wiki/Sellmeier_equation
@@ -39,43 +38,45 @@ namespace Redukti.Nfotopix {
  * <p>
  * with @math $\lambda$ the micrometer wavelength.
  */
-public class Sellmeier : Dielectric {
+    public class Sellmeier : Dielectric
+    {
+        double[] _coeff;
+        double _constant;
 
-    double[] _coeff;
-    double _constant;
-
-    /**
+        /**
      * Create an empty sellmeier model
      */
-    public Sellmeier(): base("Sellmeier") {
-        _coeff = new double[0];
-        _constant = 1.0;
-    }
+        public Sellmeier() : base("Sellmeier")
+        {
+            _coeff = new double[0];
+            _constant = 1.0;
+        }
 
-    /**
+        /**
      * Create an 3rd order sellmeier model with given coefficients
      * and 1.0 constant
      */
-    public Sellmeier(double K1, double L1, double K2, double L2, double K3, double L3) {
-        _coeff = new double[6];
-        _constant = 1.0;
-        _coeff[0] = K1;
-        _coeff[1] = L1;
-        _coeff[2] = K2;
-        _coeff[3] = L2;
-        _coeff[4] = K3;
-        _coeff[5] = L3;
+        public Sellmeier(double K1, double L1, double K2, double L2, double K3, double L3)
+        {
+            _coeff = new double[6];
+            _constant = 1.0;
+            _coeff[0] = K1;
+            _coeff[1] = L1;
+            _coeff[2] = K2;
+            _coeff[3] = L2;
+            _coeff[4] = K3;
+            _coeff[5] = L3;
+        }
+
+        public override double get_measurement_index(double wavelen)
+        {
+            double w2 = MathUtils.square(wavelen / 1000.0);
+            double n = _constant;
+
+            for (int i = 0; i < _coeff.Length; i += 2)
+                n += (w2 * _coeff[i]) / (w2 - _coeff[i + 1]);
+
+            return Math.Sqrt(n);
+        }
     }
-
-    public override double get_measurement_index(double wavelen) {
-        double w2 = MathUtils.square(wavelen / 1000.0);
-        double n = _constant;
-
-        for (int i = 0; i < _coeff.Length; i += 2)
-            n += (w2 * _coeff[i]) / (w2 - _coeff[i + 1]);
-
-        return Math.Sqrt(n);
-    }
-}
-
 }

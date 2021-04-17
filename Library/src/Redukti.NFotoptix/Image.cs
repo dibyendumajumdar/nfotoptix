@@ -24,36 +24,42 @@ Original GNU Optical License and Authors are as follows:
  */
 
 
-namespace Redukti.Nfotopix {
+namespace Redukti.Nfotopix
+{
+    public class Image : Surface
+    {
+        public Image(int id, Vector3Pair p, Transform3 transform, Curve curve, Shape shape) : base(id, p, transform,
+            curve, shape)
+        {
+        }
 
-public class Image : Surface {
 
-    public Image(int id, Vector3Pair p, Transform3 transform, Curve curve, Shape shape): base(id, p, transform, curve, shape) {
+        public override string ToString()
+        {
+            return "Image{" + base.ToString() + "}";
+        }
+
+        public new class Builder : Surface.Builder
+        {
+            public override Image.Builder position(Vector3Pair position)
+            {
+                return (Image.Builder) base.position(position);
+            }
+
+            public override Image.Builder shape(Shape shape)
+            {
+                return (Image.Builder) base.shape(shape);
+            }
+
+            public override Image.Builder curve(Curve curve)
+            {
+                return (Image.Builder) base.curve(curve);
+            }
+
+            public override Image build()
+            {
+                return new Image(_id, _position, _transform, _curve, _shape);
+            }
+        }
     }
-
-    
-    public override string ToString() {
-        return "Image{" + base.ToString() + "}";
-    }
-
-    public new class Builder : Surface.Builder {
-        
-        public override Image.Builder position(Vector3Pair position) {
-            return (Image.Builder) base.position(position);
-        }
-
-        public override Image.Builder shape(Shape shape) {
-            return (Image.Builder) base.shape(shape);
-        }
-
-        public override Image.Builder curve(Curve curve) {
-            return (Image.Builder) base.curve(curve);
-        }
-
-        public override Image build() {
-            return new Image(_id, _position, _transform, _curve, _shape);
-        }
-    }
-}
-
 }

@@ -26,13 +26,10 @@ Original GNU Optical License and Authors are as follows:
 
 namespace Redukti.Nfotopix
 {
-
     public class Vacuum : MaterialBase
     {
-
         public Vacuum() : base("Vacuum")
         {
-
         }
 
         override public bool is_opaque()
@@ -60,5 +57,4 @@ namespace Redukti.Nfotopix
             return 1.0;
         }
     }
-
 }
