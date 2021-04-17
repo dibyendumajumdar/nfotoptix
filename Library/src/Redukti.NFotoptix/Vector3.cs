@@ -187,7 +187,7 @@ namespace Redukti.Nfotopix
         public Vector3 v(int i, double d)
         {
             double[] val = new double[this.values.Length];
-            Array.Copy(val, values, values.Length);
+            Array.Copy(values, val, values.Length);
             val[i] = d;
             return new Vector3(val);
         }
