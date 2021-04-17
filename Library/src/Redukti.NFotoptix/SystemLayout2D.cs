@@ -38,23 +38,36 @@ public class SystemLayout2D {
     void draw_element_2d(Renderer r, Element self, Element ref_) {
         // Order is important here as Lens extends Group
         // and Stop extends Surface
-        if (self is Lens) {
-            r.group_begin("element");
-            draw_2d_e(r, (Lens) self, ref_);
-            r.group_end();
-        } else if (self is Group) {
-            r.group_begin("element");
-            draw_2d_e(r, (Group) self, ref_);
-            r.group_end();
-        } else if (self is Stop) {
-            r.group_begin("element");
-            draw_2d_e(r, (Stop) self, ref_);
-            r.group_end();
-        } else if (self is Surface) {
-            r.group_begin("element");
-            draw_2d_e(r, (Surface) self, ref_);
-            r.group_end();
-        } else {
+        switch (self)
+        {
+            case Lens lens:
+            {
+                r.group_begin("element");
+                draw_2d_e(r, lens, ref_);
+                r.group_end();
+                break;
+            }
+            case Group group:
+            {
+                r.group_begin("element");
+                draw_2d_e(r, group, ref_);
+                r.group_end();
+                break;
+            }
+            case Stop stop:
+            {
+                r.group_begin("element");
+                draw_2d_e(r, stop, ref_);
+                r.group_end();
+                break;
+            }
+            case Surface surface:
+            {
+                r.group_begin("element");
+                draw_2d_e(r, surface, ref_);
+                r.group_end();
+                break;
+            }
         }
     }
 
