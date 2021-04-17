@@ -56,7 +56,7 @@ public class RayTracer {
     public RayTraceResults trace(OpticalSystem system, RayTraceParameters parameters) {
         RayTraceResults result = new RayTraceResults(parameters);
         switch (parameters._intensity_mode) {
-            case RayTracer.TraceIntensityMode.Simpletrace:
+            case TraceIntensityMode.Simpletrace:
                 if (!parameters._sequential_mode)
                     //trace_template<Simpletrace> ();
                     throw new InvalidOperationException();
@@ -64,7 +64,7 @@ public class RayTracer {
                     trace_sequential(parameters._intensity_mode, parameters, result);
                 break;
 
-            case RayTracer.TraceIntensityMode.Intensitytrace:
+            case TraceIntensityMode.Intensitytrace:
 //                if (!parameters._sequential_mode)
 //                    trace_template<Intensitytrace> ();
 //                else
@@ -72,7 +72,7 @@ public class RayTracer {
                 throw new InvalidOperationException();
                 //break;
 
-            case RayTracer.TraceIntensityMode.Polarizedtrace:
+            case TraceIntensityMode.Polarizedtrace:
 //                if (!parameters._sequential_mode)
 //                    trace_template<Polarizedtrace> ();
 //                else
@@ -89,7 +89,7 @@ public class RayTracer {
 
     void trace_sequential(RayTracer.TraceIntensityMode m, RayTraceParameters parameters, RayTraceResults result) {
         // stack of rays to propagate
-        RayCollection[] tmp = new RayCollection[]{new RayCollection(), new RayCollection()};
+        RayCollection[] tmp = new[]{new RayCollection(), new RayCollection()};
         RayGenerator rayGenerator = new RayGenerator();
 
         int swaped = 0;
@@ -117,18 +117,24 @@ public class RayTracer {
             generated = er._generated != null ? er._generated : tmp[swaped].rays;
             generated.Clear();
 
-            if (element is PointSource) {
-                PointSource source = (PointSource) element;
-                result.add_source(source);
-                List<Element> elist = new ();
-                if (entrance != null)
-                    elist.Add(entrance);
-                List<TracedRay> rays = rayGenerator.generate_rays_simple(result, parameters, source, elist);
-                generated.AddRange(rays);
-            } else {
-                List<TracedRay> rays = process_rays(element, m, result, source_rays);
-                // swap ray buffers
-                generated.AddRange(rays);
+            switch (element) {
+                case PointSource source:
+                {
+                    result.add_source(source);
+                    List<Element> elist = new();
+                    if (entrance != null)
+                        elist.Add(entrance);
+                    List<TracedRay> rays = rayGenerator.generate_rays_simple(result, parameters, source, elist);
+                    generated.AddRange(rays);
+                    break;
+                }
+                default:
+                {
+                    List<TracedRay> rays = process_rays(element, m, result, source_rays);
+                    // swap ray buffers
+                    generated.AddRange(rays);
+                    break;
+                }
             }
             source_rays = generated;
             swaped ^= 1;
@@ -156,13 +162,12 @@ public class RayTracer {
     }
 
     private List<TracedRay> process_rays_simple(Element e, RayTraceResults result, List<TracedRay> input) {
-        if (e is Stop) {
-            Stop surface = (Stop) e;
+        switch (e) {
+        case Stop surface: 
             return process_rays(surface, TraceIntensityMode.Simpletrace, result, input);
-        } else if (e is Surface) {
-            Surface surface = (Surface) e;
+        case Surface surface: 
             return process_rays(surface, TraceIntensityMode.Simpletrace, result, input);
-        } else {
+        default:
             throw new InvalidOperationException();
         }
     }
