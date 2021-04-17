@@ -181,8 +181,10 @@ public class SystemLayout2D {
                     r.draw_segment(new Vector2Pair(new Vector2(l2.x(), m), new Vector2(r2.x(), m)),
                             r.get_style_color(left.get_style()));
 
+                    break;
                 }
-                break;
+
+                goto case Lens.LensEdge.SlopeEdge;
             }
 
             case Lens.LensEdge.SlopeEdge:
