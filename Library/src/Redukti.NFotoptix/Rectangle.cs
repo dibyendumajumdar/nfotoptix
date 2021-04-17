@@ -45,19 +45,19 @@ namespace Redukti.Nfotopix
         }
 
 
-        override public double max_radius()
+        public override double max_radius()
         {
             return _halfsize.len();
         }
 
 
-        override public double min_radius()
+        public override double min_radius()
         {
             return Math.Min(_halfsize.x(), _halfsize.y());
         }
 
 
-        override public bool inside(Vector2 point)
+        public override bool inside(Vector2 point)
         {
             return (Math.Abs(point.x()) <= _halfsize.x()
                     && Math.Abs(point.y()) <= _halfsize.y());
@@ -69,7 +69,7 @@ namespace Redukti.Nfotopix
         {
             const double epsilon = 1e-8;
             Vector2 hs = _halfsize.times(d.get_scaling());
-            Vector2 step = hs.divide((double)(d.get_radial_density() / 2));
+            Vector2 step = hs.divide((double)(d.get_radial_density() / 2.0));
 
             switch (d.get_pattern())
             {
@@ -152,19 +152,19 @@ namespace Redukti.Nfotopix
         }
 
 
-        override public Vector2Pair get_bounding_box()
+        public override Vector2Pair get_bounding_box()
         {
             return new Vector2Pair(_halfsize.negate(), _halfsize);
         }
 
 
-        override public int get_contour_count()
+        public override int get_contour_count()
         {
             return 1;
         }
 
 
-        override public void get_contour(int contour, PatternConsumer f, double resolution)
+        public override void get_contour(int contour, PatternConsumer f, double resolution)
         {
             const double epsilon = 1e-8;
 
@@ -187,7 +187,7 @@ namespace Redukti.Nfotopix
         }
 
 
-        override public void get_triangles(ConsumerTriangle2 f, double resolution)
+        public override void get_triangles(ConsumerTriangle2 f, double resolution)
         {
             const double epsilon = 1e-8;
 
@@ -232,7 +232,7 @@ namespace Redukti.Nfotopix
         }
 
 
-        override public double get_outter_radius(Vector2 dir)
+        public override double get_outter_radius(Vector2 dir)
         {
             Vector2 e
                     = (Math.Abs(dir.x() / dir.y()) < (_halfsize.x() / _halfsize.y()))
