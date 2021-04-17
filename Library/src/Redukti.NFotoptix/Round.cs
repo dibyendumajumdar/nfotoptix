@@ -48,7 +48,7 @@ namespace Redukti.Nfotopix
             this.hole = hole;
         }
 
-        override public void get_pattern(PatternConsumer f,
+        public override void get_pattern(PatternConsumer f,
                                 Distribution d,
                                 bool unobstructed)
         {
@@ -179,7 +179,7 @@ namespace Redukti.Nfotopix
         }
 
 
-        override public int get_contour_count()
+        public override int get_contour_count()
         {
             return hole ? 2 : 1;
         }
@@ -206,7 +206,7 @@ namespace Redukti.Nfotopix
         }
 
 
-        override public void get_contour(int contour,
+        public override void get_contour(int contour,
                                 PatternConsumer f,
                                 double resolution)
         {
@@ -226,7 +226,7 @@ namespace Redukti.Nfotopix
         }
 
 
-        override public void get_triangles(ConsumerTriangle2 f, double resolution)
+        public override void get_triangles(ConsumerTriangle2 f, double resolution)
         {
             const double epsilon = 1e-8;
             double xyr = 1.0 / get_xy_ratio();
