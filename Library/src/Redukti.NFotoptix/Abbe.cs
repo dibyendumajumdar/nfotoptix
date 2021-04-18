@@ -39,7 +39,7 @@ namespace Redukti.Nfotopix
             AbbeVe, //< Abbe number of Fraunhofer @em e line
         }
 
-        readonly double _n, _q, _a;
+        readonly double _n, _q, _a, _v;
         readonly AbbeFormula _m;
 
         /**
@@ -49,6 +49,7 @@ namespace Redukti.Nfotopix
         {
             this._m = m;
             _n = n;
+            _v = v;
             _q = (n - 1.0) / v;
             _a = (v * -0.001682) + 0.6438 + dpgF;
         }
@@ -88,6 +89,11 @@ namespace Redukti.Nfotopix
             }
 
             return _n + _q * f;
+        }
+
+        public override string ToString()
+        {
+            return _m.ToString() + "{nd=" + _n + ",vd=" + _v + ",d=" + get_refractive_index(SpectralLine.d) + '}';
         }
     }
 }
