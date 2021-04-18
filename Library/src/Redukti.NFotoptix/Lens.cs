@@ -97,7 +97,7 @@ namespace Redukti.Nfotopix
          * @param thickness the thickness after this surface
          * @param glass     the material after this surface
          */
-            public Lens.Builder add_surface(double curvature, double radius, double thickness, Abbe glass)
+            public Lens.Builder add_surface(double curvature, double radius, double thickness, Medium glass)
             {
                 Curve curve;
                 if (curvature == 0.0)

@@ -252,6 +252,16 @@ namespace Redukti.Nfotopix
 //                    get_thickness (scenario), diameter_, refractive_index_, abbe_vd_);
 //        }
 
+            public void set_glass_name(string name)
+            {
+                glass_name_ = name;
+            }
+
+            public string get_glass_name()
+            {
+                return glass_name_;
+            }
+
             int id_;
             SurfaceType surface_type_;
             double radius_;
@@ -261,6 +271,7 @@ namespace Redukti.Nfotopix
             double abbe_vd_;
             bool is_cover_glass_;
             AsphericalData aspherical_data_;
+            private string glass_name_ = null;
         }
 
         public class LensSpecifications
@@ -400,6 +411,11 @@ namespace Redukti.Nfotopix
                             if (words.Length >= 6 && words[5].Length > 0)
                             {
                                 surface_data.set_abbe_vd(parseDouble(words[5]));
+                            }
+
+                            if (words.Length >= 7 && words[6].Length > 0)
+                            {
+                                surface_data.set_glass_name(words[6]);
                             }
 
                             surfaces_.Add(surface_data);
@@ -593,6 +609,7 @@ namespace Redukti.Nfotopix
             double aperture_radius = surface.get_diameter() / 2.0;
             double refractive_index = surface.get_refractive_index();
             double abbe_vd = surface.get_abbe_vd();
+            string glass_name = surface.get_glass_name();
             if (surface.get_surface_type() == SurfaceType.aperture_stop)
             {
                 lens.add_stop(aperture_radius, thickness);
@@ -602,7 +619,13 @@ namespace Redukti.Nfotopix
             AsphericalData aspherical_data = surface.get_aspherical_data();
             if (aspherical_data == null)
             {
-                if (refractive_index != 0.0)
+                if (glass_name != null && GlassMap.glassByName(glass_name) != null)
+                {
+                    lens.add_surface(
+                        radius, aperture_radius, thickness,
+                        GlassMap.glassByName(glass_name));
+                }
+                else if (refractive_index != 0.0)
                 {
                     if (abbe_vd == 0.0)
                     {
@@ -631,7 +654,15 @@ namespace Redukti.Nfotopix
             double a12 = aspherical_data.data(6);
             double a14 = aspherical_data.data(7);
 
-            if (refractive_index > 0.0)
+            if (glass_name != null && GlassMap.glassByName(glass_name) != null)
+            {
+                lens.add_surface(
+                    new Asphere(radius, k, a4, a6, a8, a10, a12,
+                        a14),
+                    new Disk(aperture_radius), thickness,
+                    GlassMap.glassByName(glass_name));
+            }
+            else if (refractive_index > 0.0)
             {
                 lens.add_surface(
                     new Asphere(radius, k, a4, a6, a8, a10, a12,
